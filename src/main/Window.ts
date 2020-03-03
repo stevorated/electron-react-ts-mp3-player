@@ -13,7 +13,7 @@ const defaultSettings = {
     height: 800,
     minWidth: 1000,
     webPreferences: {
-        nodeIntegration: false,
+        nodeIntegration: true,
         preload: path.join('./dist/perload.js'),
     },
 };

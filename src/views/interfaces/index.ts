@@ -1,16 +1,4 @@
-import PageInterface from './PageInterface';
-import { IpcMainEvent } from 'electron';
+import PageInterface from './props.interfaces';
 
+export * from './data.interfaces';
 export { PageInterface };
-
-export interface IpcChannelInterface {
-    getName(): string;
-
-    handle(event: IpcMainEvent, request: IpcRequest): void;
-}
-
-export interface IpcRequest {
-    responseChannel?: string;
-
-    params?: string[];
-}

@@ -6,7 +6,7 @@ module.exports = [
         entry: './src/main/main.ts',
         target: 'electron-main',
         resolve: {
-            extensions: ['.ts', '.tsx', '.js'],
+            extensions: ['.ts', '.tsx', '.js', 'jsx'],
         },
         module: {
             rules: [
@@ -20,6 +20,9 @@ module.exports = [
         output: {
             path: __dirname + '/dist',
             filename: 'electron.js',
+        },
+        externals: {
+            sqlite3: 'commonjs sqlite3',
         },
     },
 ];

@@ -1,7 +1,7 @@
 import React, { FunctionComponent, FormEvent } from 'react';
 
 type Props = {
-    id: string;
+    id: number;
     title: string;
 };
 
