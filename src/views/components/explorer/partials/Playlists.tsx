@@ -1,8 +1,8 @@
 import React, { ReactComponentElement } from 'react';
 import { Playlist } from './Playlist';
-import { Folder } from './Folder';
-import { TreeListType } from '../../../constants/mocks';
-import { PlaylistType } from 'src/views/constants/mocks';
+// import { Folder } from './Folder';
+
+import { PlaylistType, TreeListType } from '../../../interfaces';
 
 export const Playlists = (props: { playlists: PlaylistType[] }) => {
     const { playlists } = props;
@@ -11,6 +11,9 @@ export const Playlists = (props: { playlists: PlaylistType[] }) => {
         playlists.map(item => {
             return <Playlist key={item.id} id={item.id} title={item.title} />;
         });
+
+    // TODO: shape the return time in dataHandler before storing and then revert to this
+
     // const renderPlaylists = () =>
     //     playlists.map(item => {
     //         if (item.nested.length === 0) {

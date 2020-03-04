@@ -1,13 +1,13 @@
-import React, { Component } from 'react';
+import React, { FunctionComponent } from 'react';
 import { PlayerContainer, SongsListContainer } from './partials';
 
-export class Middle extends Component {
-  render() {
+type Props = {};
+
+export const Middle: FunctionComponent<Props> = () => {
     return (
-      <div className="flexbox-item-grow main">
-        <PlayerContainer />
-        <SongsListContainer />
-      </div>
+        <div className="flexbox-item-grow main">
+            <PlayerContainer />
+            <SongsListContainer />
+        </div>
     );
-  }
-}
+};

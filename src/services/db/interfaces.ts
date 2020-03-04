@@ -9,7 +9,7 @@ export interface ISong {
 export interface IPlaylist {
     id?: string;
     title: string;
-    songs?: any[];
+    songs?: ISong[];
     parent?: number;
     length: number;
     createdAt?: string;

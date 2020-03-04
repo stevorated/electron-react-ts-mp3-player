@@ -1,25 +1,30 @@
-import React, { Component } from 'react';
+import React, { FunctionComponent } from 'react';
+import { connect } from 'react-redux';
+// import { treeMock } from '../../constants/mocks';
+
 import { Playlists } from './partials';
-import { treeMock } from '../../constants/mocks';
+import { RootState } from '../../../views/store';
+import { PlaylistType } from '../../interfaces';
 
 import './Explorer.style.less';
-import { RootState } from 'src/views/store';
-import { connect } from 'react-redux';
-import { PlaylistType } from 'src/views/constants/mocks';
 
-export class Explorer extends Component<{ playlists: PlaylistType[] }> {
-    render() {
-        return (
-            <aside className="flexbox-item-grow sidebar">
-                …
-                <Playlists playlists={this.props.playlists} />
-            </aside>
-        );
-    }
-}
-
-const mapStateToProps = ({ playlists }: RootState) => {
-    return { playlists };
+type Props = {
+    playlists: PlaylistType[];
+    handleAction: (action: string, payload: any) => void;
 };
 
-export const ExplorerLoaded = connect(mapStateToProps)(Explorer);
+export const Explorer: FunctionComponent<Props> = props => {
+    return (
+        <aside className="flexbox-item-grow sidebar">
+            <h1>…</h1>
+
+            <Playlists playlists={props.playlists} />
+        </aside>
+    );
+};
+
+// const mapStateToProps = ({ playlists }: RootState) => {
+//     return { playlists };
+// };
+
+// export const ExplorerLoaded = connect(mapStateToProps)(Explorer);

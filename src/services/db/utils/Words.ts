@@ -44,7 +44,7 @@ export class Words {
             path: `c:/${Words.generate()}/${Words.generate(
                 Math.round(4 * Math.random())
             )}.mp3`,
-            length: 400 * (Math.random() + 0.5),
+            length: 40000 * (Math.random() + 0.5),
         };
     };
 }

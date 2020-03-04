@@ -1,8 +1,4 @@
-import {
-    LoadAllPlaylists,
-    PlaylistActions,
-} from './data.interfaces';
-import { PlaylistType } from '../constants/mocks';
+import { PlaylistType } from '../interfaces';
 
 export default interface Page {
     theme?: string;

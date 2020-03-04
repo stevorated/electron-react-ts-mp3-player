@@ -5,12 +5,10 @@ export class DataHandler {
 
     static fetchAllPlaylists = async () => {
         try {
-            const rootPlaylists = await Playlist.find(false, true);
-            console.log(rootPlaylists);
+            const rootPlaylists = await Playlist.find(true, true);
             return rootPlaylists;
         } catch (err) {
-            console.log('ERROR');
+            throw new Error('ERROR: in fetchAllPlaylists');
         }
-        console.log('YA ALLA');
     };
 }

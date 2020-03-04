@@ -1,9 +1,49 @@
+@import '../../../../assets/styles/Costants.less';
+
 audio {
-    width: 80%;
+    width: 90%;
 }
 
 audio:nth-child(2),
 audio:nth-child(4),
 audio:nth-child(6) {
     margin: 0;
+}
+
+audio:hover,
+audio:focus,
+audio:active {
+    border: none;
+    outline: none;
+    -webkit-box-shadow: 15px 15px 20px rgba(0, 0, 0, 0.4);
+    -moz-box-shadow: 15px 15px 20px rgba(0, 0, 0, 0.4);
+    box-shadow: 15px 15px 20px rgba(0, 0, 0, 0.4);
+    -webkit-transform: scale(1.05);
+    -moz-transform: scale(1.05);
+    transform: scale(1.05);
+}
+
+audio {
+    border-radius: 0;
+    border: none;
+    outline: none;
+    -webkit-transition: all 0.5s linear;
+    -moz-transition: all 0.5s linear;
+    -o-transition: all 0.5s linear;
+    transition: all 0.5s linear;
+    -moz-box-shadow: 2px 2px 4px 0px #006773;
+    -webkit-box-shadow: 2px 2px 4px 0px #006773;
+    box-shadow: 2px 2px 4px 0px #006773;
+    // -moz-border-radius: 7px 7px 7px 7px;
+    // -webkit-border-radius: 7px 7px 7px 7px;
+    // border-radius: 7px 7px 7px 7px;
+    -moz-border-radius: 0;
+    -webkit-border-radius: 0;
+    border-radius: 0;
+}
+
+.hoverable:hover {
+    cursor: pointer;
+    color: @light-primary-color;
+    background-color: @secondary-color;
 }

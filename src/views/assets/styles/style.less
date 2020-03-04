@@ -1,8 +1,8 @@
 @font-face {
-    font-family: 'Allerta';
-    src: url('../fonts/Allerta-Regular.ttf');
-    font-weight: 300;
-    font-style: normal;
+    font-family: 'Fira Sans', sans-serif;
+    src: url('../fonts/FiraSans-Light.ttf');
+    font-weight: 200;
+    // font-style: normal;
 }
 
 @import './Costants.less';
@@ -10,9 +10,8 @@
 
 // ========================================================================
 
-li {
-    margin: 0;
-    list-style: none;
+.song-list-container {
+    padding: 0 40px;
 }
 
 .fa {
@@ -29,7 +28,7 @@ li {
 
 .tree-item:hover {
     cursor: pointer;
-    background-color: @main-color;
+    background-color: @badge-color;
 }
 
 .tree-item-title {
@@ -43,7 +42,7 @@ li {
     height: 100%;
     display: flex;
     flex-direction: column;
-    background-color: @main-color;
+    background-color: @badge-color;
 }
 
 .flexbox-item-grow {
@@ -64,8 +63,8 @@ li {
     width: 50px;
     padding: 8px 2px;
     text-align: center;
-    background-color: @main-color;
-    color: #adadad;
+    background-color: @badge-color;
+    color: @light-text-color;
     font-size: 2em;
 
     i:hover {
@@ -74,7 +73,7 @@ li {
 }
 
 .flexbox-item-grow {
-    font-family: 'Allerta', arial, Tahoma;
+    // font-family: 'Allerta', arial, Tahoma;
     box-sizing: border-box;
 }
 
@@ -83,6 +82,7 @@ li {
 }
 
 .current-song-container {
+    position: relative;
     display: flex;
     justify-content: space-evenly;
     align-items: baseline;
@@ -96,8 +96,8 @@ li {
     min-height: fit-content;
     padding: 20px;
     border-radius: 5px;
-    background-color: @main-color;
-    color: whitesmoke;
+    // background-color: @badge-color;
+    color: #d4d4d4;
     margin: 20px auto;
     overflow: hidden;
 }
@@ -113,7 +113,7 @@ li {
     flex: 4;
     display: flex;
     flex-direction: column;
-    background-color: #1e1e1e;
+    background-color: @dark-primary-color;
     color: #d4d4d4;
 
     .main-body {

@@ -1,7 +1,5 @@
-import React, { Component } from 'react';
+import React, { FunctionComponent } from 'react';
 
-export class Info extends Component {
-  render() {
+export const Info: FunctionComponent = () => {
     return <aside className="flexbox-item-grow info-sidebar hide">info</aside>;
-  }
-}
+};

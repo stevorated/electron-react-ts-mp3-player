@@ -1,10 +1,12 @@
 import { app, ipcMain } from 'electron';
 import path from 'path';
-import { Window } from './Window';
+import { MainWindow } from './MainWindow';
 import { DataHandler } from './DataHandler';
 
+// require('electron-reload')(__dirname);
+
 function main() {
-    const mainWindow = new Window({
+    const mainWindow = new MainWindow({
         file: `${path.join(app.getAppPath(), './index.html')}`,
         windowSettings: {},
     });

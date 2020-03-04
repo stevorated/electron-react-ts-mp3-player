@@ -1,5 +1,13 @@
-import { ipcRenderer } from 'electron';
+import { IpcChannels } from './ipc.interfaces';
 
 export class IpcService {
-    constructor() {}
+    static sendAndReduce(channel: IpcChannels, action: (payload: any) => void) {
+        const { ipcRenderer } = window.require('electron');
+
+        ipcRenderer.send(channel);
+
+        ipcRenderer.on(channel, (e, args) => {
+            action(args);
+        });
+    }
 }

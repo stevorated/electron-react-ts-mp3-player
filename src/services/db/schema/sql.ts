@@ -13,7 +13,7 @@ export const startupSql: string[] = [
   id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE, 
   title VARCHAR(30), 
   length INTEGER DEFAULT 0, 
-  parent INTEGER, 
+  parent INTEGER DEFAULT 1, 
   created_at DEFAULT CURRENT_TIMESTAMP, 
   FOREIGN KEY("parent") REFERENCES "folder"("id") 
   );

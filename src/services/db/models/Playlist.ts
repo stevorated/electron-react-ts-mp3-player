@@ -23,7 +23,7 @@ export class Playlist extends Model {
         withSongs?: boolean,
         root?: boolean,
         playlistId?: string
-    ) {
+    ): Promise<IPlaylist[]> {
         let where = '';
         if (playlistId) {
             where = 'WHERE id = ?';
@@ -39,7 +39,9 @@ export class Playlist extends Model {
                 return pls;
             }
 
-            const promises = pls.map(pl => Playlist.findItems(pl.id || ''));
+            const promises = pls.map(pl =>
+                Playlist.findItems<ISong>(pl.id || '')
+            );
             const songs = await Promise.all(promises);
 
             const res = [];
@@ -58,7 +60,7 @@ export class Playlist extends Model {
     static async findItems<ISong>(
         playlistId: string,
         songId?: string
-    ): Promise<ISong[] | ISong> {
+    ): Promise<ISong[]> {
         let where = '';
         let sql = '';
         let params;
@@ -78,7 +80,7 @@ export class Playlist extends Model {
 
         try {
             if (songId) {
-                const res = (await SqliteDAO.all<ISong>(sql, params))[0];
+                const res = await SqliteDAO.all<ISong>(sql, params);
 
                 return res;
             } else {

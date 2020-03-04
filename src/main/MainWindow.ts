@@ -18,7 +18,7 @@ const defaultSettings = {
     },
 };
 
-export class Window extends BrowserWindow {
+export class MainWindow extends BrowserWindow {
     constructor({ file, windowSettings }: Props) {
         super({ ...defaultSettings, ...windowSettings });
 
@@ -27,9 +27,9 @@ export class Window extends BrowserWindow {
             this.webContents.openDevTools();
         }
 
-        this.once('ready-to-show', () => {
-            this.show();
-        });
+        // this.once('ready-to-show', () => {
+        //     this.show();
+        // });
 
         const menuBuilder = new MenuBuilder(this);
         menuBuilder.buildMenu();

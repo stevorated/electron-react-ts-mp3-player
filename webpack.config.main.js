@@ -1,4 +1,9 @@
+const WebpackShellPlugin = require('webpack-shell-plugin');
+
 const isDev = process.env.NODE_ENV !== 'production';
+const startupScript = isDev
+    ? 'sleep 1 && yarn run:electron'
+    : 'echo "[DONE]: No Startup Script On Production."';
 
 module.exports = [
     {
@@ -23,6 +28,13 @@ module.exports = [
         },
         externals: {
             sqlite3: 'commonjs sqlite3',
+            'electron-reload': 'commontjs electron-reload',
         },
+        plugins: [
+            new WebpackShellPlugin({
+                onBuildStart: ['echo "Webpack Start"'],
+                onBuildEnd: [startupScript],
+            }),
+        ],
     },
 ];

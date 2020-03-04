@@ -1,7 +1,5 @@
-import { PlaylistActions } from '../../interfaces';
-import { LOAD_ALL_PLAYLISTS, CREATE_PLAYLIST } from '../../interfaces';
-import { DELETE_PLAYLIST } from '../../interfaces';
-import { PlaylistType } from 'src/views/constants/mocks';
+import { PlaylistActions, PlaylistType } from '../../interfaces';
+import { LOAD_ALL_PLAYLISTS } from '../../interfaces';
 
 const initialState: PlaylistType[] = [];
 

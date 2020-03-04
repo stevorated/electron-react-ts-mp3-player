@@ -1,26 +1,4 @@
-export type TreeListType = {
-    id: number;
-    title: string;
-    type: 'playlist' | 'folder';
-    nested: TreeListType[];
-};
-
-export type PlaylistType = {
-    id: number;
-    title: string;
-    length: number;
-    created_at: string;
-    songs: SongType[];
-};
-
-export type SongType = {
-    id: number;
-    title: string;
-    path: string;
-    length: number;
-    created_at: string;
-    song_index: number;
-};
+import { TreeListType, PlaylistType } from "../interfaces";
 
 export const treeMock: TreeListType[] = [
     {

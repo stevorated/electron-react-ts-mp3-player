@@ -1,7 +1,7 @@
 import React, { FormEvent, useState, FunctionComponent } from 'react';
-import { Playlist } from './Playlist';
 
-import { TreeListType } from '../../../constants/mocks';
+import { TreeListType } from '../../../interfaces';
+import { Playlist } from './Playlist';
 import { TreeItemBox } from './TreeItemBox';
 
 type Props = {
