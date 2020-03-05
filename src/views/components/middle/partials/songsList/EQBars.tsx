@@ -3,7 +3,9 @@ import { EQBar } from './EQBar';
 
 import './EQBars.style.less';
 
-export const EQBars = (props: { cols: number }) => {
+type Props = { cols: number };
+
+export function EQBars(props: Props) {
     const renderBars = () => {
         const arr = [];
         for (let i = 0; i < props.cols; i++) {
@@ -13,4 +15,4 @@ export const EQBars = (props: { cols: number }) => {
     };
 
     return <div className="container-audio centered">{renderBars()}</div>;
-};
+}

@@ -1,19 +1,37 @@
-import React, { FunctionComponent } from 'react';
+import React from 'react';
 
-import { faPlus, faMinus, faFolder } from '@fortawesome/free-solid-svg-icons';
-
-import { Icon } from '../../../shared';
+import {
+    FaPlusCircle,
+    FaWrench,
+    FaMusic,
+    FaCoffee,
+    FaTable,
+    FaExternalLinkSquareAlt,
+    FaCogs,
+} from 'react-icons/fa';
 
 import './PlayerContainer.style.less';
+import { IPlaylist } from '../../../../../services/db';
 
-type Props = {};
+type Props = {
+    playlists: IPlaylist[];
+    currentPlaylistId: number;
+};
 
-export const PlayerContainer: FunctionComponent<Props> = () => {
+export function PlayerContainer({ playlists, currentPlaylistId }: Props) {
+    const [current] = playlists
+        ? playlists?.filter(
+              pl => typeof pl.id === 'number' && pl.id === currentPlaylistId
+          )
+        : [];
     return (
-        <div className="container-audio centered">
+        <div className="container-audio centered transition border-bottom">
             <audio
                 onPlayingCapture={() => {
-                    console.log('playling');
+                    console.log('playing');
+                }}
+                onEnded={() => {
+                    console.log('song ended');
                 }}
                 className="audio"
                 controls
@@ -25,44 +43,26 @@ export const PlayerContainer: FunctionComponent<Props> = () => {
                 />
             </audio>
             <div className="container-audio current-song-container">
-                <Icon
-                    icon={faPlus}
-                    style={{
-                        bottom: '20px',
-                        left: '5px',
-                    }}
+                <FaCogs
+                    className="action-icon hoverable"
+                    style={{ bottom: '5px', left: '5px' }}
                 />
-                <h3 className="nopadd centered">Playlist Title</h3>
+                <FaWrench
+                    className="action-icon hoverable"
+                    style={{ bottom: '5px', left: '45px' }}
+                />
+                <h3 className="nopadd centered">{current?.title}</h3>
                 <h3 className="nopadd centered">Song Title</h3>
                 <h3 className="nopadd centered">02:42</h3>
-                <Icon
-                    icon={faFolder}
-                    style={{
-                        bottom: '20px',
-                        right: '5px',
-                    }}
+                <FaExternalLinkSquareAlt
+                    className="action-icon hoverable"
+                    style={{ bottom: '5px', right: '40px' }}
+                />
+                <FaPlusCircle
+                    className="action-icon hoverable"
+                    style={{ bottom: '5px', right: '0px' }}
                 />
             </div>
         </div>
     );
-};
-
-// <FontAwesomeIcon
-//     icon={faPlus}
-//     style={{
-//         borderRadius: '100%',
-//         display: 'inline-block',
-//         boxShadow: '0px 0px 2px #888',
-//         padding: '0.5em 0.6em',
-//     }}
-// />;
-
-// <FontAwesomeIcon
-//     icon={faFolder}
-//     style={{
-//         borderRadius: '100%',
-//         display: 'inline-block',
-//         boxShadow: '0px 0px 2px #888',
-//         padding: '0.5em 0.6em',
-//     }}
-// />;
+}

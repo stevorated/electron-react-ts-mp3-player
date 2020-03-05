@@ -1,7 +1,10 @@
-import { PlaylistType } from '../interfaces';
+import { IPlaylist } from '../../services/db';
+import { TreeListType } from './data.interfaces';
 
 export default interface Page {
     theme?: string;
-    playlists: PlaylistType[];
-    loadAllPlaylists: (payload: PlaylistType[]) => void;
+    playlists: IPlaylist[];
+    tree: TreeListType[];
+    loadAllPlaylists: (payload: IPlaylist[]) => void;
+    loadTree: (payload: TreeListType[]) => void;
 }

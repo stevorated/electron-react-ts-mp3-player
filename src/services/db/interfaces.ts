@@ -1,9 +1,10 @@
 export interface ISong {
-    id?: string;
+    id?: number;
     title: string;
     path: string;
     length: number;
-    createdAt?: string;
+    created_at?: string;
+    song_index?: number;
 }
 
 export interface IPlaylist {

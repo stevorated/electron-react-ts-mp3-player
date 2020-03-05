@@ -1,36 +1,44 @@
-import React, { ReactComponentElement } from 'react';
+import React from 'react';
 import { Playlist } from './Playlist';
-// import { Folder } from './Folder';
+import { Folder } from './Folder';
 
-import { PlaylistType, TreeListType } from '../../../interfaces';
+import { TreeListType, SongType } from '../../../interfaces';
 
-export const Playlists = (props: { playlists: PlaylistType[] }) => {
-    const { playlists } = props;
+type Props = {
+    tree: TreeListType[];
+    handleAction: (action: string, payload: any) => void;
+};
 
-    const renderPlaylists = () =>
-        playlists.map(item => {
-            return <Playlist key={item.id} id={item.id} title={item.title} />;
+export function Playlists(props: Props) {
+    const { tree, handleAction } = props;
+
+    const renderTree = () =>
+        tree.map(item => {
+            if (item.type === 'folder') {
+                return (
+                    <Folder
+                        key={`folder-tree-item-${item.id}`}
+                        id={item.id}
+                        title={item.title}
+                        playlists={item.nested}
+                        handleAction={handleAction}
+                    />
+                );
+            } else {
+                return (
+                    <Playlist
+                        key={`playlist-tree-item-${item.id}`}
+                        id={item.id}
+                        title={item.title}
+                        handleAction={props.handleAction}
+                    />
+                );
+            }
         });
 
-    // TODO: shape the return time in dataHandler before storing and then revert to this
-
-    // const renderPlaylists = () =>
-    //     playlists.map(item => {
-    //         if (item.nested.length === 0) {
-    //             return (
-    //                 <Playlist key={item.id} id={item.id} title={item.title} />
-    //             );
-    //         } else {
-    //             return (
-    //                 <Folder
-    //                     key={item.id}
-    //                     id={item.id}
-    //                     title={item.title}
-    //                     playlists={item.nested}
-    //                 />
-    //             );
-    //         }
-    //     });
-
-    return <ul>{renderPlaylists()}</ul>;
-};
+    return (
+        <div>
+            <ul>{renderTree()}</ul>
+        </div>
+    );
+}

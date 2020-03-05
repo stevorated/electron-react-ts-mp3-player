@@ -1,21 +1,23 @@
-import React, { FunctionComponent, FormEvent } from 'react';
+import React, { FormEvent } from 'react';
+import { FaMusic } from 'react-icons/fa';
 
 type Props = {
     id: number;
     title: string;
+    handleAction: (action: string, payload: any) => void;
 };
 
-export const Playlist: FunctionComponent<Props> = (props: Props) => {
+export function Playlist({ id, title, handleAction }: Props) {
     const handleClick = (e: FormEvent) => {
-        console.log(e.target);
-        console.log('CLICKED PLAYLIST', props.id);
+        handleAction('switch', id);
     };
 
     return (
-        <li className="tree-item" key={props.id}>
-            <p className="tree-item-title" onClick={handleClick}>
-                {props.title}
-            </p>
+        <li className="tree-item" key={id}>
+            <div className="tree-item-title" onClick={handleClick}>
+                <FaMusic />
+                <div style={{ marginLeft: '10px' }}>{title}</div>
+            </div>
         </li>
     );
-};
+}

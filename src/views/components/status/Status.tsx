@@ -1,11 +1,10 @@
-import React, { FunctionComponent } from 'react';
-
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { fab } from '@fortawesome/free-brands-svg-icons';
+import React from 'react';
 
 import './Status.style.less';
 
-export const Status: FunctionComponent = () => {
+type Props = {};
+
+export function Status(props: Props) {
     return (
         <footer>
             <div className="app-git">
@@ -32,6 +31,6 @@ export const Status: FunctionComponent = () => {
             </div>
         </footer>
     );
-};
+}
 
 export default Status;

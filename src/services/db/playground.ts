@@ -2,6 +2,7 @@ import 'source-map-support/register';
 import { SqliteDAO } from './SqliteDAO';
 import { Playlist, ISong, Song, Folder } from './index';
 import { Words } from './utils';
+import { IFolder } from './interfaces';
 
 // SqliteDAO.connect();
 SqliteDAO.setup();
@@ -52,8 +53,12 @@ const createFolder = async (title: string) => {
     }).then(data => console.log(data.lastID));
 };
 
-// createFolder('root');
+Playlist.swap('2', '2', '2');
 
+// createFolder('new');
+// Folder.findItems('1').then(d => console.log(d));
+// Folder.find(true, '1').then(d => console.log(d));
+// Playlist.find(true, true).then(d => console.log(d));
 // createRandomSong();
 // createRandomSong();
 // createRandomSong();
@@ -62,7 +67,11 @@ const createFolder = async (title: string) => {
 // createRandomPlaylist();
 // Playlist.popItem('1', '1');
 // Playlist.find(false, true).then(data => console.log(data));
-// Playlist.pushItem('5', '3', '5').then(data => console.log(data));
+// const index = '6';
+// Playlist.pushItem(index, '2', index).then(data => console.log(data));
+// Folder.updateById<IFolder>('3', {
+//     title: 'third folder',
+// });
 
 setTimeout(() => {
     SqliteDAO.close();

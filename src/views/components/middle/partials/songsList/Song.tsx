@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from 'react';
+import React from 'react';
 import { SongType } from '../../../../interfaces';
 import { formatMillsToTime } from './../../../../utils';
 
@@ -6,13 +6,29 @@ type Props = {
     song: SongType;
 };
 
-export const Song: FunctionComponent<Props> = ({ song }: Props) => {
-    const { id, title, length, song_index } = song;
+export function Song({ song }: Props) {
+    const { title, length, song_index } = song;
     return (
-        <div className="song-container">
-            <h3>{song_index}</h3>
-            <h3>{title}</h3>
-            <h3>{formatMillsToTime(300000)}</h3>
+        <div className="dropable">
+            <div
+                draggable
+                onDragOver={e => {
+                    console.log(e.dataTransfer);
+                    e.preventDefault();
+                    // e.dataTransfer.setData('title', 'ya habibi');
+                }}
+                // onDragStart={e => {
+                //     console.log(e.dataTransfer);
+                //     // e.dataTransfer.setData('title', 'ya alla');
+                //     e.preventDefault();
+                //     console.log();
+                // }}
+                className="draggable-song song-container hoverable-light border-bottom-light"
+            >
+                <h3>{song_index}</h3>
+                <h3>{title}</h3>
+                <h3>{formatMillsToTime(length * 100)}</h3>
+            </div>
         </div>
     );
-};
+}

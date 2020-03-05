@@ -18,17 +18,17 @@ const defaultSettings = {
     },
 };
 
-export class MainWindow extends BrowserWindow {
+export class Window extends BrowserWindow {
     constructor({ file, windowSettings }: Props) {
         super({ ...defaultSettings, ...windowSettings });
 
         this.loadFile(file);
         if (process.env.NODE_ENV === 'development') {
-            this.webContents.openDevTools();
+            // this.webContents.openDevTools();
         }
 
         // this.once('ready-to-show', () => {
-        //     this.show();
+        // this.show();
         // });
 
         const menuBuilder = new MenuBuilder(this);

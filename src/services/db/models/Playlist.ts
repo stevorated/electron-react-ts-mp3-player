@@ -28,7 +28,7 @@ export class Playlist extends Model {
         if (playlistId) {
             where = 'WHERE id = ?';
         } else if (root) {
-            where = 'WHERE parent IS null';
+            where = 'WHERE parent = 1';
         }
         const sql1 = `SELECT * FROM playlists ${where};`;
 

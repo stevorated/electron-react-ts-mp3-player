@@ -1,6 +1,6 @@
 import { IpcChannels } from './ipc.interfaces';
 
-export class IpcService {
+export class IpcConnector {
     static sendAndReduce(channel: IpcChannels, action: (payload: any) => void) {
         const { ipcRenderer } = window.require('electron');
 

@@ -8,7 +8,7 @@ type Props = {
     songs: SongType[];
 };
 
-export const Songs = ({ songs, rows }: Props) => {
+export function Songs({ songs, rows }: Props) {
     const renderSongs = () => {
         const arr = [];
         for (let i = 0; i < rows; i++) {
@@ -25,4 +25,4 @@ export const Songs = ({ songs, rows }: Props) => {
     };
 
     return <ol className="song-list-container">{renderSongs()}</ol>;
-};
+}

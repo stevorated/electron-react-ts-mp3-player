@@ -1,17 +1,19 @@
-import React, { FormEvent, useState, FunctionComponent } from 'react';
+import React, { FormEvent, useState } from 'react';
 
-import { TreeListType } from '../../../interfaces';
 import { Playlist } from './Playlist';
 import { TreeItemBox } from './TreeItemBox';
+import { TreeListType } from '../../../interfaces';
+import { FaFolderOpen, FaFolder } from 'react-icons/fa';
 
 type Props = {
     playlists: TreeListType[];
     title: string;
     id: number;
+    handleAction: (action: string, payload: any) => void;
 };
 
-export const Folder: FunctionComponent<Props> = (props: Props) => {
-    const { playlists, id } = props;
+export function Folder(props: Props) {
+    const { playlists, id, handleAction } = props;
     const [show, setShow] = useState(false);
 
     const toggleNested = (e: FormEvent) => {
@@ -19,20 +21,42 @@ export const Folder: FunctionComponent<Props> = (props: Props) => {
     };
 
     const renderPlaylists = () =>
-        playlists.map(({ id, title, nested }) => {
-            if (nested.length === 0) {
-                return <Playlist key={id} id={id} title={title} />;
+        playlists?.map(({ id, title, nested, type }) => {
+            if (type === 'folder') {
+                return (
+                    <Folder
+                        handleAction={handleAction}
+                        key={id}
+                        id={id}
+                        title={title}
+                        playlists={nested}
+                    />
+                );
             } else {
                 return (
-                    <Folder key={id} id={id} title={title} playlists={nested} />
+                    <Playlist
+                        handleAction={handleAction}
+                        key={id}
+                        id={id}
+                        title={title}
+                    />
                 );
             }
         });
 
     return (
         <li key={id}>
-            <TreeItemBox onClick={toggleNested} title={props.title} />
+            <div
+                style={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    alignItems: 'baseline',
+                }}
+            >
+                {show ? <FaFolderOpen size="20px" /> : <FaFolder size="20px" />}
+                <TreeItemBox onClick={toggleNested} title={props.title} />
+            </div>
             <ul className={show ? '' : 'hide'}>{renderPlaylists()}</ul>
         </li>
     );
-};
+}

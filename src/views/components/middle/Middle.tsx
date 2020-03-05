@@ -1,13 +1,25 @@
-import React, { FunctionComponent } from 'react';
+import React from 'react';
 import { PlayerContainer, SongsListContainer } from './partials';
 
-type Props = {};
+import { IPlaylist } from '../../../services/db';
 
-export const Middle: FunctionComponent<Props> = () => {
+type Props = {
+    playlists: IPlaylist[];
+    currentPlaylistId: number;
+};
+
+export function Middle({ playlists, currentPlaylistId }: Props) {
+    // console.log({ playlists, currentPlaylistId });
     return (
         <div className="flexbox-item-grow main">
-            <PlayerContainer />
-            <SongsListContainer />
+            <PlayerContainer
+                currentPlaylistId={currentPlaylistId}
+                playlists={playlists}
+            />
+            <SongsListContainer
+                currentPlaylistId={currentPlaylistId}
+                playlists={playlists}
+            />
         </div>
     );
-};
+}

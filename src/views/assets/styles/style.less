@@ -10,16 +10,26 @@
 
 // ========================================================================
 
-.song-list-container {
-    padding: 0 40px;
+.transition {
+    transition: all 0.1s ease;
 }
 
-.fa {
-    font-size: 14px;
+.border-bottom {
+    border-bottom: rgba(245, 222, 179, 0.15) solid 2px;
+}
+
+.border-bottom-light {
+    border-bottom: rgba(245, 222, 179, 0.05) solid 2px;
+}
+
+.song-list-container {
+    padding: 20px 40px;
+    border-top: rgba(245, 222, 179, 0.15) solid 2px;
 }
 
 .tree-item {
     padding: 2px 10px;
+    width: @explorer-width;
     margin: 0;
     &.active {
         font-weight: 900;
@@ -27,12 +37,20 @@
 }
 
 .tree-item:hover {
-    cursor: pointer;
+    cursor: grab;
+    background-color: @badge-color;
+}
+
+.tree-item:active {
+    cursor: grabbing;
     background-color: @badge-color;
 }
 
 .tree-item-title {
-    display: block;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: baseline;
     padding: 0;
     margin: 5px 0;
 }
@@ -94,11 +112,11 @@
 .container-audio {
     width: 90%;
     min-height: fit-content;
-    padding: 20px;
+    // padding: 20px;
     border-radius: 5px;
     // background-color: @badge-color;
     color: #d4d4d4;
-    margin: 20px auto;
+    margin: 8px auto;
     overflow: hidden;
 }
 
@@ -127,4 +145,17 @@
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    padding: 0px 2rem;
+}
+
+.song-container:hover {
+    cursor: grab;
+}
+
+.song-container:active {
+    cursor: grabbing;
+}
+
+.song-container:focus {
+    cursor: grab;
 }

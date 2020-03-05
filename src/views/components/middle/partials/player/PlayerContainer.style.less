@@ -1,7 +1,10 @@
 @import '../../../../assets/styles/Costants.less';
 
 audio {
-    width: 90%;
+    width: 85%;
+}
+audio:nth-child(0),
+audio:nth-child(1) {
 }
 
 audio:nth-child(2),
@@ -11,19 +14,20 @@ audio:nth-child(6) {
 }
 
 audio:hover,
-audio:focus,
+// audio:focus,
 audio:active {
     border: none;
     outline: none;
     -webkit-box-shadow: 15px 15px 20px rgba(0, 0, 0, 0.4);
     -moz-box-shadow: 15px 15px 20px rgba(0, 0, 0, 0.4);
     box-shadow: 15px 15px 20px rgba(0, 0, 0, 0.4);
-    -webkit-transform: scale(1.05);
-    -moz-transform: scale(1.05);
-    transform: scale(1.05);
+    -webkit-transform: scale(1.02);
+    -moz-transform: scale(1.02);
+    transform: scale(1.02);
 }
 
 audio {
+    filter: sepia(20%) saturate(70%) grayscale(1) contrast(99%) invert(12%);
     border-radius: 0;
     border: none;
     outline: none;
@@ -34,16 +38,45 @@ audio {
     -moz-box-shadow: 2px 2px 4px 0px #006773;
     -webkit-box-shadow: 2px 2px 4px 0px #006773;
     box-shadow: 2px 2px 4px 0px #006773;
-    // -moz-border-radius: 7px 7px 7px 7px;
-    // -webkit-border-radius: 7px 7px 7px 7px;
-    // border-radius: 7px 7px 7px 7px;
-    -moz-border-radius: 0;
-    -webkit-border-radius: 0;
-    border-radius: 0;
+    -moz-border-radius: 10px 10px 10px 10px;
+    -webkit-border-radius: 10px 10px 10px 10px;
+    border-radius: 24px 24px 24px 24px;
+    // -moz-border-radius: 0;
+    // -webkit-border-radius: 0;
+    // border-radius: 0;
+}
+
+.hoverable-light,
+.hoverable {
+    transition: all 0.3s linear;
+}
+
+.hoverable-light:active,
+.hoverable:active {
+    cursor: grabbing;
+    color: @light-primary-color;
+    background-color: @secondary-color;
 }
 
 .hoverable:hover {
-    cursor: pointer;
-    color: @light-primary-color;
-    background-color: @secondary-color;
+    cursor: grab;
+    color: white;
+    background-color: rgba(245, 222, 179, 0.3);
+    transform: translateY(-1px);
+}
+
+.hoverable-light:hover {
+    cursor: grab;
+    color: white;
+    background-color: rgba(245, 222, 179, 0.05);
+    transform: translateY(-1px);
+}
+
+.action-icon {
+    border-radius: 10%;
+    position: absolute;
+    display: inline-block;
+    box-shadow: 0px 0px 2px #888;
+    padding: 0.6em 0.7em;
+    margin-right: 5px;
 }
