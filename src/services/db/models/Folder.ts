@@ -2,8 +2,6 @@ import { Model } from './Model';
 import { IFolder, ISong } from './../interfaces';
 import { SqliteDAO, Playlist, IPlaylist } from '..';
 
-
-
 export class Folder extends Model {
     static async find(
         withNested?: boolean,
@@ -25,7 +23,7 @@ export class Folder extends Model {
             }
 
             const promises = folders.map(folder =>
-                this.findItems<IPlaylist>(folder.id || '')
+                this.findItems<IPlaylist>(folder.id?.toString() || '')
             );
             const nested = await Promise.all(promises);
 
@@ -59,6 +57,4 @@ export class Folder extends Model {
             throw new Error(err.message);
         }
     }
-
-
 }

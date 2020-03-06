@@ -9,7 +9,13 @@ interface ITreeItem {
 }
 
 export class DataHandler {
-    static fetchAllPlaylists = async () => {
+    static createPlaylist = async (title: string): Promise<any> => {
+        // const res = await Playlist.create({ title });
+        // console.log(res);
+        return 0;
+    };
+
+    static fetchSendPlaylists = async () => {
         try {
             return Playlist.find(true, false);
         } catch (err) {
@@ -17,7 +23,7 @@ export class DataHandler {
         }
     };
 
-    static async getTree(): Promise<ITreeItem[]> {
+    static async fetchSendTree(): Promise<ITreeItem[]> {
         const sql = `SELECT * FROM
         (
         SELECT f.id, f.title, "folder" as type, COUNT(*) length FROM folders f

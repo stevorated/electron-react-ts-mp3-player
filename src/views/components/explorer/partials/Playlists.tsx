@@ -2,11 +2,11 @@ import React from 'react';
 import { Playlist } from './Playlist';
 import { Folder } from './Folder';
 
-import { TreeListType, SongType } from '../../../interfaces';
+import { TreeListType, HandlerAction } from '../../../interfaces';
 
 type Props = {
     tree: TreeListType[];
-    handleAction: (action: string, payload: any) => void;
+    handleAction: (action: HandlerAction, payload?: any) => void;
 };
 
 export function Playlists(props: Props) {
@@ -19,6 +19,7 @@ export function Playlists(props: Props) {
                     <Folder
                         key={`folder-tree-item-${item.id}`}
                         id={item.id}
+                        item={item}
                         title={item.title}
                         playlists={item.nested}
                         handleAction={handleAction}
@@ -28,7 +29,8 @@ export function Playlists(props: Props) {
                 return (
                     <Playlist
                         key={`playlist-tree-item-${item.id}`}
-                        id={item.id}
+                        id={item.id || 0}
+                        item={item}
                         title={item.title}
                         handleAction={props.handleAction}
                     />

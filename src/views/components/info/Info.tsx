@@ -1,7 +1,9 @@
 import React from 'react';
 
-type Props = {};
+type Props = {
+    status: string;
+};
 
-export function Info(props: Props) {
+export function Info({ status }: Props) {
     return <aside className="flexbox-item-grow info-sidebar hide">info</aside>;
 }

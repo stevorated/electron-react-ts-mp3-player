@@ -22,7 +22,7 @@ export class Playlist extends Model {
     static async find(
         withSongs?: boolean,
         root?: boolean,
-        playlistId?: string
+        playlistId?: number
     ): Promise<IPlaylist[]> {
         let where = '';
         if (playlistId) {
@@ -40,7 +40,7 @@ export class Playlist extends Model {
             }
 
             const promises = pls.map(pl =>
-                Playlist.findItems<ISong>(pl.id || '')
+                Playlist.findItems<ISong>(pl.id?.toString() || '')
             );
             const songs = await Promise.all(promises);
 

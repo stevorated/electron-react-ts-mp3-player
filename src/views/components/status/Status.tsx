@@ -2,15 +2,17 @@ import React from 'react';
 
 import './Status.style.less';
 
-type Props = {};
+type Props = {
+    status: string;
+};
 
-export function Status(props: Props) {
+export function Status({ status }: Props) {
     return (
         <footer>
             <div className="app-git">
                 <ul>
                     <li>
-                        <i className="fa fa-github"></i> master
+                        <i className="fa fa-github"></i> {status}
                     </li>
                     <li>
                         <i className="fa fa-times-circle"></i> 0

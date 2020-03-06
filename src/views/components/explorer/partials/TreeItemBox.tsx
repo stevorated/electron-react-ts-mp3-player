@@ -1,6 +1,7 @@
-import React, { FunctionComponent } from 'react';
+import React from 'react';
 
 type Props = {
+    itemId: number;
     title: string;
     onClick: (e: React.FormEvent) => void;
 };

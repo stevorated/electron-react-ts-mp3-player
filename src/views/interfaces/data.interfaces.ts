@@ -1,48 +1,53 @@
-// import { PlaylistType } from 'src/views/constants/mocks';
 import { ISong, IPlaylist } from './../../services/db';
-
-export const LOAD_TREE = 'LOAD_TREE';
-export const LOAD_ALL_PLAYLISTS = 'LOAD_ALL_PLAYLISTS';
-export const LOAD_PLAYLIST_WITH_SONGS = 'LOAD_PLAYLISTS_WITH_SONGS';
-export const CREATE_PLAYLIST = 'CREATE_PLAYLIST';
-export const DELETE_PLAYLIST = 'DELETE_PLAYLIST';
+import {
+    LOAD_TREE,
+    LOAD_ALL_PLAYLISTS,
+    UPDATE_PLAYLIST,
+    DELETE_PLAYLIST_FROM_TREE,
+} from '../store/actions';
+import { LOAD_PLAYLIST_WITH_SONGS, CREATE_PLAYLIST } from '../store/actions';
+import { DELETE_PLAYLIST } from '../store/actions';
 
 export type TreeListType = {
-    id: number;
+    id?: number;
     title: string;
     type: 'playlist' | 'folder';
     nested: TreeListType[];
 };
 
-export type SongType = ISong;
-
-// export type SongType = {
-//     id: number;
-//     title: string;
-//     path: string;
-//     length: number;
-//     created_at: string;
-//     song_index: number;
-// };
-
-export type PlaylistType = {
-    id: number;
-    title: string;
-    length: number;
-    parent: string;
-    created_at?: string;
-    songs: SongType[];
-};
-
 export interface LoadAllPlaylists {
     type: typeof LOAD_ALL_PLAYLISTS;
     payload: IPlaylist[];
+    extra?: any;
 }
 
 export interface LoadTree {
     type: typeof LOAD_TREE;
     payload: TreeListType[];
+    extra?: any;
+}
+
+export interface AddToTree {
+    type: typeof CREATE_PLAYLIST;
+    payload: TreeListType[];
+    extra?: any;
+}
+
+export interface UpdateTree {
+    type: typeof UPDATE_PLAYLIST;
+    payload: TreeListType[];
+    extra?: any;
+}
+
+export interface DeletePlaylistFromTree {
+    type: typeof DELETE_PLAYLIST_FROM_TREE;
+    payload: TreeListType[];
+    extra?: any;
 }
 
 export type PlaylistActions = LoadAllPlaylists;
-export type TreeActions = LoadTree;
+export type TreeActions =
+    | LoadTree
+    | AddToTree
+    | UpdateTree
+    | DeletePlaylistFromTree;

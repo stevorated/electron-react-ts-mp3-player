@@ -9,16 +9,15 @@ type Props = {
 };
 
 const defaultSettings = {
-    width: 1300,
-    height: 800,
-    minWidth: 1000,
+    width: 600,
+    height: 600,
     webPreferences: {
         nodeIntegration: true,
         preload: path.join('./dist/perload.js'),
     },
 };
 
-export class Window extends BrowserWindow {
+export class Modal extends BrowserWindow {
     constructor({ file, windowSettings }: Props) {
         super({ ...defaultSettings, ...windowSettings });
 
@@ -28,12 +27,15 @@ export class Window extends BrowserWindow {
         }
 
         this.once('ready-to-show', () => {
-            this.show();
+            this.hide();
         });
 
-        this.on('close', () => {
+        this.on('close', e => {
+            e.preventDefault();
+            this.hide();
             // new Window({ file: '' });
         });
+        
 
         const menuBuilder = new MenuBuilder(this);
         menuBuilder.buildMenu();

@@ -1,24 +1,42 @@
 import React from 'react';
 import { PlayerContainer, SongsListContainer } from './partials';
-
 import { IPlaylist } from '../../../services/db';
+import { HandlerAction } from '../../interfaces';
 
 type Props = {
-    playlists: IPlaylist[];
-    currentPlaylistId: number;
+    current: IPlaylist;
+    pointer: number;
+    waitBetween: number;
+    handleAction: (action: HandlerAction, payload?: any) => void;
+    play: () => void;
+    songsArr: string[];
+    status: string;
 };
 
-export function Middle({ playlists, currentPlaylistId }: Props) {
-    // console.log({ playlists, currentPlaylistId });
+export function Middle({
+    current,
+    pointer,
+    waitBetween,
+    handleAction,
+    play,
+    songsArr,
+    status,
+}: Props) {
     return (
         <div className="flexbox-item-grow main">
             <PlayerContainer
-                currentPlaylistId={currentPlaylistId}
-                playlists={playlists}
+                current={current}
+                songsArr={songsArr}
+                pointer={pointer}
+                play={play}
+                handleAction={handleAction}
+                waitBetween={waitBetween}
             />
             <SongsListContainer
-                currentPlaylistId={currentPlaylistId}
-                playlists={playlists}
+                status={status}
+                handleAction={handleAction}
+                current={current}
+                pointer={pointer}
             />
         </div>
     );

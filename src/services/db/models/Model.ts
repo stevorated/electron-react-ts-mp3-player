@@ -31,7 +31,7 @@ export abstract class Model {
     }
 
     static async updateById<T>(
-        id: string,
+        id: number,
         payload: Partial<Record<keyof T, number | string>>
     ) {
         if (Object.values(payload).length === 0) {
@@ -102,7 +102,7 @@ export abstract class Model {
         await SqliteDAO.run(sql, [...params, ...whereValues]);
     }
 
-    static async removeById(id: string) {
+    static async removeById(id: number) {
         const sql = `DELETE FROM ${this.name.toLowerCase()}s WHERE id = ?;`;
 
         await SqliteDAO.run(sql, [id]);

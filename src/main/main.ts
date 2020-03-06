@@ -1,40 +1,40 @@
-import { app, ipcMain } from 'electron';
+import { app } from 'electron';
 import path from 'path';
 import { Window } from './Window';
 import { DataHandler } from './DataHandler';
+import { reply, execute } from './Ipc';
+import { Modal } from './modal';
 
-// require('electron-reload')(__dirname);
-
+app.allowRendererProcessReuse = true;
 function main() {
-    const mainWindow = new Window({
+    let modal: Modal | null = new Modal({
+        file: `${path.join(app.getAppPath(), './index.html/#hello')}`,
+    });
+
+    modal?.hide();
+
+    execute('TOGGLE_NEW_PLAYLIST_MODAL', () => {
+        console.log('TOGGLE_NEW_PLAYLIST_MODAL');
+        modal?.show();
+    });
+
+    // execute('SAVE_PLAYLIST', () => {
+    //     console.log('SAVE_PLAYLIST');
+    //     // DataHandler.createPlaylist()
+    // });
+
+    let mainWindow: Window | null = new Window({
         file: `${path.join(app.getAppPath(), './index.html')}`,
         windowSettings: {},
     });
-    // new Window({
-    //     file: `${path.join(app.getAppPath(), './index/#blabla.html')}`,
-    //     windowSettings: { width: 500, height: 500 },
-    // });
 }
-
-app.allowRendererProcessReuse = true;
 
 app.on('ready', main);
 
-DataHandler.fetchAllPlaylists().then(d => {
-    ipcMain.on('FETCH_PLAYLIST_EXPLORER', (e, arg) => {
-        e.reply('FETCH_PLAYLIST_EXPLORER', d);
-    });
+DataHandler.fetchSendPlaylists().then(d => {
+    reply('FETCH_PLAYLISTS', d);
 });
 
-DataHandler.getTree().then(d => {
-    ipcMain.on('FETCH_TREE', (e, arg) => {
-        e.reply('FETCH_TREE', d);
-    });
-});
-
-DataHandler.getTree().then(d => {
-    const action = 'OPEN_SETTINGS';
-    ipcMain.on('OPEN_SETTINGS', (e, arg) => {
-        e.reply('OPEN_SETTINGS', d);
-    });
+DataHandler.fetchSendTree().then(d => {
+    reply('FETCH_TREE', d);
 });

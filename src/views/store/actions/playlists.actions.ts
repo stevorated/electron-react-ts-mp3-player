@@ -1,6 +1,11 @@
 import { PlaylistActions } from '../../interfaces';
 import { IPlaylist } from '../../../services/db';
-import { LOAD_ALL_PLAYLISTS } from '../../interfaces/data.interfaces';
+
+export const LOAD_ALL_PLAYLISTS = 'LOAD_ALL_PLAYLISTS';
+export const LOAD_PLAYLIST_WITH_SONGS = 'LOAD_PLAYLISTS_WITH_SONGS';
+export const CREATE_PLAYLIST = 'CREATE_PLAYLIST';
+export const UPDATE_PLAYLIST = 'UPDATE_PLAYLIST';
+export const DELETE_PLAYLIST = 'DELETE_PLAYLIST';
 
 export function loadAllPlaylists(playlists: IPlaylist[]): PlaylistActions {
     return {

@@ -3,20 +3,23 @@ import { EQBars } from './EQBars';
 import { Songs } from './Songs';
 // import { playlistsMock } from '../../../../constants/mocks';
 import { IPlaylist } from '../../../../../services/db';
+import { HandlerAction } from '../../../../interfaces';
 
 type Props = {
-    playlists: IPlaylist[];
-    currentPlaylistId: number;
+    current: IPlaylist;
+    pointer: number;
+    handleAction: (action: HandlerAction, payload: any) => void;
+    status: string;
 };
 
-export function SongsListContainer({ playlists, currentPlaylistId }: Props) {
-    // console.log({ playlists, currentPlaylistId });
+export function SongsListContainer({
+    current,
+    pointer,
+    handleAction,
+    status,
+}: Props) {
+    const { songs } = current;
     const [width, setWidth] = useState(window.innerWidth);
-    const [songs] = playlists
-        ?.filter(pl => {
-            if (typeof pl.id === 'number') return pl.id === currentPlaylistId;
-        })
-        ?.map(pl => pl.songs);
 
     const updateWidth = () => {
         setWidth(window.innerWidth);
@@ -26,11 +29,17 @@ export function SongsListContainer({ playlists, currentPlaylistId }: Props) {
         window.addEventListener('resize', updateWidth);
         return () => window.removeEventListener('resize', updateWidth);
     });
-    // const { songs } = playlistsMock[0];
+
     return (
         <div className="main-body playlist-container">
             <EQBars cols={Math.round((width - 300) / 41)} />
-            <Songs rows={17} songs={songs || []} />
+            <Songs
+                status={status}
+                rows={17}
+                songs={songs || []}
+                pointer={pointer}
+                handleAction={handleAction}
+            />
         </div>
     );
 }

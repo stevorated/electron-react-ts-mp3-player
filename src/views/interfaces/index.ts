@@ -1,4 +1,4 @@
-import PageInterface from './props.interfaces';
+import { IPage, HandlerAction } from './props.interfaces';
 
 export * from './data.interfaces';
-export { PageInterface };
+export { IPage, HandlerAction };

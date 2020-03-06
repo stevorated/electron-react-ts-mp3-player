@@ -1,5 +1,5 @@
-import { PlaylistActions, PlaylistType } from '../../interfaces';
-import { LOAD_ALL_PLAYLISTS } from '../../interfaces';
+import { PlaylistActions } from '../../interfaces';
+import { LOAD_ALL_PLAYLISTS } from '../actions';
 import { IPlaylist } from '../../../services/db';
 
 const initialState: IPlaylist[] = [];

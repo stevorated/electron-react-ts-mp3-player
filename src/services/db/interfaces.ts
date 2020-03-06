@@ -8,18 +8,18 @@ export interface ISong {
 }
 
 export interface IPlaylist {
-    id?: string;
+    id?: number;
     title: string;
     songs?: ISong[];
     parent?: number;
     length: number;
-    createdAt?: string;
+    created_at?: string;
 }
 
 export interface IFolder {
-    id?: string;
+    id?: number;
     title: string;
     playlists?: any[];
     length: number;
-    createdAt?: string;
+    created_at?: string;
 }
