@@ -1,12 +1,14 @@
-import { ISong, IPlaylist } from './../../services/db';
+import { ISong, IPlaylist } from '@services/db';
 import {
-    LOAD_TREE,
+    FETCH_TREE,
     LOAD_ALL_PLAYLISTS,
+    CREATE_PLAYLIST_TREE,
+    UPDATE_PLAYLIST_TREE,
+    DELETE_PLAYLIST_TREE,
+    CREATE_PLAYLIST,
     UPDATE_PLAYLIST,
-    DELETE_PLAYLIST_FROM_TREE,
-} from '../store/actions';
-import { LOAD_PLAYLIST_WITH_SONGS, CREATE_PLAYLIST } from '../store/actions';
-import { DELETE_PLAYLIST } from '../store/actions';
+    DELETE_PLAYLIST,
+} from '@views/store/actions';
 
 export type TreeListType = {
     id?: number;
@@ -18,36 +20,36 @@ export type TreeListType = {
 export interface LoadAllPlaylists {
     type: typeof LOAD_ALL_PLAYLISTS;
     payload: IPlaylist[];
-    extra?: any;
+    id?: number;
 }
 
-export interface LoadTree {
-    type: typeof LOAD_TREE;
+export interface FetchTree {
+    type: typeof FETCH_TREE;
     payload: TreeListType[];
-    extra?: any;
+    id?: number;
 }
 
-export interface AddToTree {
-    type: typeof CREATE_PLAYLIST;
+export interface CreateTempPlaylist {
+    type: typeof CREATE_PLAYLIST_TREE;
     payload: TreeListType[];
-    extra?: any;
+    id?: number;
 }
 
-export interface UpdateTree {
-    type: typeof UPDATE_PLAYLIST;
+export interface UpdateTreePlaylist {
+    type: typeof UPDATE_PLAYLIST_TREE;
     payload: TreeListType[];
-    extra?: any;
+    id?: number;
 }
 
-export interface DeletePlaylistFromTree {
-    type: typeof DELETE_PLAYLIST_FROM_TREE;
+export interface DeletePlaylistTree {
+    type: typeof DELETE_PLAYLIST_TREE;
     payload: TreeListType[];
-    extra?: any;
+    id?: number;
 }
 
 export type PlaylistActions = LoadAllPlaylists;
 export type TreeActions =
-    | LoadTree
-    | AddToTree
-    | UpdateTree
-    | DeletePlaylistFromTree;
+    | FetchTree
+    | CreateTempPlaylist
+    | UpdateTreePlaylist
+    | DeletePlaylistTree;

@@ -1,10 +1,12 @@
 import React from 'react';
+
+import { IPlaylist } from '@services/db';
+import { HandlerAction } from '@views/interfaces';
+
 import { PlayerContainer, SongsListContainer } from './partials';
-import { IPlaylist } from '../../../services/db';
-import { HandlerAction } from '../../interfaces';
 
 type Props = {
-    current: IPlaylist;
+    current?: IPlaylist;
     pointer: number;
     waitBetween: number;
     handleAction: (action: HandlerAction, payload?: any) => void;

@@ -1,20 +1,14 @@
-import React, { useRef } from 'react';
+import React from 'react';
+import { FaPlusCircle, FaPoo } from 'react-icons/fa';
 
+import { IPlaylist } from '@services/db';
+import { HandlerAction, TreeListType } from '@views/interfaces';
+
+import { ExplorerBtn } from './partials';
 import { Playlists } from './partials';
-import { TreeListType } from '../../interfaces';
-import { IPlaylist } from '../../../services/db';
+import { Modal, DropZone } from '../shared';
+
 import './Explorer.style.less';
-import {
-    FaPlusCircle,
-    FaAccusoft,
-    FaPlus,
-    FaPoop,
-    FaPoo,
-} from 'react-icons/fa';
-import { Modal } from '../shared/Modal';
-import { HandlerAction } from '../../interfaces';
-import { ExplorerBtn } from './partials/ExplorerBtn';
-import { Ipc } from './../../tools/Ipc';
 
 type Props = {
     playlists: IPlaylist[];
@@ -38,7 +32,7 @@ export function Explorer(props: Props) {
                 }
                 text="new playlist…"
                 onClick={() => {
-                    props.handleAction('createPlaylist');
+                    props.handleAction('CREATE_PLAYLIST');
                 }}
             />
             <ExplorerBtn
@@ -74,17 +68,7 @@ export function Explorer(props: Props) {
             >
                 <h1>DO SOMETHING FORM</h1>
             </Modal>
-            <div
-                style={{
-                    display: 'flex',
-                    height: '20vh',
-                    border: '2px dashed rgba(200, 200, 200, 0.2)',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                }}
-            >
-                <h3>Drop Here?</h3>
-            </div>
+            <DropZone />
             <Playlists tree={props.tree} handleAction={props.handleAction} />
         </aside>
     );

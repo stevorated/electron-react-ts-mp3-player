@@ -14,5 +14,9 @@ export function EQBars(props: Props) {
         return arr.map(col => <EQBar key={col} />);
     };
 
-    return <div className="container-audio centered">{renderBars()}</div>;
+    return (
+        <div className="container-audio centered border-bottom">
+            {renderBars()}
+        </div>
+    );
 }

@@ -2,37 +2,14 @@ import 'source-map-support/register';
 import { SqliteDAO } from './SqliteDAO';
 import { Playlist, ISong, Song, Folder } from './index';
 import { Words } from './utils';
-import { IFolder } from './interfaces';
+import { startupSql, keys } from './schema/sql';
 
 // SqliteDAO.connect();
-SqliteDAO.setup();
-SqliteDAO.setup();
 
-// Playlist.find().then(data => {
-//     // console.log(data);
-// });
-
-// const make = async () => {
-//     const pls = await Playlist.find();
-
-//     if (!pls) {
-//         return [];
-//     }
-
-//     const promises = pls.map(pl => Playlist.findItems(pl.id || ''));
-
-//     const songs = (await Promise.all(promises)) as ISong[][];
-
-//     const res = [];
-//     for (let i = 0; i < pls.length; i++) {
-//         const x = { ...pls[i], songs: songs[i] };
-//         res.push(x);
-//     }
-
-//     return res;
-// };
-
-// make().then(data => console.log(data));
+SqliteDAO.setup(startupSql).then(d => console.log(d));
+setTimeout(() => {
+    SqliteDAO.setup(keys).then(d => console.log(d));
+}, 1000);
 
 const createRandomSong = async () => {
     const song = await Song.create<ISong>(
@@ -40,40 +17,48 @@ const createRandomSong = async () => {
     ).then(data => console.log(data.lastID));
 };
 
-const createRandomPlaylist = async () => {
-    const playlist = await Playlist.create({
+const createRandomPlaylist = () => {
+    Playlist.create({
         title: Words.generate(2),
         // parent: 3,
     }).then(data => console.log(data.lastID));
 };
 
-const createFolder = async (title: string) => {
-    const folder = await Folder.create({
+const createFolder = (title: string) => {
+    Folder.create({
         title,
     }).then(data => console.log(data.lastID));
 };
 
-Playlist.swap('2', '2', '2');
-
-// createFolder('new');
-// Folder.findItems('1').then(d => console.log(d));
-// Folder.find(true, '1').then(d => console.log(d));
-// Playlist.find(true, true).then(d => console.log(d));
-// createRandomSong();
-// createRandomSong();
-// createRandomSong();
-// createRandomSong();
-// createRandomSong();
-// createRandomPlaylist();
-// Playlist.popItem('1', '1');
-// Playlist.find(false, true).then(data => console.log(data));
-// const index = '6';
-// Playlist.pushItem(index, '2', index).then(data => console.log(data));
-// Folder.updateById<IFolder>('3', {
-//     title: 'third folder',
-// });
+setTimeout(() => {
+    createRandomSong();
+    createRandomSong();
+    createRandomSong();
+    createRandomSong();
+    createRandomSong();
+    createRandomPlaylist();
+    createRandomPlaylist();
+    createRandomPlaylist();
+    createRandomPlaylist();
+    Playlist.pushItem('1', '1', '1');
+    Playlist.pushItem('1', '2', '1');
+    Playlist.pushItem('1', '3', '1');
+    Playlist.pushItem('1', '4', '1');
+    Playlist.pushItem('2', '1', '2');
+    Playlist.pushItem('2', '2', '2');
+    Playlist.pushItem('2', '3', '2');
+    Playlist.pushItem('2', '4', '2');
+    Playlist.pushItem('3', '1', '3');
+    Playlist.pushItem('3', '2', '3');
+    Playlist.pushItem('3', '3', '3');
+    Playlist.pushItem('3', '4', '3');
+    Playlist.pushItem('4', '1', '4');
+    Playlist.pushItem('4', '2', '4');
+    Playlist.pushItem('4', '3', '4');
+    Playlist.pushItem('4', '4', '4');
+}, 2000);
 
 setTimeout(() => {
     SqliteDAO.close();
     console.log('SUCCESS');
-}, 1000);
+}, 3000);

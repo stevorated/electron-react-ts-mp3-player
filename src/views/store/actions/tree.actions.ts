@@ -1,25 +1,21 @@
-import { TreeActions, TreeListType } from '../../interfaces';
-import { CREATE_PLAYLIST, UPDATE_PLAYLIST } from './playlists.actions';
-import { v4 as uuid } from 'uuid';
+import { TreeActions, TreeListType } from '@views/interfaces';
 
-export const LOAD_TREE = 'LOAD_TREE';
-export const DELETE_PLAYLIST_FROM_TREE = 'DELETE_PLAYLIST_FROM_TREE';
-
-export function loadTree(tree: TreeListType[]): TreeActions {
+export const FETCH_TREE = 'FETCH_TREE';
+export function fetchTree(tree: TreeListType[]): TreeActions {
     return {
-        type: LOAD_TREE,
+        type: FETCH_TREE,
         payload: tree,
     };
 }
 
-export function createTempTreePlaylist(tree?: TreeListType): TreeActions {
+export const CREATE_PLAYLIST_TREE = 'CREATE_PLAYLIST_TREE';
+export function createTempPlaylist(tree?: TreeListType): TreeActions {
     return {
-        type: CREATE_PLAYLIST,
+        type: CREATE_PLAYLIST_TREE,
         payload: tree
             ? [tree]
             : [
                   {
-                      //   id: Math.round(Math.random() * 100000000000000),
                       id: 666,
                       title: 'new playlist',
                       type: 'playlist',
@@ -29,20 +25,22 @@ export function createTempTreePlaylist(tree?: TreeListType): TreeActions {
     };
 }
 
+export const UPDATE_PLAYLIST_TREE = 'UPDATE_PLAYLIST_TREE';
 export function updateTreePlaylist(
     item: TreeListType,
     oldId?: number
 ): TreeActions {
     return {
-        type: UPDATE_PLAYLIST,
+        type: UPDATE_PLAYLIST_TREE,
         payload: [item],
-        extra: oldId,
+        id: oldId,
     };
 }
 
+export const DELETE_PLAYLIST_TREE = 'DELETE_PLAYLIST_TREE';
 export function deleteFromTree(item: TreeListType) {
     return {
-        type: DELETE_PLAYLIST_FROM_TREE,
+        type: DELETE_PLAYLIST_TREE,
         payload: [item],
     };
 }

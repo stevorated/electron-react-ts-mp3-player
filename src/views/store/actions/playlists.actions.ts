@@ -1,5 +1,6 @@
-import { PlaylistActions } from '../../interfaces';
-import { IPlaylist } from '../../../services/db';
+import { IPlaylist } from '@services/db';
+
+import { PlaylistActions } from '@views/interfaces';
 
 export const LOAD_ALL_PLAYLISTS = 'LOAD_ALL_PLAYLISTS';
 export const LOAD_PLAYLIST_WITH_SONGS = 'LOAD_PLAYLISTS_WITH_SONGS';

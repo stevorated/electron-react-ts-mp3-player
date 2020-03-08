@@ -1,9 +1,9 @@
 import React from 'react';
-
-import { ISong } from '../../../../../services/db';
-import { formatMillsToTime } from './../../../../utils';
 import { FaPlayCircle, FaPauseCircle } from 'react-icons/fa';
-import { shouldFloat } from '../../../../utils';
+
+import { ISong } from '@services/db';
+import { shouldFloat, formatMillsToTime } from '../../../../utils';
+
 type Props = {
     song: ISong;
     active: boolean;

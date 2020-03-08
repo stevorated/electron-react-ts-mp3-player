@@ -1,33 +1,60 @@
 import React from 'react';
 
 import './Status.style.less';
+import {
+    FaMusic,
+    FaXRay,
+    FaMagic,
+    FaAngrycreative,
+    FaCouch,
+    FaFeather,
+    FaDeaf,
+    FaSatellite,
+    FaSmile,
+    FaList,
+    FaSnowman,
+} from 'react-icons/fa';
+import { IPlaylist } from '@services/db';
 
 type Props = {
     status: string;
+    pointer: number;
+    current?: IPlaylist;
 };
 
-export function Status({ status }: Props) {
+export function Status({ status, current, pointer }: Props) {
+    console.log(status, current, pointer);
+    console.log(current?.songs?.[pointer]);
     return (
         <footer>
-            <div className="app-git">
+            <div className="status-bar">
                 <ul>
-                    <li>
-                        <i className="fa fa-github"></i> {status}
+                    <li style={{ display: 'flex', alignItems: 'base' }}>
+                        <FaSmile size="14px" style={{ marginRight: '6px' }} />
+                        status: {status}
                     </li>
-                    <li>
-                        <i className="fa fa-times-circle"></i> 0
+                    <li style={{ display: 'flex', alignItems: 'base' }}>
+                        <FaSnowman size="12px" style={{ marginRight: '6px' }} />{' '}
+                        {current?.title}
                     </li>
-                    <li>
-                        <i className="fa fa-warning"></i> 0
+                    <li style={{ display: 'flex', alignItems: 'base' }}>
+                        <FaList size="12px" style={{ marginRight: '6px' }} />{' '}
+                        {current?.songs?.length || '-'}
                     </li>
-                </ul>
-            </div>
-            <div className="app-encoding">
-                <ul>
-                    <li>UTF-8</li>
-                    <li>HTML</li>
-                    <li>
-                        <i className="fa fa-smile-o"></i>
+                    <li
+                        style={{
+                            display: 'inline',
+                            alignItems: 'base',
+                            float: 'left',
+                        }}
+                    >
+                        <FaMagic
+                            size="12px"
+                            style={{
+                                marginRight: '6px',
+                            }}
+                        />{' '}
+                        {current?.songs?.[pointer]?.title}
                     </li>
                 </ul>
             </div>
@@ -36,3 +63,5 @@ export function Status({ status }: Props) {
 }
 
 export default Status;
+
+// {current?.songs?.[pointer]}

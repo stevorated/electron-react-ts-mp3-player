@@ -1,14 +1,15 @@
 import React, { Component } from 'react';
 
-import { IPlaylist } from '../../../../../services/db';
-import { HandlerAction } from '../../../../interfaces';
+import { IPlaylist } from '@services/db';
+import { HandlerAction } from '@views/interfaces';
+
 import { MediaPlayer } from './MediaPlayer';
 import { MediaPanel } from './MediaPanel';
 
 import './PlayerContainer.style.less';
 
 type Props = {
-    current: IPlaylist;
+    current?: IPlaylist;
     songsArr: string[];
     pointer: number;
     waitBetween: number;
@@ -25,7 +26,7 @@ export class PlayerContainer extends Component<Props> {
     nextsong = () => {
         const { pointer, handleAction } = this.props;
         const nextSongPointer = pointer + 1;
-        handleAction('changeSong', nextSongPointer);
+        handleAction('SET_CURRENT', nextSongPointer);
         this.props.play();
     };
 
@@ -34,16 +35,19 @@ export class PlayerContainer extends Component<Props> {
     render() {
         const { current, pointer, handleAction, songsArr } = this.props;
         const src = songsArr[pointer];
+
         return (
             <div className="container-audio centered transition border-bottom">
                 <MediaPlayer
+                    pointer={pointer}
                     handleAction={handleAction}
                     src={src}
                     nextsong={this.nextsong}
                 />
                 <MediaPanel
+                    pointer={pointer}
                     handleAction={handleAction}
-                    albumTitle={current?.title}
+                    playlistTitle={current?.title}
                     songs={current?.songs}
                 />
             </div>

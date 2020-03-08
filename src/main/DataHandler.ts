@@ -10,12 +10,11 @@ interface ITreeItem {
 
 export class DataHandler {
     static createPlaylist = async (title: string): Promise<any> => {
-        // const res = await Playlist.create({ title });
-        // console.log(res);
-        return 0;
+        const res = await Playlist.create({ title });
+        return res.lastID;
     };
 
-    static fetchSendPlaylists = async () => {
+    static fetchPlaylists = async () => {
         try {
             return Playlist.find(true, false);
         } catch (err) {
@@ -23,11 +22,12 @@ export class DataHandler {
         }
     };
 
-    static async fetchSendTree(): Promise<ITreeItem[]> {
+    static async fetchTree(): Promise<ITreeItem[]> {
         const sql = `SELECT * FROM
         (
         SELECT f.id, f.title, "folder" as type, COUNT(*) length FROM folders f
         JOIN playlists p ON f.id = p.parent
+        WHERE f.id != 1
         GROUP BY f.id
         
         UNION
@@ -38,7 +38,7 @@ export class DataHandler {
         GROUP BY playlist_id
         ) sl 
         ON sl.playlist_id = p.id
-        WHERE p.parent != 1
+        WHERE p.parent IS NULL
         )
         ORDER BY type`;
 

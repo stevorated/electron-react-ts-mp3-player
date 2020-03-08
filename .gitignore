@@ -1,6 +1,7 @@
 /dist
 /build
 /node_modules
+/junk
 .env
 yarn.lock
 *yarn-error.log

@@ -1,42 +1,45 @@
 import React from 'react';
 import { FaCogs, FaPoo, FaRandom, FaUndo } from 'react-icons/fa';
 
-import { ISong } from '../../../../../services/db';
-import { HandlerAction } from '../../../../interfaces';
+import { ISong } from '@services/db';
+import { HandlerAction } from '@views/interfaces';
 
 type Props = {
-    albumTitle: string;
+    pointer: number;
+    playlistTitle?: string;
     songs?: ISong[];
     handleAction: (action: HandlerAction, payload?: any) => void;
 };
 
-export function MediaPanel({ albumTitle, handleAction }: Props) {
+export function MediaPanel({
+    playlistTitle,
+    handleAction,
+    songs,
+    pointer,
+}: Props) {
     const openSettings = () => {
-        handleAction(
-            'openCreatePlaylistModal',
-            'BLA BLA BLA BLA BLA BLA BLA BLA BLA'
-        );
+        handleAction('HANDLE_OPEN_MODAL');
     };
+    const statusClass = playlistTitle ? 'hoverable' : 'disabled';
     return (
         <div className="container-audio current-song-container">
             <FaCogs
-                className="action-icon hoverable"
+                className={`action-icon ${statusClass}`}
                 onClick={openSettings}
                 style={{ bottom: '5px', left: '5px' }}
             />
             <FaPoo
-                className="action-icon hoverable"
+                className={`action-icon ${statusClass}`}
                 style={{ bottom: '5px', left: '45px' }}
             />
-            <h3 className="nopadd centered">{albumTitle}</h3>
-            <h3 className="nopadd centered">Song Title</h3>
-            <h3 className="nopadd centered">02:42</h3>
+            <h4 className="nopadd centered">{playlistTitle}</h4>
+            <h4 className="nopadd centered">{songs?.[pointer]?.title}</h4>
             <FaUndo
-                className="action-icon hoverable"
+                className={`action-icon ${statusClass}`}
                 style={{ bottom: '5px', right: '40px' }}
             />
             <FaRandom
-                className="action-icon hoverable"
+                className={`action-icon ${statusClass}`}
                 style={{ bottom: '5px', right: '0px' }}
             />
         </div>

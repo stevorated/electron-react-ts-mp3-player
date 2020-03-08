@@ -9,6 +9,7 @@ type Props = {
     placeholder: string;
     item: TreeListType;
     afterEdit: string;
+    handleClick: () => void;
     setAfterEdit: (newState: string) => void;
     setEditing: (newState: boolean) => void;
     onBlur: () => void;
@@ -22,7 +23,7 @@ export function Editable({
     afterEdit,
     setAfterEdit,
     isEditing,
-    setEditing,
+    handleClick,
     handleKeyDown,
     onBlur,
 }: Props) {
@@ -43,10 +44,7 @@ export function Editable({
                     />
                 </div>
             ) : (
-                <div
-                    className="tree-item-title"
-                    onClick={() => setEditing(true)}
-                >
+                <div className="tree-item-title" onClick={handleClick}>
                     <FaMusic />
                     <div style={{ marginLeft: '10px' }}>
                         {afterEdit || placeholder}

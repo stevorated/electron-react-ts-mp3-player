@@ -1,14 +1,8 @@
 import sqlite3, { Database, RunResult } from 'sqlite3';
 import { Connector } from './Connector';
-import { startupSql } from './schema/sql';
+import { startupSql, keys } from './schema/sql';
 
 sqlite3.verbose();
-
-interface IDAO {
-    connect: (dir: string, db: string) => Database | null;
-    // close: () => boolean;
-    // setup: () => Promise<boolean>;
-}
 
 export class SqliteDAO {
     static exec(sql: string, dontLog?: boolean) {
@@ -61,7 +55,6 @@ export class SqliteDAO {
     static run(sql: string, params: (string | number)[]): Promise<RunResult> {
         return new Promise((resolve, reject) => {
             try {
-                // console.log(Connector.getInstance().run(sql, params));
                 Connector.getInstance().run(sql, params, function(err) {
                     if (err) {
                         reject(err);
@@ -70,7 +63,7 @@ export class SqliteDAO {
                     resolve(this);
                 });
             } catch (err) {
-                console.log(err);
+                console.log('[Error]: somthing went wrong.')
                 reject(err);
             }
         });
@@ -100,15 +93,30 @@ export class SqliteDAO {
         });
     }
 
-    static async setup(): Promise<boolean> {
-        try {
-            startupSql.forEach(async query => {
-                await this.exec(query);
+    static setup(sql: string[]): Promise<boolean> {
+        return new Promise((resolve, reject) => {
+            const promises = sql.map(async query => {
+                this.exec(query);
             });
-            return true;
-        } catch (e) {
-            return false;
-        }
+            Promise.all(promises).then(d => {
+                console.log(d);
+                resolve(true);
+            });
+            // .then(() => {
+            //     const keysPromises = keys.map(key => {
+            //         this.exec(key);
+            //     });
+            //     Promise.all(keysPromises)
+            //         .then(() => {
+            //             console.log('CREATED DB');
+            //             resolve(true);
+            //         })
+            //         .catch(e => {
+            //             reject(e);
+            //         });
+            // })
+            // .catch(e => reject(e));
+        });
     }
 
     static connect(): Database {

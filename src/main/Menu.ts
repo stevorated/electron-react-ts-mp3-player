@@ -11,7 +11,6 @@ export default class MenuBuilder {
     mainWindow: BrowserWindow;
 
     constructor(mainWindow: BrowserWindow) {
-        console.log(process.platform);
         this.mainWindow = mainWindow;
     }
 

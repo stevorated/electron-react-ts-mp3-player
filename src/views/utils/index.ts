@@ -1,3 +1,5 @@
-export * from './times';
-export * from './sort';
-export * from './vanilla';
+import { formatMillsToTime } from './times';
+import { by } from './sort';
+import { shouldFloat } from './vanilla';
+
+export { formatMillsToTime, by, shouldFloat };

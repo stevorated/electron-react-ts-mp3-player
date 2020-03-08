@@ -7,7 +7,7 @@ import { HandlerAction } from '../interfaces';
 type Props = {
     handleAction: (action: HandlerAction, payload: any) => void;
     playlists: IPlaylist[];
-    current: IPlaylist;
+    current?: IPlaylist;
     tree: TreeListType[];
     songs: string[]; // TODO: change later
     play: () => void;
@@ -40,13 +40,13 @@ export function MainPage({
                     songsArr={songs}
                     play={play}
                     handleAction={handleAction}
-                    current={current || []}
+                    current={current}
                     pointer={pointer}
                     waitBetween={waitBetween}
                 />
                 <Info status={status} />
             </div>
-            <Status status={status} />
+            <Status current={current} status={status} pointer={pointer}/>
         </>
     );
 }

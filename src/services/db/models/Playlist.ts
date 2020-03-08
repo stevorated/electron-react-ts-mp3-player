@@ -1,7 +1,6 @@
 import { Model } from './Model';
 import { ISong, IPlaylist } from '../interfaces';
 import { SqliteDAO } from '../SqliteDAO';
-import { Connector } from '../Connector';
 
 export class Playlist extends Model {
     static async pushItem(
@@ -117,8 +116,6 @@ export class Playlist extends Model {
       `,
                 [songId, playlistId]
             );
-
-            console.log('songIndex: ', res?.sid);
 
             if (!res?.sid) {
                 throw new Error('Record Not Found');

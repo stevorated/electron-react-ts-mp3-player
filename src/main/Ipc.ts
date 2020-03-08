@@ -1,26 +1,14 @@
-import { ipcMain } from 'electron';
-import { DataHandler } from './DataHandler';
+import { ipcMain, IpcMainInvokeEvent } from 'electron';
 
-export type IpcChannels =
-    | 'FETCH_PLAYLISTS'
+export type Channels =
     | 'FETCH_TREE'
-    | 'CREATE_PLAYLIST'
-    | 'TOGGLE_NEW_PLAYLIST_MODAL'
-    | 'SAVE_PLAYLIST';
+    | 'SAVE_PLAYLIST'
+    | 'FETCH_PLAYLISTS'
+    | 'ADD_FILE_DIALOG';
 
-export const reply = (channel: IpcChannels, cb: any) => {
-    ipcMain.on(channel, (e, arg) => {
-        e.reply(channel, cb);
-    });
-};
-
-export const execute = (channel: IpcChannels, cb: () => any) => {
-    ipcMain.on(channel, (e, args) => {
-        cb();
-        console.log(args);
-        // DataHandler.createPlaylist(args.title).then(d => {
-        // console.log('SAVED!!!!', d);
-        // });
-        reply(channel, 'DONE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
-    });
+export const handleEvent = (
+    channel: Channels,
+    handler: (event: IpcMainInvokeEvent, args: any) => any
+) => {
+    ipcMain.handle(channel, handler);
 };

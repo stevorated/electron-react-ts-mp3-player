@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
+
+import { IPlaylist } from '@services/db';
+import { HandlerAction } from '@views/interfaces';
+
 import { EQBars } from './EQBars';
 import { Songs } from './Songs';
-// import { playlistsMock } from '../../../../constants/mocks';
-import { IPlaylist } from '../../../../../services/db';
-import { HandlerAction } from '../../../../interfaces';
 
 type Props = {
-    current: IPlaylist;
+    current?: IPlaylist;
     pointer: number;
     handleAction: (action: HandlerAction, payload: any) => void;
     status: string;
@@ -18,7 +19,7 @@ export function SongsListContainer({
     handleAction,
     status,
 }: Props) {
-    const { songs } = current;
+    const { songs } = current || {};
     const [width, setWidth] = useState(window.innerWidth);
 
     const updateWidth = () => {
@@ -32,11 +33,10 @@ export function SongsListContainer({
 
     return (
         <div className="main-body playlist-container">
-            <EQBars cols={Math.round((width - 300) / 41)} />
+            {current && <EQBars cols={Math.round((width - 300) / 41)} />}
             <Songs
                 status={status}
-                rows={17}
-                songs={songs || []}
+                songs={songs}
                 pointer={pointer}
                 handleAction={handleAction}
             />

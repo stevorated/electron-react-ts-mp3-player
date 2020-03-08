@@ -4,6 +4,7 @@ import { FaMusic } from 'react-icons/fa';
 import { HandlerAction, TreeListType } from '../../../interfaces';
 import { Editable } from './Editable';
 import { Ipc } from './../../../tools/Ipc';
+import { ipcRenderer } from 'electron';
 
 type Props = {
     id: number;
@@ -14,28 +15,29 @@ type Props = {
 
 export function Playlist({ id, title, handleAction, item }: Props) {
     const handleClick = () => {
-        handleAction('switch', id);
+        console.log(id);
+        handleAction('HANDLE_SWITCH_PLAYLIST', id);
     };
 
     const [isEditing, setEditing] = useState(true);
     const [afterEdit, setAfterEdit] = useState('');
-
     const saveItem = async () => {
-        handleAction(
-            'updateTree',
-            {
-                ...item,
-                title: afterEdit,
-                id: Math.round(Math.random() * 10000),
-            },
-            666
-        );
+        ipcRenderer.invoke('SAVE_PLAYLIST', afterEdit).then(id => {
+            handleAction(
+                'CREATE_PLAYLIST_SAVE',
+                {
+                    ...item,
+                    title: afterEdit,
+                    id,
+                },
+                -1
+            );
+        });
         setEditing(false);
-        Ipc.sendAndRecieve('SAVE_PLAYLIST', item);
     };
 
     const deleteItem = () => {
-        handleAction('deleteTreeItem', item);
+        handleAction('DELETE_PLAYLIST', item);
         setEditing(false);
     };
 
@@ -47,7 +49,7 @@ export function Playlist({ id, title, handleAction, item }: Props) {
         event.keyCode === 13 && afterEdit !== '' && saveItem();
     };
 
-    return id !== 666 ? (
+    return id !== -1 ? (
         <li className="tree-item" key={id} onClick={handleClick}>
             <div className="tree-item-title">
                 <FaMusic />
@@ -57,6 +59,7 @@ export function Playlist({ id, title, handleAction, item }: Props) {
     ) : (
         <li id="new_playlist_temp" className="tree-item" key={id}>
             <Editable
+                handleClick={handleClick}
                 save={saveItem}
                 item={item}
                 text="text"

@@ -1,3 +1,3 @@
-import { IpcChannels } from './Ipc';
+import { Channels } from './Ipc';
 
-export { IpcChannels };
+export { Channels };

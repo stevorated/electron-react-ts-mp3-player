@@ -1,8 +1,9 @@
 import React from 'react';
 
-import { HandlerAction } from '../../../../interfaces';
+import { HandlerAction } from '@views/interfaces';
 
 type Props = {
+    pointer: number;
     src: string;
     nextsong: () => void;
     handleAction: (action: HandlerAction, payload?: any) => void;
@@ -13,14 +14,14 @@ export function MediaPlayer({ src, nextsong, handleAction }: Props) {
         <audio
             id="media-player"
             onPlayingCapture={() => {
-                handleAction('statusChange', 'playing');
+                handleAction('SET_STATUS', 'playing');
             }}
             onPauseCapture={() => {
-                handleAction('statusChange', 'paused');
+                handleAction('SET_STATUS', 'paused');
             }}
             onEnded={async () => {
                 nextsong();
-                handleAction('statusChange', 'changing Song...');
+                handleAction('SET_STATUS', 'changing Song...');
             }}
             className="audio"
             controls

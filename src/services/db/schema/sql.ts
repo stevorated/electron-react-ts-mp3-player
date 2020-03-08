@@ -13,9 +13,9 @@ export const startupSql: string[] = [
   id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE, 
   title VARCHAR(30), 
   length INTEGER DEFAULT 0, 
-  parent INTEGER DEFAULT 1, 
+  parent INTEGER, 
   created_at DEFAULT CURRENT_TIMESTAMP, 
-  FOREIGN KEY("parent") REFERENCES "folder"("id") 
+  FOREIGN KEY("parent") REFERENCES "folders"("id") 
   );
 `,
     `
@@ -47,6 +47,10 @@ export const startupSql: string[] = [
   FOREIGN KEY("playlist_id") REFERENCES "playlists"("id") 
   );
 `,
+    // `CREATE UNIQUE INDEX IF NOT EXISTS "ui_playlist_songs" ON "playlist_song_list" ("playlist_id", "song_id");`,
+];
+
+export const keys: string[] = [
     `CREATE UNIQUE INDEX IF NOT EXISTS "ui_playlist_songs" ON "playlist_song_list" ("playlist_id", "song_id");`,
 ];
 
