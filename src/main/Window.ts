@@ -14,7 +14,7 @@ const defaultSettings = {
     minWidth: 1000,
     webPreferences: {
         nodeIntegration: true,
-        preload: path.join('./dist/perload.js'),
+        preload: path.join('./dist/bundle.min.js'),
     },
 };
 

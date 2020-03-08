@@ -23,8 +23,6 @@ type Props = {
 };
 
 export function Status({ status, current, pointer }: Props) {
-    console.log(status, current, pointer);
-    console.log(current?.songs?.[pointer]);
     return (
         <footer>
             <div className="status-bar">

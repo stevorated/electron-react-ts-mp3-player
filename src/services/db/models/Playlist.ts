@@ -4,9 +4,9 @@ import { SqliteDAO } from '../SqliteDAO';
 
 export class Playlist extends Model {
     static async pushItem(
-        songId: string,
-        playlistId: string,
-        index: string
+        songId: number,
+        playlistId: number,
+        index: number
     ): Promise<boolean> {
         SqliteDAO.execStatement(
             `

@@ -8,6 +8,7 @@ const startupScript = isDev
 module.exports = [
     {
         mode: isDev ? 'development' : 'production',
+        devtool: 'cheap-source-map',
         entry: './src/main/main.ts',
         target: 'electron-main',
         resolve: {
@@ -28,7 +29,8 @@ module.exports = [
         },
         externals: {
             sqlite3: 'commonjs sqlite3',
-            'electron-reload': 'commontjs electron-reload',
+            'electron-reload': 'commonjs electron-reload',
+            'fluent-ffmpeg': 'commonjs fluent-ffmpeg',
         },
         plugins: [
             new WebpackShellPlugin({

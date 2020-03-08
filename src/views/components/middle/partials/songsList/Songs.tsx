@@ -40,7 +40,7 @@ export function Songs({ songs, pointer, handleAction, status }: Props) {
                     </li>
                 ))
         ) : (
-            <DropZone height="60vh" />
+            <DropZone height="50vh" />
         );
     };
 

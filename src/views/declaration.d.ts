@@ -8,3 +8,4 @@ declare interface NodeModule {
 }
 
 // declare module 'react-modal-resizable-draggable';
+

@@ -31,34 +31,38 @@ const createFolder = (title: string) => {
 };
 
 setTimeout(() => {
-    createRandomSong();
-    createRandomSong();
-    createRandomSong();
-    createRandomSong();
-    createRandomSong();
-    createRandomPlaylist();
-    createRandomPlaylist();
-    createRandomPlaylist();
-    createRandomPlaylist();
-    Playlist.pushItem('1', '1', '1');
-    Playlist.pushItem('1', '2', '1');
-    Playlist.pushItem('1', '3', '1');
-    Playlist.pushItem('1', '4', '1');
-    Playlist.pushItem('2', '1', '2');
-    Playlist.pushItem('2', '2', '2');
-    Playlist.pushItem('2', '3', '2');
-    Playlist.pushItem('2', '4', '2');
-    Playlist.pushItem('3', '1', '3');
-    Playlist.pushItem('3', '2', '3');
-    Playlist.pushItem('3', '3', '3');
-    Playlist.pushItem('3', '4', '3');
-    Playlist.pushItem('4', '1', '4');
-    Playlist.pushItem('4', '2', '4');
-    Playlist.pushItem('4', '3', '4');
-    Playlist.pushItem('4', '4', '4');
+    // const song = Song.create<ISong>(Words.createRandomSongObject()).then(data =>
+    //     console.log(data.lastID)
+    // );
+    // createRandomSong();
+    // createRandomSong();
+    // createRandomSong();
+    // createRandomSong();
+    // createRandomSong();
+    // createRandomPlaylist();
+    // createRandomPlaylist();
+    // createRandomPlaylist();
+    // createRandomPlaylist();
+    // Playlist.pushItem(1, 1, 1);
+    // Playlist.pushItem(1, 2, 1);
+    // Playlist.pushItem(1, 3, 1);
+    // Playlist.pushItem(1, 4, 1);
+    // Playlist.pushItem(2, 1, 2);
+    // Playlist.pushItem(2, 2, 2);
+    // Playlist.pushItem(2, 3, 2);
+    // Playlist.pushItem(2, 4, 2);
+    // Playlist.pushItem(3, 1, 3);
+    // Playlist.pushItem(3, 2, 3);
+    // Playlist.pushItem(3, 3, 3);
+    // Playlist.pushItem(3, 4, 3);
+    // Playlist.pushItem(4, 1, 4);
+    // Playlist.pushItem(4, 2, 4);
+    // Playlist.pushItem(4, 3, 4);
+    // Playlist.pushItem(4, 4, 4);
 }, 2000);
 
 setTimeout(() => {
     SqliteDAO.close();
     console.log('SUCCESS');
 }, 3000);
+

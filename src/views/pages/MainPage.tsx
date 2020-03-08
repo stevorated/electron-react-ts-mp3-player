@@ -1,7 +1,7 @@
 import React from 'react';
 import { Explorer, Middle, Info, Status } from '../components';
 import { TreeListType } from '../interfaces';
-import { IPlaylist } from '../../services/db';
+import { IPlaylist, ISong } from '@services/db';
 import { HandlerAction } from '../interfaces';
 
 type Props = {
@@ -9,7 +9,6 @@ type Props = {
     playlists: IPlaylist[];
     current?: IPlaylist;
     tree: TreeListType[];
-    songs: string[]; // TODO: change later
     play: () => void;
     pointer: number;
     waitBetween: number;
@@ -20,7 +19,6 @@ export function MainPage({
     handleAction,
     playlists,
     tree,
-    songs,
     play,
     current,
     pointer,
@@ -37,7 +35,6 @@ export function MainPage({
                 />
                 <Middle
                     status={status}
-                    songsArr={songs}
                     play={play}
                     handleAction={handleAction}
                     current={current}
@@ -46,7 +43,7 @@ export function MainPage({
                 />
                 <Info status={status} />
             </div>
-            <Status current={current} status={status} pointer={pointer}/>
+            <Status current={current} status={status} pointer={pointer} />
         </>
     );
 }

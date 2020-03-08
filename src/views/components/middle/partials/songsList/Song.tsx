@@ -49,7 +49,7 @@ export function Song({ song, active, status }: Props) {
                         {title}
                     </h3>
                 </div>
-                <h3>{formatMillsToTime(length * 100)}</h3>
+                <h3>{formatMillsToTime(length || 0)}</h3>
             </div>
         </div>
     );

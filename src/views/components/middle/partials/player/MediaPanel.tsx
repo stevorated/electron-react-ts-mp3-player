@@ -32,8 +32,8 @@ export function MediaPanel({
                 className={`action-icon ${statusClass}`}
                 style={{ bottom: '5px', left: '45px' }}
             />
-            <h4 className="nopadd centered">{playlistTitle}</h4>
-            <h4 className="nopadd centered">{songs?.[pointer]?.title}</h4>
+            <h4 className="no-pad centered">{playlistTitle}</h4>
+            <h4 className="no-pad centered">{songs?.[pointer]?.title}</h4>
             <FaUndo
                 className={`action-icon ${statusClass}`}
                 style={{ bottom: '5px', right: '40px' }}

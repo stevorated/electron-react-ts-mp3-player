@@ -13,7 +13,7 @@ const defaultSettings = {
     height: 600,
     webPreferences: {
         nodeIntegration: true,
-        preload: path.join('./dist/perload.js'),
+        preload: path.join('./dist/bundle.min.js'),
     },
 };
 
@@ -35,7 +35,6 @@ export class Modal extends BrowserWindow {
             this.hide();
             // new Window({ file: '' });
         });
-        
 
         const menuBuilder = new MenuBuilder(this);
         menuBuilder.buildMenu();

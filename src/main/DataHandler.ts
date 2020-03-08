@@ -1,4 +1,12 @@
-import { Folder, Playlist, SqliteDAO, IPlaylist, ISong } from '../services/db';
+import {
+    Folder,
+    Playlist,
+    SqliteDAO,
+    IPlaylist,
+    Song,
+    ISong,
+} from '../services/db';
+import { OpenDialogReturnValue } from 'electron';
 
 interface ITreeItem {
     id: string;
@@ -11,6 +19,18 @@ interface ITreeItem {
 export class DataHandler {
     static createPlaylist = async (title: string): Promise<any> => {
         const res = await Playlist.create({ title });
+        return res.lastID;
+    };
+
+    static createSong = async (
+        title: string,
+        duration: number,
+        path: string | string[],
+        playlistId: number,
+        index: number
+    ): Promise<any> => {
+        const res = await Song.create({ title, path, length: duration });
+        await Playlist.pushItem(res.lastID, playlistId, index);
         return res.lastID;
     };
 

@@ -24,9 +24,13 @@ export abstract class Model {
 
             SqliteDAO.run(sql, params)
                 .then(data => {
+                    console.log(data);
                     resolve(data);
                 })
-                .catch(e => reject(e));
+                .catch(e => {
+                    console.log(e);
+                    reject(e);
+                });
         });
     }
 

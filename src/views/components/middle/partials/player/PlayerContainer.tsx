@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import { IPlaylist } from '@services/db';
+import { IPlaylist, ISong } from '@services/db';
 import { HandlerAction } from '@views/interfaces';
 
 import { MediaPlayer } from './MediaPlayer';
@@ -10,7 +10,6 @@ import './PlayerContainer.style.less';
 
 type Props = {
     current?: IPlaylist;
-    songsArr: string[];
     pointer: number;
     waitBetween: number;
     handleAction: (action: HandlerAction, payload?: any) => void;
@@ -18,23 +17,20 @@ type Props = {
 };
 
 export class PlayerContainer extends Component<Props> {
-    state = {
-        src:
-            'C:\\Users\\garbe\\Desktop\\album\\album_1\\Actually Not Master.mp3',
-    };
-
     nextsong = () => {
-        const { pointer, handleAction } = this.props;
-        const nextSongPointer = pointer + 1;
-        handleAction('SET_CURRENT', nextSongPointer);
-        this.props.play();
+        const { pointer, handleAction, current } = this.props;
+        if (current?.songs && pointer + 1 < current?.songs?.length) {
+            const nextSongPointer = pointer + 1;
+            handleAction('SET_CURRENT', nextSongPointer);
+            this.props.play();
+        }
     };
 
     handleEndOfTrack = () => {};
 
     render() {
-        const { current, pointer, handleAction, songsArr } = this.props;
-        const src = songsArr[pointer];
+        const { current, pointer, handleAction } = this.props;
+        const src = current?.songs?.[pointer]?.path || '';
 
         return (
             <div className="container-audio centered transition border-bottom">

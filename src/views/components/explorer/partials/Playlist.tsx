@@ -14,25 +14,28 @@ type Props = {
 };
 
 export function Playlist({ id, title, handleAction, item }: Props) {
-    const handleClick = () => {
-        console.log(id);
-        handleAction('HANDLE_SWITCH_PLAYLIST', id);
-    };
-
     const [isEditing, setEditing] = useState(true);
     const [afterEdit, setAfterEdit] = useState('');
+    const [newId, setNewId] = useState(-1);
+
+    const handleClick = () => {
+        handleAction('HANDLE_SWITCH_PLAYLIST', newId === -1 ? id : newId);
+    };
+
     const saveItem = async () => {
-        ipcRenderer.invoke('SAVE_PLAYLIST', afterEdit).then(id => {
+        ipcRenderer.invoke('SAVE_PLAYLIST', afterEdit).then(payload => {
+            setNewId(payload);
             handleAction(
                 'CREATE_PLAYLIST_SAVE',
                 {
                     ...item,
                     title: afterEdit,
-                    id,
+                    id: payload,
                 },
                 -1
             );
         });
+
         setEditing(false);
     };
 
