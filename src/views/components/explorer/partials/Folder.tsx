@@ -1,4 +1,4 @@
-import React, { FormEvent, useState } from 'react';
+import React, { useState } from 'react';
 import { FaFolderOpen, FaFolder } from 'react-icons/fa';
 
 import { Playlist } from './Playlist';
@@ -7,6 +7,7 @@ import { TreeListType, HandlerAction } from '../../../interfaces';
 
 type Props = {
     playlists: TreeListType[];
+    currentPlaylistId: number;
     title: string;
     id?: number;
     item: TreeListType;
@@ -14,10 +15,10 @@ type Props = {
 };
 
 export function Folder(props: Props) {
-    const { playlists, id, handleAction, item } = props;
+    const { playlists, id, handleAction, item, currentPlaylistId } = props;
     const [show, setShow] = useState(false);
 
-    const toggleNested = (e: FormEvent) => {
+    const toggleNested = () => {
         setShow(!show);
     };
 
@@ -26,6 +27,7 @@ export function Folder(props: Props) {
             if (type === 'folder') {
                 return (
                     <Folder
+                        currentPlaylistId={currentPlaylistId}
                         handleAction={handleAction}
                         key={itemId}
                         item={item}
@@ -37,7 +39,8 @@ export function Folder(props: Props) {
             } else {
                 return (
                     <Playlist
-                        item={item}
+                        playlist={item}
+                        currentPlaylistId={currentPlaylistId}
                         handleAction={handleAction}
                         key={itemId}
                         id={itemId || 0}

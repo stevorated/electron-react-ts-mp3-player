@@ -1,20 +1,23 @@
 import React from 'react';
 
-import { IPlaylist, ISong } from '@services/db';
+import { IPlaylist } from '@services/db';
 import { HandlerAction } from '@views/interfaces';
 
 import { PlayerContainer, SongsListContainer } from './partials';
 
 type Props = {
-    current?: IPlaylist;
+    status: string;
     pointer: number;
     waitBetween: number;
+    current?: IPlaylist;
+
     handleAction: (action: HandlerAction, payload?: any) => void;
+    getPlayer: () => HTMLMediaElement;
     play: () => void;
-    status: string;
 };
 
 export function Middle({
+    getPlayer,
     current,
     pointer,
     waitBetween,
@@ -25,6 +28,8 @@ export function Middle({
     return (
         <div className="flexbox-item-grow main">
             <PlayerContainer
+                getPlayer={getPlayer}
+                status={status}
                 current={current}
                 pointer={pointer}
                 play={play}

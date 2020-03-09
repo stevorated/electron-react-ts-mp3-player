@@ -1,7 +1,6 @@
-import React, { useState, ReactNode, KeyboardEvent } from 'react';
+import React, { useRef, useEffect, KeyboardEvent } from 'react';
 import { FaMusic } from 'react-icons/fa';
-import { HandlerAction, TreeListType } from '../../../interfaces';
-import { v4 as uuid } from 'uuid';
+import { TreeListType } from '../../../interfaces';
 
 type Props = {
     text: string;
@@ -27,6 +26,13 @@ export function Editable({
     handleKeyDown,
     onBlur,
 }: Props) {
+    const inputRef = useRef<HTMLInputElement>(null);
+
+    useEffect(() => {
+        if (isEditing && inputRef?.current) {
+            inputRef?.current?.focus && inputRef?.current?.focus();
+        }
+    }, [isEditing]);
     return (
         <section>
             {isEditing ? (
@@ -37,6 +43,7 @@ export function Editable({
                 >
                     <FaMusic />
                     <input
+                        ref={inputRef}
                         value={afterEdit}
                         onChange={e => setAfterEdit(e.target.value)}
                         style={{ marginLeft: '10px' }}
@@ -55,25 +62,25 @@ export function Editable({
     );
 }
 
-function EditableItem({
-    onBlur,
-    handleKeyDown,
-    afterEdit,
-    setAfterEdit,
-}: Partial<Props>) {
-    return (
-        <div
-            className="tree-item-title"
-            onBlur={onBlur}
-            onKeyDown={e => handleKeyDown && handleKeyDown(e)}
-        >
-            <FaMusic />
-            <input
-                value={afterEdit}
-                onChange={e => setAfterEdit && setAfterEdit(e.target.value)}
-                style={{ marginLeft: '10px' }}
-                type="text"
-            />
-        </div>
-    );
-}
+// function EditableItem({
+//     onBlur,
+//     handleKeyDown,
+//     afterEdit,
+//     setAfterEdit,
+// }: Partial<Props>) {
+//     return (
+//         <div
+//             className="tree-item-title"
+//             onBlur={onBlur}
+//             onKeyDown={e => handleKeyDown && handleKeyDown(e)}
+//         >
+//             <FaMusic />
+//             <input
+//                 value={afterEdit}
+//                 onChange={e => setAfterEdit && setAfterEdit(e.target.value)}
+//                 style={{ marginLeft: '10px' }}
+//                 type="text"
+//             />
+//         </div>
+//     );
+// }

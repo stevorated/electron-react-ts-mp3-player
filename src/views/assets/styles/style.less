@@ -1,7 +1,7 @@
 @font-face {
     font-family: 'Fira Sans', sans-serif;
     src: url('../fonts/FiraSans-Light.ttf');
-    font-weight: 200;
+    font-weight: 100;
     // font-style: normal;
 }
 
@@ -10,18 +10,29 @@
 
 // ========================================================================
 
+html {
+    scroll-behavior: smooth;
+}
+
+::selection {
+    background: none; /* WebKit/Blink Browsers */
+}
+::-moz-selection {
+    background: none; /* Gecko Browsers */
+}
+
 .float-text-wrapper {
     overflow: hidden;
     width: 50%;
     .float-text {
         white-space: nowrap;
         width: 100%;
-        animation: floatText 10s infinite linear;
+        animation: floatText 12s infinite linear;
     }
 }
 
 @max-right: translateX(100%);
-@max-left: translateX(-150%);
+@max-left: translateX(-172%);
 
 @-moz-keyframes floatText {
     0% {
@@ -54,15 +65,32 @@
 
 .song-play-button {
     margin: auto 10px;
+    // padding: 10px;
+}
+
+.danger {
+    padding-left: 10px;
+    color: rgba(170, 153, 0, 0.76);
+}
+
+.danger:hover {
+    padding-left: 10px;
+    color: rgba(170, 77, 0, 0.918);
 }
 
 .disabled {
-    color: rgba(245, 222, 179, 0.3);
+    color: rgba(245, 235, 179, 0.3);
 }
 
-.active {
-    background-color: rgba(245, 222, 179, 0.15);
+// .active {
+//     // background-color: rgba(245, 222, 179, 0.15);
+// }
+
+.btn:active {
+    // background-color: rgba(245, 222, 179, 0.15);
+    color: @active-text-color;
 }
+
 .transition {
     transition: all 0.1s ease;
 }
@@ -84,7 +112,14 @@
     width: @explorer-width;
     margin: 0;
     &.active {
-        font-weight: 900;
+        color: @active-text-color;
+        // background-color: none;
+        font-weight: 700;
+    }
+    .tiny-text {
+        color: @medium-text-color;
+        margin-left: 20px;
+        font-size: 9px;
     }
 }
 
@@ -178,7 +213,7 @@
 }
 
 .transition {
-    transition: all 0.3s linear;
+    transition: all 0.1s linear;
 }
 
 .centered {
@@ -189,7 +224,7 @@
 .main {
     overflow: auto;
     height: auto;
-    flex: 4;
+    flex: 3;
     display: flex;
     flex-direction: column;
     background-color: @dark-primary-color;
@@ -198,7 +233,7 @@
     .main-body {
         overflow: auto;
         height: auto;
-        padding: 0 50px;
+        padding: 0 10px;
     }
 }
 
@@ -207,16 +242,22 @@
     flex-direction: row;
     justify-content: space-between;
     padding: 0px 2rem;
+
+    .tiny-text {
+        color: @medium-text-color;
+        margin-left: 20px;
+        font-size: 11px;
+    }
 }
 
-.song-container:hover {
-    cursor: grab;
-}
+// .song-container:hover {
+//     // cursor: grab;
+// }
 
-.song-container:active {
-    cursor: grabbing;
-}
+// .song-container:active {
+//     // cursor: grabbing;
+// }
 
-.song-container:focus {
-    cursor: grab;
-}
+// .song-container:focus {
+//     // cursor: grab;
+// }

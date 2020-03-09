@@ -1,5 +1,5 @@
 import React from 'react';
-import { FaPlusCircle, FaPoo } from 'react-icons/fa';
+import { FaPlusCircle, FaPoo, FaFolderPlus } from 'react-icons/fa';
 
 import { IPlaylist } from '@services/db';
 import { HandlerAction, TreeListType } from '@views/interfaces';
@@ -11,6 +11,7 @@ import { Modal, DropZone } from '../shared';
 import './Explorer.style.less';
 
 type Props = {
+    currentPlaylistId: number;
     playlists: IPlaylist[];
     tree: TreeListType[];
     handleAction: (action: HandlerAction, payload?: any) => void;
@@ -32,12 +33,12 @@ export function Explorer(props: Props) {
                 }
                 text="new playlist…"
                 onClick={() => {
-                    props.handleAction('CREATE_PLAYLIST');
+                    props.handleAction('CREATE_TEMP_PLAYLIST');
                 }}
             />
             <ExplorerBtn
                 icon={
-                    <FaPlusCircle
+                    <FaFolderPlus
                         style={{
                             fontSize: '12px',
                             marginRight: '5px',
@@ -69,7 +70,11 @@ export function Explorer(props: Props) {
                 <h1>DO SOMETHING FORM</h1>
             </Modal>
             <DropZone />
-            <Playlists tree={props.tree} handleAction={props.handleAction} />
+            <Playlists
+                currentPlaylistId={props.currentPlaylistId}
+                tree={props.tree}
+                handleAction={props.handleAction}
+            />
         </aside>
     );
 }

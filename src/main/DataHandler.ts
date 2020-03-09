@@ -5,8 +5,10 @@ import {
     IPlaylist,
     Song,
     ISong,
+    startup,
 } from '../services/db';
-import { OpenDialogReturnValue } from 'electron';
+
+import { Logger } from '../logger';
 
 interface ITreeItem {
     id: string;
@@ -17,30 +19,46 @@ interface ITreeItem {
 }
 
 export class DataHandler {
-    static createPlaylist = async (title: string): Promise<any> => {
+    private static logger = new Logger('main');
+    static async startup() {
+        const res = startup();
+        this.logger.info('called startup');
+        return res;
+    }
+    static async createPlaylist(title: string): Promise<any> {
         const res = await Playlist.create({ title });
+        this.logger.info('playlist created', [res]);
         return res.lastID;
-    };
+    }
 
-    static createSong = async (
+    static async createSong(
         title: string,
         duration: number,
         path: string | string[],
         playlistId: number,
         index: number
-    ): Promise<any> => {
-        const res = await Song.create({ title, path, length: duration });
-        await Playlist.pushItem(res.lastID, playlistId, index);
-        return res.lastID;
-    };
-
-    static fetchPlaylists = async () => {
+    ): Promise<any> {
         try {
-            return Playlist.find(true, false);
+            const res = await Song.create({ title, path, length: duration });
+            this.logger.info('created Song ', [res]);
+            await Playlist.pushItem(res.lastID, playlistId, index);
+            return res.lastID;
         } catch (err) {
+            this.logger.error(err.message, err);
+            throw new Error(err.message);
+        }
+    }
+
+    static async fetchPlaylists() {
+        try {
+            const res = await Playlist.find(true, false);
+            this.logger.info('fetched Playlist', res);
+            return res;
+        } catch (err) {
+            this.logger.error(err.message, err);
             throw new Error('ERROR: in fetchAllPlaylists');
         }
-    };
+    }
 
     static async fetchTree(): Promise<ITreeItem[]> {
         const sql = `SELECT * FROM
@@ -82,8 +100,11 @@ export class DataHandler {
                 });
             }
 
+            this.logger.info('fetched Tree', res);
+
             return res;
         } catch (err) {
+            this.logger.error(err.message, err);
             throw new Error(err.message);
         }
     }

@@ -1,7 +1,7 @@
 @import '../../../../assets/styles/constants.less';
 
 audio {
-    width: 85%;
+    width: 50%;
 
     -webkit-box-shadow: 15px 15px 20px rgba(0, 0, 0, 0.4);
     -moz-box-shadow: 15px 15px 20px rgba(0, 0, 0, 0.4);
@@ -39,10 +39,10 @@ audio {
     border-radius: 0;
     border: none;
     outline: none;
-    -webkit-transition: all 0.5s linear;
-    -moz-transition: all 0.5s linear;
-    -o-transition: all 0.5s linear;
-    transition: all 0.5s linear;
+    -webkit-transition: all 0.1s linear;
+    -moz-transition: all 0.1s linear;
+    -o-transition: all 0.1s linear;
+    transition: all 0.1s linear;
     -moz-box-shadow: 2px 2px 4px 0px #006773;
     -webkit-box-shadow: 2px 2px 4px 0px #006773;
     box-shadow: 2px 2px 4px 0px #006773;
@@ -54,22 +54,27 @@ audio {
     // border-radius: 0;
 }
 
+.round {
+    border-radius: 100%;
+}
+
 .hoverable-light,
 .hoverable {
-    transition: all 0.3s linear;
+    transition: all 0.1s linear;
 }
 
 .hoverable-light:active,
 .hoverable:active {
     cursor: grabbing;
     color: @light-primary-color;
-    background-color: @secondary-color;
+    // background-color: @secondary-color;
 }
 
 .hoverable:hover {
-    cursor: grab;
+    // cursor: grab;
+    cursor: pointer;
     color: white;
-    background-color: rgba(245, 222, 179, 0.3);
+    // background-color: rgba(245, 222, 179, 0.3);
     transform: translateY(-1px);
 }
 

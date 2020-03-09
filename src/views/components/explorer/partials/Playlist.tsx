@@ -1,19 +1,26 @@
 import React, { useState, KeyboardEvent } from 'react';
+import { ipcRenderer } from 'electron';
 import { FaMusic } from 'react-icons/fa';
 
-import { HandlerAction, TreeListType } from '../../../interfaces';
+import { HandlerAction, TreeListType } from '@views/interfaces';
+
 import { Editable } from './Editable';
-import { Ipc } from './../../../tools/Ipc';
-import { ipcRenderer } from 'electron';
 
 type Props = {
     id: number;
+    currentPlaylistId: number;
     title: string;
-    item: TreeListType;
+    playlist: TreeListType;
     handleAction: (action: HandlerAction, payload?: any, extra?: any) => void;
 };
 
-export function Playlist({ id, title, handleAction, item }: Props) {
+export function Playlist({
+    id,
+    title,
+    handleAction,
+    playlist,
+    currentPlaylistId,
+}: Props) {
     const [isEditing, setEditing] = useState(true);
     const [afterEdit, setAfterEdit] = useState('');
     const [newId, setNewId] = useState(-1);
@@ -28,7 +35,7 @@ export function Playlist({ id, title, handleAction, item }: Props) {
             handleAction(
                 'CREATE_PLAYLIST_SAVE',
                 {
-                    ...item,
+                    ...playlist,
                     title: afterEdit,
                     id: payload,
                 },
@@ -40,7 +47,7 @@ export function Playlist({ id, title, handleAction, item }: Props) {
     };
 
     const deleteItem = () => {
-        handleAction('DELETE_PLAYLIST', item);
+        handleAction('DELETE_PLAYLIST', playlist);
         setEditing(false);
     };
 
@@ -53,10 +60,19 @@ export function Playlist({ id, title, handleAction, item }: Props) {
     };
 
     return id !== -1 ? (
-        <li className="tree-item" key={id} onClick={handleClick}>
+        <li
+            className={`tree-item ${currentPlaylistId === id ? 'active' : ''}`}
+            key={id}
+            onClick={handleClick}
+        >
             <div className="tree-item-title">
                 <FaMusic />
-                <div style={{ marginLeft: '10px' }}>{title}</div>
+                <div style={{ marginLeft: '10px' }}>
+                    {title}
+                    <span className="tiny-text">
+                        {playlist.nested.length} songs
+                    </span>
+                </div>
             </div>
         </li>
     ) : (
@@ -64,7 +80,7 @@ export function Playlist({ id, title, handleAction, item }: Props) {
             <Editable
                 handleClick={handleClick}
                 save={saveItem}
-                item={item}
+                item={playlist}
                 text="text"
                 type="text"
                 placeholder="…"

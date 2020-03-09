@@ -23,13 +23,30 @@ export class Ipc {
         });
     }
 
+    static invokeAndReturn<T>(channel: Channels, args?: any): Promise<T> {
+        return new Promise((resolve, reject) => {
+            ipcRenderer
+                .invoke(channel, args)
+                .then(payload => {
+                    resolve(payload);
+                })
+                .catch(err => reject(err));
+        });
+    }
+
     static sendAndReduce(channel: Channels, action: (payload: any) => void) {
-        const { ipcRenderer } = window.require('electron');
+        return new Promise((resolve, reject) => {
+            const { ipcRenderer } = window.require('electron');
 
-        ipcRenderer.send(channel);
+            ipcRenderer.send(channel);
 
-        ipcRenderer.on(channel, (e, args) => {
-            action(args);
+            ipcRenderer
+                .invoke(channel)
+                .then(d => {
+                    action(d);
+                    resolve();
+                })
+                .catch(e => reject(e));
         });
     }
 
@@ -40,7 +57,7 @@ export class Ipc {
 
                 ipcRenderer.send(channel, args);
 
-                ipcRenderer.on(channel, (e, args) => {
+                ipcRenderer.on(channel, (_, args) => {
                     resolve(args);
                 });
             } catch (err) {

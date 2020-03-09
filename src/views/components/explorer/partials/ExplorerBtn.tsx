@@ -1,4 +1,4 @@
-import React, { ReactNode, MutableRefObject } from 'react';
+import React, { ReactNode } from 'react';
 
 type Props = {
     icon: ReactNode;

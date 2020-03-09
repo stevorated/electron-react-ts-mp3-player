@@ -25,14 +25,15 @@ export function Songs({ songs, pointer, handleAction, status }: Props) {
                         className={
                             song.song_index === pointer + 1 ? 'active' : ''
                         }
-                        onClick={() =>
-                            handleAction(
-                                'SET_CURRENT',
-                                (song.song_index ?? 0) - 1
-                            )
-                        }
+                        // onClick={() =>
+                        //     handleAction(
+                        //         'SET_CURRENT',
+                        //         (song.song_index ?? 0) - 1
+                        //     )
+                        // }
                     >
                         <Song
+                            handleAction={handleAction}
                             status={status}
                             song={song}
                             active={song.song_index === pointer + 1}

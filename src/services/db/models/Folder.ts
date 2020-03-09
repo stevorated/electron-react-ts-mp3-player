@@ -1,6 +1,6 @@
 import { Model } from './Model';
-import { IFolder, ISong } from './../interfaces';
-import { SqliteDAO, Playlist, IPlaylist } from '..';
+import { IFolder } from './../interfaces';
+import { SqliteDAO, IPlaylist } from '..';
 
 export class Folder extends Model {
     static async find(
@@ -19,6 +19,7 @@ export class Folder extends Model {
                 ? await SqliteDAO.all<IFolder>(sql1, [folderId])
                 : await SqliteDAO.all<IFolder>(sql1, []);
             if (!withNested) {
+                this.logInfo('find', [folders]);
                 return folders;
             }
 
@@ -38,23 +39,32 @@ export class Folder extends Model {
                 res.push(withNested);
             }
 
+            this.logInfo('find', [res]);
+
             return res;
         } catch (err) {
+            this.logError('find', err);
             throw new Error(err.text);
         }
     }
 
-    static async findItems<IPlaylist>(folderId: string): Promise<IPlaylist[]> {
-        const sql = `
-        SELECT a.*, b.title as root_folder_title FROM playlists a
-        JOIN folders b ON b.id = a.parent
-        WHERE b.id = ?
-  `;
+    static findItems<IPlaylist>(folderId: string): Promise<IPlaylist[]> {
+        return new Promise((resolve, reject) => {
+            const sql = `
+            SELECT a.*, b.title as root_folder_title FROM playlists a
+            JOIN folders b ON b.id = a.parent
+            WHERE b.id = ?
+      `;
 
-        try {
-            return SqliteDAO.all<IPlaylist>(sql, [folderId]);
-        } catch (err) {
-            throw new Error(err.message);
-        }
+            SqliteDAO.all<IPlaylist>(sql, [folderId])
+                .then(data => {
+                    this.logInfo('findItem', [data]);
+                    resolve(data);
+                })
+                .catch(err => {
+                    this.logError('findItems', err);
+                    reject(err);
+                });
+        });
     }
 }

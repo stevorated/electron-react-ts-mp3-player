@@ -3,7 +3,7 @@ const WebpackShellPlugin = require('webpack-shell-plugin');
 const isDev = process.env.NODE_ENV !== 'production';
 const startupScript = isDev
     ? 'sleep 3 && yarn run:electron'
-    : 'echo "[DONE]: No Startup Script On Production."';
+    : 'sleep 3 && yarn run:electron';
 
 module.exports = [
     {

@@ -1,11 +1,5 @@
 /* eslint @typescript-eslint/ban-ts-ignore: off */
-import {
-    app,
-    Menu,
-    shell,
-    BrowserWindow,
-    MenuItemConstructorOptions,
-} from 'electron';
+import { Menu, shell, BrowserWindow } from 'electron';
 
 export default class MenuBuilder {
     mainWindow: BrowserWindow;
@@ -32,11 +26,19 @@ export default class MenuBuilder {
         this.mainWindow.webContents.on('context-menu', (_, props) => {
             const { x, y } = props;
 
+            console.log(x, y);
+
             Menu.buildFromTemplate([
                 {
                     label: 'Inspect element',
                     click: () => {
                         this.mainWindow.webContents.inspectElement(x, y);
+                    },
+                },
+                {
+                    label: 'bladdd',
+                    click: () => {
+                        // this.mainWindow.webContents.setAudioMuted(true);
                     },
                 },
             ]).popup({ window: this.mainWindow });

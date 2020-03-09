@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 // import { useDropzone } from 'react-dropzone';
 
 type Props = {

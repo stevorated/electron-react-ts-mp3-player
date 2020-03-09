@@ -1,5 +1,9 @@
 @import './constants.less';
 
+// * {
+//     scroll-behavior: smooth;
+// }
+
 ::-webkit-scrollbar {
     width: 12px;
     background-color: transparent;
@@ -17,10 +21,12 @@
 }
 
 ::-webkit-scrollbar:hover {
+    cursor: e-resize;
     background-color: rgba(0, 0, 0, 0.5);
 }
 
 ::-webkit-scrollbar-thumb:vertical {
+    cursor: pointer;
     background: rgba(255, 255, 255, 0.1);
     border-radius: 100px;
     background-clip: padding-box;

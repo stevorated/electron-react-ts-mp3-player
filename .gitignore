@@ -2,6 +2,11 @@
 /build
 /node_modules
 /junk
+
+/logs
+*.log
+
 .env
+
 yarn.lock
 *yarn-error.log

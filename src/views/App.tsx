@@ -7,12 +7,15 @@ import { loadAllPlaylists, RootState, fetchTree } from './store';
 import { updateTreePlaylist, deleteFromTree } from './store';
 import { createTempPlaylist } from './store';
 
-import { IPlaylist } from '../services/db';
+import { IPlaylist } from '@services/db';
 import { Ipc } from './tools';
 
 import { MainPage } from './pages';
 
 import './App.style.less';
+import { Logger } from '../logger/logger';
+
+const logger = new Logger('app');
 
 type ComponentProps = {
     theme?: string;
@@ -43,9 +46,12 @@ type State = {
 };
 
 export class App extends Component<Props, State> {
-    componentDidMount = () => {
-        Ipc.invoke('FETCH_TREE', this.handleAction);
-        Ipc.invoke('FETCH_PLAYLISTS', this.handleAction);
+    componentDidMount = async () => {
+        await Ipc.invoke('FETCH_TREE', this.handleAction);
+        await Ipc.invoke('FETCH_PLAYLISTS', this.handleAction);
+
+        const [playlist] = this.props.playlists;
+        this.setCurrentPlaylist(playlist?.id || -1);
     };
 
     state: State = {
@@ -56,52 +62,55 @@ export class App extends Component<Props, State> {
         status: 'stoped',
     };
 
-    setCurrentPlaylist = (payload: number) => {
-        const [current] = this.props.playlists?.filter(
-            pl => pl.id && pl.id === payload
-        );
-
-        console.log(current);
-        if (current) {
-            this.setState({
-                ...this.state,
-                pointer: 0,
-                current,
-                currentPlaylistId: payload,
-            });
-        }
-    };
-
-    handleAction = (action: HandlerAction, payload?: any, extra?: any) => {
+    handleAction = async (
+        action: HandlerAction,
+        payload?: any,
+        extra?: any
+    ) => {
         const { pointer, status, current } = this.state;
-        const { fetchTree, updateTree } = this.props;
+        const { fetchTree, updateTree, tree } = this.props;
         const { createPlaylist, deleteFromTree, loadAllPlaylists } = this.props;
 
+        logger.info(`Action Hander dispatched "${action}"`, [payload, extra]);
+
         switch (action) {
-            // ===================================  tree reducers
+            // ===================================  TREE reducers   ========================================= //
             case 'FETCH_TREE':
                 return fetchTree(payload);
 
-            // ===================================   playlist reducers
+            // ===================================   PLAYLIST reducers   ========================================= //
             case 'FETCH_PLAYLISTS':
                 return loadAllPlaylists(payload);
-            case 'CREATE_PLAYLIST':
+
+            case 'CREATE_TEMP_PLAYLIST':
+                if (tree.filter(pl => pl?.id === -1).length) {
+                    return;
+                }
+
                 return createPlaylist({
                     id: -1,
                     title: '...',
                     type: 'playlist',
                     nested: [],
                 });
+
             case 'CREATE_PLAYLIST_SAVE':
-                Ipc.invoke('FETCH_PLAYLISTS', this.handleAction);
+                const x = await Ipc.invokeAndReturn<IPlaylist[]>(
+                    'FETCH_PLAYLISTS'
+                );
+                this.props.loadAllPlaylists(x);
+                this.setState({ currentPlaylistId: payload.id });
+                this.setCurrentPlaylist(payload.id);
                 return updateTree(payload, extra);
+
             case 'DELETE_PLAYLIST':
                 return deleteFromTree(payload);
-            //  ===================================  songs reducers
+            //  ===================================  SONG reducers   ========================================= //
 
-            //  ===================================  state
+            //  ===================================  STATE   ========================================= //
             case 'HANDLE_SWITCH_PLAYLIST':
                 return this.setCurrentPlaylist(payload);
+
             case 'SET_CURRENT':
                 if (current?.songs?.[payload]) {
                     if (payload === pointer) {
@@ -134,11 +143,28 @@ export class App extends Component<Props, State> {
                     );
                 }
                 return;
+
             default:
                 console.log(
                     `unknown action: ${action}, with payload: ${payload}`
                 );
                 break;
+        }
+    };
+
+    setCurrentPlaylist = (payload: number) => {
+        const [current] = this.props.playlists?.filter(
+            pl => pl.id && pl.id === payload
+        );
+
+        if (current) {
+            this.setState({
+                ...this.state,
+                pointer: 0,
+                status: 'ready',
+                current,
+                currentPlaylistId: payload,
+            });
         }
     };
 
@@ -162,10 +188,17 @@ export class App extends Component<Props, State> {
 
     render() {
         const { tree, playlists } = this.props;
-        const { pointer, waitBetween, status, current } = this.state;
+        const {
+            pointer,
+            waitBetween,
+            status,
+            current,
+            currentPlaylistId,
+        } = this.state;
 
         return (
             <MainPage
+                getPlayer={this.getPlayer}
                 handleAction={this.handleAction}
                 playlists={playlists}
                 tree={tree}
@@ -174,6 +207,7 @@ export class App extends Component<Props, State> {
                 current={current}
                 pointer={pointer}
                 waitBetween={waitBetween}
+                currentPlaylistId={currentPlaylistId}
             />
         );
     }

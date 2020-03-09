@@ -21,7 +21,6 @@ export function MediaPlayer({ src, nextsong, handleAction }: Props) {
             }}
             onEnded={async () => {
                 nextsong();
-                handleAction('SET_STATUS', 'changing Song...');
             }}
             className="audio"
             controls

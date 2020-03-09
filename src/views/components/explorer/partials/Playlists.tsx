@@ -5,12 +5,13 @@ import { Folder } from './Folder';
 import { TreeListType, HandlerAction } from '../../../interfaces';
 
 type Props = {
+    currentPlaylistId: number;
     tree: TreeListType[];
     handleAction: (action: HandlerAction, payload?: any) => void;
 };
 
 export function Playlists(props: Props) {
-    const { tree, handleAction } = props;
+    const { tree, handleAction, currentPlaylistId } = props;
 
     const renderTree = () =>
         tree.map(item => {
@@ -18,6 +19,7 @@ export function Playlists(props: Props) {
                 return (
                     <Folder
                         key={`folder-tree-item-${item.id}`}
+                        currentPlaylistId={currentPlaylistId}
                         id={item.id}
                         item={item}
                         title={item.title}
@@ -30,8 +32,9 @@ export function Playlists(props: Props) {
                     <Playlist
                         key={`playlist-tree-item-${item.id}`}
                         id={item.id || 0}
-                        item={item}
+                        playlist={item}
                         title={item.title}
+                        currentPlaylistId={currentPlaylistId}
                         handleAction={props.handleAction}
                     />
                 );

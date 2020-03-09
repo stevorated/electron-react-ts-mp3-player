@@ -1,20 +1,9 @@
 import React from 'react';
+import { FaMagic, FaSmile, FaList, FaSnowman } from 'react-icons/fa';
+
+import { IPlaylist } from '@services/db';
 
 import './Status.style.less';
-import {
-    FaMusic,
-    FaXRay,
-    FaMagic,
-    FaAngrycreative,
-    FaCouch,
-    FaFeather,
-    FaDeaf,
-    FaSatellite,
-    FaSmile,
-    FaList,
-    FaSnowman,
-} from 'react-icons/fa';
-import { IPlaylist } from '@services/db';
 
 type Props = {
     status: string;

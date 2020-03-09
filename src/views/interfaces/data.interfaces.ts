@@ -1,13 +1,10 @@
-import { ISong, IPlaylist } from '@services/db';
+import { IPlaylist } from '@services/db';
 import {
     FETCH_TREE,
     LOAD_ALL_PLAYLISTS,
     CREATE_PLAYLIST_TREE,
     UPDATE_PLAYLIST_TREE,
     DELETE_PLAYLIST_TREE,
-    CREATE_PLAYLIST,
-    UPDATE_PLAYLIST,
-    DELETE_PLAYLIST,
 } from '@views/store/actions';
 
 export type TreeListType = {
