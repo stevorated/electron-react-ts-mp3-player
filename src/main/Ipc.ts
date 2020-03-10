@@ -4,8 +4,11 @@ import { Logger } from '../logger/logger';
 export type Channels =
     | 'FETCH_TREE'
     | 'SAVE_PLAYLIST'
+    | 'UPDATE_PLAYLIST'
     | 'FETCH_PLAYLISTS'
-    | 'ADD_FILE_DIALOG';
+    | 'FETCH_PLAYLIST'
+    | 'ADD_SONG'
+    | 'DELETE_SONG';
 
 const logger = new Logger('main');
 

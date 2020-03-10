@@ -134,12 +134,20 @@ html {
 }
 
 .tree-item-title {
+    position: relative;
     display: flex;
     flex-direction: row;
     justify-content: flex-start;
     align-items: baseline;
     padding: 0;
     margin: 5px 0;
+    // background-color: red;
+}
+
+.stick-right {
+    position: absolute;
+    // background-color: red;
+    right: 5%;
 }
 
 .flexbox-parent {
@@ -224,7 +232,7 @@ html {
 .main {
     overflow: auto;
     height: auto;
-    flex: 3;
+    flex: 4;
     display: flex;
     flex-direction: column;
     background-color: @dark-primary-color;

@@ -141,7 +141,7 @@ export abstract class Model {
                     resolve(data);
                 })
                 .catch(err => {
-                    this.logError('update', err);
+                    this.logError('update', [err]);
                     reject(err);
                 });
         });
@@ -157,7 +157,7 @@ export abstract class Model {
                     resolve(data);
                 })
                 .catch(err => {
-                    this.logError('removeById', err);
+                    this.logError('removeById', [err]);
                     reject(err);
                 });
         });

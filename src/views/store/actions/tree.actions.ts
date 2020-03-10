@@ -25,15 +25,20 @@ export function createTempPlaylist(tree?: TreeListType): TreeActions {
     };
 }
 
+export const SAVE_PLAYLIST_TREE = 'UPDATE_PLAYLIST_TREE';
+export function savePlaylist(item: TreeListType, oldId?: number): TreeActions {
+    return {
+        type: SAVE_PLAYLIST_TREE,
+        payload: [item],
+        id: oldId,
+    };
+}
+
 export const UPDATE_PLAYLIST_TREE = 'UPDATE_PLAYLIST_TREE';
-export function updateTreePlaylist(
-    item: TreeListType,
-    oldId?: number
-): TreeActions {
+export function updatePlaylist(item: TreeListType): TreeActions {
     return {
         type: UPDATE_PLAYLIST_TREE,
         payload: [item],
-        id: oldId,
     };
 }
 
@@ -41,6 +46,15 @@ export const DELETE_PLAYLIST_TREE = 'DELETE_PLAYLIST_TREE';
 export function deleteFromTree(item: TreeListType) {
     return {
         type: DELETE_PLAYLIST_TREE,
+        payload: [item],
+    };
+}
+
+export const DELETE_SONG_TREE = 'DELETE_SONG_FROM_TREE';
+
+export function deleteSong(item: TreeListType) {
+    return {
+        type: DELETE_SONG_TREE,
         payload: [item],
     };
 }

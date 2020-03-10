@@ -25,10 +25,40 @@ export class DataHandler {
         this.logger.info('called startup');
         return res;
     }
+
     static async createPlaylist(title: string): Promise<any> {
         const res = await Playlist.create({ title });
         this.logger.info('playlist created', [res]);
         return res.lastID;
+    }
+
+    static async updatePlaylist(payload: Partial<IPlaylist>): Promise<any> {
+        if (!payload.id || !payload) {
+            return;
+        }
+
+        const { title } = payload;
+        const res = await Playlist.updateById<IPlaylist>(payload?.id, {
+            title,
+        });
+
+        return res;
+    }
+
+    static async findSong(id?: number) {
+        try {
+            const song = await Song.find(id);
+
+            this.logger.info('fetched song', [song]);
+            return song;
+        } catch (err) {
+            this.logger.error(err.message);
+            throw new Error(err.message);
+        }
+    }
+
+    static async deleteSong(id: number, playlistId: number) {
+        Playlist.popItem(playlistId.toString(), id.toString());
     }
 
     static async createSong(
@@ -49,9 +79,14 @@ export class DataHandler {
         }
     }
 
-    static async fetchPlaylists() {
+    static async fetchPlaylists(id?: number) {
         try {
-            const res = await Playlist.find(true, false);
+            let res: IPlaylist[];
+            if (id) {
+                res = await Playlist.find(true, false, id);
+            } else {
+                res = await Playlist.find(true, false);
+            }
             this.logger.info('fetched Playlist', res);
             return res;
         } catch (err) {

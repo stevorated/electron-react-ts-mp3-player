@@ -1,17 +1,21 @@
 import React from 'react';
 
-import { IPlaylist } from '@services/db';
-import { HandlerAction } from '@views/interfaces';
+import { HandlerAction, TreeListType } from '@views/interfaces';
+import { StateHandlerAction } from '@views/interfaces';
 
 import { PlayerContainer, SongsListContainer } from './partials';
 
 type Props = {
     status: string;
+    // currentPlaylistId: number;
+    // tree?: TreeListType[];
     pointer: number;
     waitBetween: number;
-    current?: IPlaylist;
-
-    handleAction: (action: HandlerAction, payload?: any) => void;
+    current?: TreeListType;
+    handleAction: (
+        action: HandlerAction | StateHandlerAction,
+        payload?: any
+    ) => void;
     getPlayer: () => HTMLMediaElement;
     play: () => void;
 };

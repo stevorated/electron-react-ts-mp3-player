@@ -1,9 +1,9 @@
 import React, { useState, KeyboardEvent } from 'react';
-import { ipcRenderer } from 'electron';
-import { FaMusic } from 'react-icons/fa';
 
 import { HandlerAction, TreeListType } from '@views/interfaces';
+import { StateHandlerAction } from '@views/interfaces';
 
+import { Ipc } from '../../../tools';
 import { Editable } from './Editable';
 
 type Props = {
@@ -11,7 +11,11 @@ type Props = {
     currentPlaylistId: number;
     title: string;
     playlist: TreeListType;
-    handleAction: (action: HandlerAction, payload?: any, extra?: any) => void;
+    handleAction: (
+        action: HandlerAction | StateHandlerAction,
+        payload?: any,
+        extra?: any
+    ) => void;
 };
 
 export function Playlist({
@@ -21,27 +25,49 @@ export function Playlist({
     playlist,
     currentPlaylistId,
 }: Props) {
-    const [isEditing, setEditing] = useState(true);
+    const [isEditing, setEditing] = useState(false);
     const [afterEdit, setAfterEdit] = useState('');
     const [newId, setNewId] = useState(-1);
 
     const handleClick = () => {
-        handleAction('HANDLE_SWITCH_PLAYLIST', newId === -1 ? id : newId);
+        handleAction('SWITCH_PLAYLIST', newId === -1 ? id : newId);
+    };
+
+    const handleDoubleClick = () => {
+        if (!isEditing) {
+            setAfterEdit(playlist.title);
+            setEditing(true);
+        }
     };
 
     const saveItem = async () => {
-        ipcRenderer.invoke('SAVE_PLAYLIST', afterEdit).then(payload => {
-            setNewId(payload);
-            handleAction(
-                'CREATE_PLAYLIST_SAVE',
-                {
+        try {
+            if (!isEditing) {
+                const id = await Ipc.invoke<number>('SAVE_PLAYLIST', afterEdit);
+                setNewId(id);
+                handleAction(
+                    'SAVE_PLAYLIST',
+                    {
+                        ...playlist,
+                        title: afterEdit,
+                        id: id,
+                    },
+                    -1
+                );
+            } else {
+                await Ipc.invoke('UPDATE_PLAYLIST', {
                     ...playlist,
                     title: afterEdit,
-                    id: payload,
-                },
-                -1
-            );
-        });
+                });
+
+                handleAction('UPDATE_PLAYLIST', {
+                    ...playlist,
+                    title: afterEdit,
+                });
+            }
+        } catch (err) {
+            new Error('unable to save!!');
+        }
 
         setEditing(false);
     };
@@ -52,40 +78,36 @@ export function Playlist({
     };
 
     const onBlurEdit = () => {
-        afterEdit !== '' ? saveItem() : deleteItem();
+        !!afterEdit
+            ? saveItem()
+            : !isEditing
+            ? deleteItem()
+            : setEditing(false);
     };
 
-    const handleKeyDown = async (event: KeyboardEvent<HTMLDivElement>) => {
+    const handleKeyDown = async (
+        event: KeyboardEvent<HTMLDivElement> | KeyboardEvent<HTMLLIElement>
+    ) => {
         event.keyCode === 13 && afterEdit !== '' && saveItem();
     };
 
-    return id !== -1 ? (
+    return (
         <li
             className={`tree-item ${currentPlaylistId === id ? 'active' : ''}`}
             key={id}
-            onClick={handleClick}
         >
-            <div className="tree-item-title">
-                <FaMusic />
-                <div style={{ marginLeft: '10px' }}>
-                    {title}
-                    <span className="tiny-text">
-                        {playlist.nested.length} songs
-                    </span>
-                </div>
-            </div>
-        </li>
-    ) : (
-        <li id="new_playlist_temp" className="tree-item" key={id}>
             <Editable
+                currentPlaylistId={currentPlaylistId}
+                id={id}
+                handleDoubleClick={handleDoubleClick}
                 handleClick={handleClick}
                 save={saveItem}
                 item={playlist}
                 text="text"
                 type="text"
-                placeholder="…"
+                placeholder={id === -1 ? '...' : title}
                 afterEdit={afterEdit}
-                isEditing={isEditing}
+                isEditing={id === -1 ? true : isEditing}
                 setAfterEdit={setAfterEdit}
                 setEditing={setEditing}
                 onBlur={onBlurEdit}

@@ -9,16 +9,17 @@ export const startup = (): Promise<boolean> => {
         SqliteDAO.setup(startupSql)
             .then(res => {
                 logger.info('startup - create tables', [res]);
-
-                SqliteDAO.setup(keys)
-                    .then(res => {
-                        logger.info('startup - create indexes', [res]);
-                        resolve(true);
-                    })
-                    .catch(err => {
-                        logger.info('startup - create indexes');
-                        reject(err);
-                    });
+                setTimeout(() => {
+                    SqliteDAO.setup(keys)
+                        .then(res => {
+                            logger.info('startup - create indexes', [res]);
+                            resolve(true);
+                        })
+                        .catch(err => {
+                            logger.info('startup - create indexes');
+                            reject(err);
+                        });
+                }, 1000);
             })
             .catch(err => {
                 logger.info('startup - create tables');

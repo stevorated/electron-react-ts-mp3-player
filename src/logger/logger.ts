@@ -25,6 +25,8 @@ export class Logger {
             label({ label: service.toUpperCase() }),
             timestamp(),
             logFormat
+            
+            // winston.format.json()
         );
 
         this.errorFileLogger = isProd

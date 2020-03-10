@@ -1,20 +1,30 @@
 import React from 'react';
 
 import { ISong } from '@services/db';
-import { HandlerAction } from '@views/interfaces';
+import { HandlerAction, StateHandlerAction } from '@views/interfaces';
 
 import { by } from '../../../../utils';
 import { Song } from './Song';
 import { DropZone } from '../../../shared';
 
 type Props = {
+    playlistId?: number;
     pointer: number;
     status: string;
     songs?: ISong[];
-    handleAction: (action: HandlerAction, payload?: any) => void;
+    handleAction: (
+        action: HandlerAction | StateHandlerAction,
+        payload?: any
+    ) => void;
 };
 
-export function Songs({ songs, pointer, handleAction, status }: Props) {
+export function Songs({
+    songs,
+    pointer,
+    handleAction,
+    status,
+    playlistId,
+}: Props) {
     const renderSongs = () => {
         return songs && songs.length > 0 ? (
             songs
@@ -25,14 +35,9 @@ export function Songs({ songs, pointer, handleAction, status }: Props) {
                         className={
                             song.song_index === pointer + 1 ? 'active' : ''
                         }
-                        // onClick={() =>
-                        //     handleAction(
-                        //         'SET_CURRENT',
-                        //         (song.song_index ?? 0) - 1
-                        //     )
-                        // }
                     >
                         <Song
+                            playlistId={playlistId}
                             handleAction={handleAction}
                             status={status}
                             song={song}

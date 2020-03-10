@@ -1,8 +1,11 @@
 import React from 'react';
 import { FaPlusCircle, FaPoo, FaFolderPlus } from 'react-icons/fa';
 
-import { IPlaylist } from '@services/db';
-import { HandlerAction, TreeListType } from '@views/interfaces';
+import {
+    HandlerAction,
+    TreeListType,
+    StateHandlerAction,
+} from '@views/interfaces';
 
 import { ExplorerBtn } from './partials';
 import { Playlists } from './partials';
@@ -12,9 +15,11 @@ import './Explorer.style.less';
 
 type Props = {
     currentPlaylistId: number;
-    playlists: IPlaylist[];
     tree: TreeListType[];
-    handleAction: (action: HandlerAction, payload?: any) => void;
+    handleAction: (
+        action: HandlerAction | StateHandlerAction,
+        payload?: any
+    ) => void;
 };
 
 export function Explorer(props: Props) {
@@ -33,7 +38,7 @@ export function Explorer(props: Props) {
                 }
                 text="new playlist…"
                 onClick={() => {
-                    props.handleAction('CREATE_TEMP_PLAYLIST');
+                    props.handleAction('CREATE_PLAYLIST_TEMP');
                 }}
             />
             <ExplorerBtn

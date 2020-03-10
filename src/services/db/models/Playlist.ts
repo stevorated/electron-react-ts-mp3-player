@@ -34,14 +34,16 @@ export class Playlist extends Model {
     ): Promise<IPlaylist[]> {
         return new Promise((resolve, reject) => {
             let where = '';
+            let params = [];
             if (playlistId) {
                 where = 'WHERE id = ?';
+                params.push(playlistId.toString());
             } else if (root) {
                 where = 'WHERE parent = 1';
             }
             const sql1 = `SELECT * FROM playlists ${where};`;
 
-            SqliteDAO.all<IPlaylist>(sql1, [])
+            SqliteDAO.all<IPlaylist>(sql1, params)
                 .then(pls => {
                     if (!withSongs) {
                         this.logInfo('find', pls);
@@ -62,7 +64,7 @@ export class Playlist extends Model {
                                 };
                                 res.push(recordWithSongs);
                             }
-
+                            // console.log(res);
                             this.logInfo('find', res);
                             resolve(res);
                         })
@@ -163,21 +165,21 @@ export class Playlist extends Model {
                                 [res.sid, playlistId]
                             )
                                 .then(() => {
-                                    this.logInfo('popItem', ['success']);
+                                    // this.logInfo('popItem', ['success']);
                                     resolve(true);
                                 })
                                 .catch(err => {
-                                    this.logError('popItem', err);
+                                    this.logError('popItem', [err]);
                                     reject(err);
                                 });
                         })
                         .catch(err => {
-                            this.logError('popItem', err);
+                            this.logError('popItem', [err]);
                             reject(err);
                         });
                 })
                 .catch(err => {
-                    this.logError('popItem', err);
+                    this.logError('popItem', [err]);
                     reject(err);
                 });
         });
@@ -214,7 +216,7 @@ export class Playlist extends Model {
                             resolve(data);
                         })
                         .catch(err => {
-                            this.logError('swap', err);
+                            this.logError('swap', [err]);
                             reject(err);
                         });
                 })

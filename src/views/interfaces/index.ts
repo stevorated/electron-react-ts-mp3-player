@@ -2,11 +2,14 @@ export * from './data.interfaces';
 
 export type HandlerAction =
     | 'FETCH_TREE'
-    | 'FETCH_PLAYLISTS'
-    | 'CREATE_TEMP_PLAYLIST'
-    | 'CREATE_PLAYLIST_SAVE'
+    | 'CREATE_PLAYLIST_TEMP'
+    | 'SAVE_PLAYLIST'
+    | 'UPDATE_PLAYLIST'
+    | 'ADD_SONG_MODAL'
     | 'DELETE_PLAYLIST'
-    | 'HANDLE_SWITCH_PLAYLIST'
-    | 'SET_CURRENT'
-    | 'SET_STATUS'
-    | 'HANDLE_OPEN_MODAL';
+    | 'DELETE_SONG';
+
+export type StateHandlerAction =
+    | 'SWITCH_PLAYLIST'
+    | 'CHANGE_SONG'
+    | 'SET_STATUS';

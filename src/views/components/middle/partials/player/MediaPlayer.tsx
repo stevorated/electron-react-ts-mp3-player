@@ -1,12 +1,15 @@
 import React from 'react';
 
-import { HandlerAction } from '@views/interfaces';
+import { HandlerAction, StateHandlerAction } from '@views/interfaces';
 
 type Props = {
     pointer: number;
     src: string;
     nextsong: () => void;
-    handleAction: (action: HandlerAction, payload?: any) => void;
+    handleAction: (
+        action: HandlerAction | StateHandlerAction,
+        payload?: any
+    ) => void;
 };
 
 export function MediaPlayer({ src, nextsong, handleAction }: Props) {

@@ -18,10 +18,10 @@ export function MediaPanel({
     pointer,
 }: Props) {
     const openSettings = () => {
-        handleAction('HANDLE_OPEN_MODAL');
+        handleAction('ADD_SONG_MODAL');
     };
     const statusClass = playlistTitle ? 'hoverable' : 'disabled';
-    console.log(statusClass);
+
     return (
         <div className="container-audio current-song-container">
             <FaCogs

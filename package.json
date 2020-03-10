@@ -6,7 +6,7 @@
     "scripts": {
         "start": "yarn clean && cross-env NODE_ENV=production yarn build:ui && cross-env NODE_ENV=production  yarn build:app",
         "dev": "yarn clean && concurrently \"yarn watch:ui\" \"yarn watch:app\"",
-        "debug": "yarn clean && concurrently \"yarn watch:ui\" \"yarn watch:app\"",
+        "debug": "yarn clean && cross-env DEBUG=true concurrently \"yarn watch:ui\" \"yarn watch:app\"",
         "build:ui": "yarn clean && webpack --mode development --config webpack.config.ui.js",
         "build:app": "webpack --config ./webpack.config.main.js",
         "watch:ui": "yarn clean && webpack --watch --mode development --config webpack.config.ui.js",

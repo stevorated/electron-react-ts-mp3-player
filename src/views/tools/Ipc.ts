@@ -3,7 +3,19 @@ import { ipcRenderer } from 'electron';
 import { HandlerAction } from '../interfaces';
 
 export class Ipc {
-    static invoke(
+    static invoke<T>(channel: Channels, args: any): Promise<T> {
+        return new Promise((resolve, reject) => {
+            ipcRenderer
+                .invoke(channel, args)
+                .then(res => {
+                    resolve(res as T);
+                })
+                .catch(err => {
+                    reject(err);
+                });
+        });
+    }
+    static invokeAndHandle(
         channel: Channels,
         action: (action: HandlerAction, payload: any) => void,
         args?: any,
@@ -17,7 +29,7 @@ export class Ipc {
                         handlerAction || (channel as HandlerAction),
                         payload
                     );
-                    resolve(true);
+                    resolve(payload);
                 })
                 .catch(err => reject(err));
         });
@@ -34,11 +46,15 @@ export class Ipc {
         });
     }
 
-    static sendAndReduce(channel: Channels, action: (payload: any) => void) {
+    static sendAndReduce(
+        channel: Channels,
+        action: (payload: any) => void,
+        args?: any[]
+    ) {
         return new Promise((resolve, reject) => {
             const { ipcRenderer } = window.require('electron');
 
-            ipcRenderer.send(channel);
+            ipcRenderer.send(channel, args);
 
             ipcRenderer
                 .invoke(channel)

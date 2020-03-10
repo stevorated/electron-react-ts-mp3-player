@@ -9,16 +9,26 @@ import {
 
 import { ISong } from '@services/db';
 import { shouldFloat, formatMillsToTime } from '../../../../utils';
-import { HandlerAction } from '@views/interfaces';
+import { HandlerAction, StateHandlerAction } from '@views/interfaces';
 
 type Props = {
     song: ISong;
     active: boolean;
     status: string;
-    handleAction: (action: HandlerAction, payload?: any) => void;
+    playlistId?: number;
+    handleAction: (
+        action: HandlerAction | StateHandlerAction,
+        payload?: any
+    ) => void;
 };
 
-export function Song({ song, active, status, handleAction }: Props) {
+export function Song({
+    song,
+    active,
+    status,
+    handleAction,
+    playlistId,
+}: Props) {
     const [isEditable, setIsEditable] = useState(false);
     const { title, length, song_index: songIndex } = song;
     const smallIconSize = '.9rem';
@@ -47,7 +57,7 @@ export function Song({ song, active, status, handleAction }: Props) {
                         // padding: '30px',
                     }}
                     onClick={() =>
-                        handleAction('SET_CURRENT', (song.song_index ?? 0) - 1)
+                        handleAction('CHANGE_SONG', (song.song_index ?? 0) - 1)
                     }
                 >
                     <span className="tiny-text" style={{ marginRight: '10px' }}>
@@ -70,7 +80,7 @@ export function Song({ song, active, status, handleAction }: Props) {
                         className={float ? 'float-text-wrapper' : ''}
                         onClick={() =>
                             handleAction(
-                                'SET_CURRENT',
+                                'CHANGE_SONG',
                                 (song.song_index ?? 0) - 1
                             )
                         }
@@ -87,7 +97,7 @@ export function Song({ song, active, status, handleAction }: Props) {
                         className={float ? 'float-text-wrapper' : ''}
                         onClick={() =>
                             handleAction(
-                                'SET_CURRENT',
+                                'CHANGE_SONG',
                                 (song.song_index ?? 0) - 1
                             )
                         }
@@ -108,6 +118,9 @@ export function Song({ song, active, status, handleAction }: Props) {
                         }}
                     />
                     <FaPoo
+                        onClick={() => {
+                            handleAction('DELETE_SONG', [song, playlistId]);
+                        }}
                         size={smallIconSize}
                         className={`${iconClassName} danger hoverable`}
                     />

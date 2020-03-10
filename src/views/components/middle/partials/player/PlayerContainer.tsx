@@ -1,7 +1,11 @@
 import React, { Component } from 'react';
 
-import { IPlaylist } from '@services/db';
-import { HandlerAction } from '@views/interfaces';
+import { ISong } from '@services/db';
+import {
+    HandlerAction,
+    TreeListType,
+    StateHandlerAction,
+} from '@views/interfaces';
 
 import { MediaPlayer } from './MediaPlayer';
 import { MediaPanel } from './MediaPanel';
@@ -21,20 +25,23 @@ type Props = {
     status: string;
     pointer: number;
     waitBetween: number;
-    current?: IPlaylist;
+    current?: TreeListType;
     getPlayer: () => HTMLMediaElement;
     play: () => void;
-    handleAction: (action: HandlerAction, payload?: any) => void;
+    handleAction: (
+        action: HandlerAction | StateHandlerAction,
+        payload?: any
+    ) => void;
 };
 
 export class PlayerContainer extends Component<Props> {
     nextsong = () => {
         const { pointer, handleAction, current } = this.props;
 
-        if (current?.songs && pointer + 1 < current?.songs?.length) {
+        if (current?.nested && pointer + 1 < current?.nested?.length) {
             const nextSongPointer = pointer + 1;
             handleAction('SET_STATUS', 'changing Song...');
-            handleAction('SET_CURRENT', nextSongPointer);
+            handleAction('CHANGE_SONG', nextSongPointer);
             this.props.play();
         } else {
             handleAction('SET_STATUS', 'end of list');
@@ -45,7 +52,7 @@ export class PlayerContainer extends Component<Props> {
 
     render() {
         const { current, pointer, handleAction, status } = this.props;
-        const src = current?.songs?.[pointer]?.path || '';
+        const src = (current?.nested?.[pointer] as ISong)?.path || '';
         const size = '20px';
         const bigSize = '30px';
         return (
@@ -98,7 +105,7 @@ export class PlayerContainer extends Component<Props> {
                     pointer={pointer}
                     handleAction={handleAction}
                     playlistTitle={current?.title}
-                    songs={current?.songs}
+                    songs={current?.nested as ISong[]}
                 />
             </div>
         );

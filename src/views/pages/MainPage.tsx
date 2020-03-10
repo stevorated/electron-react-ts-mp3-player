@@ -1,16 +1,15 @@
 import React from 'react';
 
-import { IPlaylist } from '@services/db';
-
 import { Explorer, Middle, Info, Status } from '../components';
 import { TreeListType } from '../interfaces';
-import { HandlerAction } from '../interfaces';
+import { HandlerAction, StateHandlerAction } from '../interfaces';
 
 type Props = {
     getPlayer: () => HTMLMediaElement;
-    handleAction: (action: HandlerAction, payload: any) => void;
-    playlists: IPlaylist[];
-    current?: IPlaylist;
+    handleAction: (
+        action: HandlerAction | StateHandlerAction,
+        payload: any
+    ) => void;
     tree: TreeListType[];
     play: () => void;
     pointer: number;
@@ -22,37 +21,38 @@ type Props = {
 export function MainPage({
     getPlayer,
     handleAction,
-    playlists,
     tree,
     play,
-    current,
     currentPlaylistId,
     pointer,
     waitBetween,
     status,
 }: Props) {
+    const [current] = tree.filter(
+        item => item.type === 'playlist' && item.id === currentPlaylistId
+    );
+
     return (
         <>
             <div className="fill-area flexbox-item-grow">
                 <Explorer
                     currentPlaylistId={currentPlaylistId}
-                    handleAction={handleAction}
-                    playlists={playlists}
                     tree={tree}
+                    handleAction={handleAction}
                 />
 
                 <Middle
                     getPlayer={getPlayer}
-                    status={status}
                     play={play}
-                    handleAction={handleAction}
                     current={current}
                     pointer={pointer}
+                    status={status}
                     waitBetween={waitBetween}
+                    handleAction={handleAction}
                 />
                 <Info />
             </div>
-            <Status current={current} status={status} pointer={pointer} />
+            <Status status={status} pointer={pointer} />
         </>
     );
 }

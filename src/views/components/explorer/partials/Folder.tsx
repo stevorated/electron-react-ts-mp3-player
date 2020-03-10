@@ -3,19 +3,26 @@ import { FaFolderOpen, FaFolder } from 'react-icons/fa';
 
 import { Playlist } from './Playlist';
 import { TreeItemBox } from './TreeItemBox';
-import { TreeListType, HandlerAction } from '../../../interfaces';
+import {
+    TreeListType,
+    HandlerAction,
+    StateHandlerAction,
+} from '../../../interfaces';
 
 type Props = {
-    playlists: TreeListType[];
+    nestedItems: TreeListType[];
     currentPlaylistId: number;
     title: string;
     id?: number;
     item: TreeListType;
-    handleAction: (action: HandlerAction, payload?: any) => void;
+    handleAction: (
+        action: HandlerAction | StateHandlerAction,
+        payload?: any
+    ) => void;
 };
 
 export function Folder(props: Props) {
-    const { playlists, id, handleAction, item, currentPlaylistId } = props;
+    const { nestedItems, id, handleAction, item, currentPlaylistId } = props;
     const [show, setShow] = useState(false);
 
     const toggleNested = () => {
@@ -23,7 +30,7 @@ export function Folder(props: Props) {
     };
 
     const renderPlaylists = () =>
-        playlists?.map(({ id: itemId, title, nested, type }) => {
+        nestedItems?.map(({ id: itemId, title, nested, type }) => {
             if (type === 'folder') {
                 return (
                     <Folder
@@ -33,7 +40,7 @@ export function Folder(props: Props) {
                         item={item}
                         id={itemId || 0}
                         title={title}
-                        playlists={nested}
+                        nestedItems={nested as TreeListType[]}
                     />
                 );
             } else {
