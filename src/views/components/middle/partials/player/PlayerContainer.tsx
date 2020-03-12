@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 
 import { ISong } from '@services/db';
 import {
@@ -7,26 +7,16 @@ import {
     StateHandlerAction,
 } from '@views/interfaces';
 
-import { MediaPlayer } from './MediaPlayer';
 import { MediaPanel } from './MediaPanel';
-
+import { MediaPlayerWrap } from './MediaPlayerWrap';
 import './PlayerContainer.style.less';
-import {
-    FaBackward,
-    FaFastBackward,
-    FaFastForward,
-    FaStop,
-    FaPlay,
-    FaForward,
-    FaPause,
-} from 'react-icons/fa';
 
 type Props = {
     status: string;
     pointer: number;
     waitBetween: number;
     current?: TreeListType;
-    getPlayer: () => HTMLMediaElement;
+    getPlayer: () => HTMLMediaElement | null;
     play: () => void;
     handleAction: (
         action: HandlerAction | StateHandlerAction,
@@ -34,80 +24,48 @@ type Props = {
     ) => void;
 };
 
-export class PlayerContainer extends Component<Props> {
-    nextsong = () => {
-        const { pointer, handleAction, current } = this.props;
-
+export function PlayerContainer({
+    status,
+    pointer,
+    handleAction,
+    current,
+    getPlayer,
+    play,
+}: Props) {
+    const nextsong = () => {
         if (current?.nested && pointer + 1 < current?.nested?.length) {
             const nextSongPointer = pointer + 1;
             handleAction('SET_STATUS', 'changing Song...');
             handleAction('CHANGE_SONG', nextSongPointer);
-            this.props.play();
+            play();
         } else {
             handleAction('SET_STATUS', 'end of list');
         }
     };
 
-    handleEndOfTrack = () => {};
+    const src = (current?.nested?.[pointer] as ISong)?.path || '';
+    const size = '20px';
+    const bigSize = '30px';
 
-    render() {
-        const { current, pointer, handleAction, status } = this.props;
-        const src = (current?.nested?.[pointer] as ISong)?.path || '';
-        const size = '20px';
-        const bigSize = '30px';
-        return (
-            <div className="container-audio centered transition border-bottom">
-                <div
-                    style={{
-                        display: 'flex',
-                        justifyContent: 'space-evenly',
-                        alignItems: 'center',
-                    }}
-                >
-                    <div style={{ alignItems: 'center' }}>
-                        <FaFastBackward className="btn hoverable" size={size} />
-                        <FaBackward
-                            className="btn hoverable"
-                            size={size}
-                            style={{ marginLeft: '10px' }}
-                        />
-                    </div>
-                    {status !== 'playing' ? (
-                        <FaPlay
-                            className="btn hoverable"
-                            size={bigSize}
-                            onClick={() => this.props.getPlayer().play()}
-                        />
-                    ) : (
-                        <FaPause
-                            className="btn hoverable"
-                            size={bigSize}
-                            onClick={() => this.props.getPlayer().pause()}
-                        />
-                    )}
-                    <MediaPlayer
-                        pointer={pointer}
-                        handleAction={handleAction}
-                        src={src}
-                        nextsong={this.nextsong}
-                    />
-                    <FaStop size={bigSize} className="btn hoverable" />
-                    <div>
-                        <FaForward
-                            className="btn hoverable"
-                            size={size}
-                            style={{ marginRight: '10px' }}
-                        />
-                        <FaFastForward className="btn hoverable" size={size} />
-                    </div>
-                </div>
-                <MediaPanel
-                    pointer={pointer}
-                    handleAction={handleAction}
-                    playlistTitle={current?.title}
-                    songs={current?.nested as ISong[]}
-                />
-            </div>
-        );
-    }
+    return (
+        <div className="container-audio centered transition border-bottom">
+            <MediaPlayerWrap
+                song={current?.nested[pointer] as ISong}
+                status={status}
+                nextsong={nextsong}
+                handleAction={handleAction}
+                getPlayer={getPlayer}
+                pointer={pointer}
+                src={src}
+                size={size}
+                bigSize={bigSize}
+            />
+            <MediaPanel
+                pointer={pointer}
+                handleAction={handleAction}
+                playlistTitle={current?.title}
+                songs={current?.nested as ISong[]}
+            />
+        </div>
+    );
 }

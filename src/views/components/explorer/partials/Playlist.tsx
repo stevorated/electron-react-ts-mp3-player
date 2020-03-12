@@ -43,6 +43,7 @@ export function Playlist({
     const saveItem = async () => {
         try {
             if (!isEditing) {
+                console.log(afterEdit);
                 const id = await Ipc.invoke<number>('SAVE_PLAYLIST', afterEdit);
                 setNewId(id);
                 handleAction(
@@ -92,27 +93,22 @@ export function Playlist({
     };
 
     return (
-        <li
-            className={`tree-item ${currentPlaylistId === id ? 'active' : ''}`}
-            key={id}
-        >
-            <Editable
-                currentPlaylistId={currentPlaylistId}
-                id={id}
-                handleDoubleClick={handleDoubleClick}
-                handleClick={handleClick}
-                save={saveItem}
-                item={playlist}
-                text="text"
-                type="text"
-                placeholder={id === -1 ? '...' : title}
-                afterEdit={afterEdit}
-                isEditing={id === -1 ? true : isEditing}
-                setAfterEdit={setAfterEdit}
-                setEditing={setEditing}
-                onBlur={onBlurEdit}
-                handleKeyDown={handleKeyDown}
-            />
-        </li>
+        <Editable
+            id={id}
+            currentPlaylistId={currentPlaylistId}
+            handleDoubleClick={handleDoubleClick}
+            handleClick={handleClick}
+            save={saveItem}
+            item={playlist}
+            text="..."
+            type="text"
+            placeholder={id === -1 ? '...' : title}
+            afterEdit={afterEdit}
+            isEditing={id === -1 ? true : isEditing}
+            setAfterEdit={setAfterEdit}
+            setEditing={setEditing}
+            onBlur={onBlurEdit}
+            handleKeyDown={handleKeyDown}
+        />
     );
 }

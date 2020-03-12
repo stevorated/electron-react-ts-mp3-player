@@ -3,13 +3,17 @@ import React, { useState, useEffect } from 'react';
 import { HandlerAction, TreeListType } from '@views/interfaces';
 import { StateHandlerAction } from '@views/interfaces';
 
+import { Canvas } from './Canvas';
 import { EQBars } from './EQBars';
 import { Songs } from './Songs';
 import { ISong } from '@services/db';
+import { FaSpinner } from 'react-icons/fa';
 
 type Props = {
+    loading: boolean;
     current?: TreeListType;
     pointer: number;
+    getPlayer: () => HTMLMediaElement | null;
     handleAction: (
         action: HandlerAction | StateHandlerAction,
         payload: any
@@ -22,8 +26,9 @@ export function SongsListContainer({
     pointer,
     handleAction,
     status,
+    loading,
+    getPlayer,
 }: Props) {
-    // const { nested } = current || {};
     const [width, setWidth] = useState(window.innerWidth);
 
     const updateWidth = () => {
@@ -38,6 +43,7 @@ export function SongsListContainer({
     return (
         <div className="main-body playlist-container">
             {current && <EQBars cols={Math.round((width - 300) / 41)} />}
+            <Canvas getPlayer={getPlayer} />
             <Songs
                 playlistId={current?.id}
                 status={status}
@@ -45,6 +51,7 @@ export function SongsListContainer({
                 pointer={pointer}
                 handleAction={handleAction}
             />
+            {loading && <FaSpinner className="spinner spin" size="40px" />}
         </div>
     );
 }

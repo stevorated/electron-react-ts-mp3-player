@@ -5,26 +5,26 @@ import { Logger } from '../../logger';
 export class SqliteDAO {
     private static logger = new Logger('database');
 
-    private static logWarn(desc: string, meta: any[]) {
+    private static logWarn(desc: string, meta: any) {
         this.logger.warn(`DAO ${desc} `, meta);
     }
 
-    private static logError(desc: string, meta: any[]) {
+    private static logError(desc: string, meta: any) {
         this.logger.error(`DAO ${desc} `, meta);
     }
 
-    private static logInfo(desc: string, meta: any[]) {
+    private static logInfo(desc: string, meta: any) {
         this.logger.info(`DAO ${desc} `, meta);
     }
 
     static exec(sql: string) {
         return new Promise<boolean>((resolve, reject) => {
-            Connector.getInstance().exec(sql, err => {
-                if (err) {
-                    this.logError('exec method', [err]);
-                    reject(err);
+            Connector.getInstance().exec(sql, error => {
+                if (error) {
+                    this.logError('exec method', { err: error });
+                    reject(error);
                 } else {
-                    this.logInfo('exec method', [sql]);
+                    this.logInfo('exec method', { data: sql });
                     resolve(true);
                 }
             });
@@ -33,13 +33,13 @@ export class SqliteDAO {
 
     static get<T>(sql: string, params: string[]) {
         return new Promise<T>((resolve, reject) => {
-            Connector.getInstance().get(sql, params, (err, result) => {
-                if (err) {
-                    this.logError('get method', [err]);
-                    reject(err);
+            Connector.getInstance().get(sql, params, (error, data) => {
+                if (error) {
+                    this.logError('get method', { error });
+                    reject(error);
                 } else {
-                    this.logInfo('get method', [result]);
-                    resolve(result);
+                    this.logInfo('get method', { data });
+                    resolve(data);
                 }
             });
         });
@@ -48,13 +48,13 @@ export class SqliteDAO {
     static all<T>(sql: string, params: string[]): Promise<T[]> {
         return new Promise<T[]>((resolve, reject) => {
             try {
-                Connector.getInstance().all(sql, params, (err, result) => {
-                    if (err) {
-                        this.logError('all method', [err]);
-                        reject(err);
+                Connector.getInstance().all(sql, params, (error, data) => {
+                    if (error) {
+                        this.logError('all method', { error });
+                        reject(error);
                     } else {
-                        this.logInfo('all method', [result]);
-                        resolve(result);
+                        this.logInfo('all method', { data });
+                        resolve(data);
                     }
                 });
             } catch (err) {}
@@ -62,13 +62,16 @@ export class SqliteDAO {
     }
 
     static run(sql: string, params: (string | number)[]): Promise<RunResult> {
+        console.log(sql, params);
         return new Promise((resolve, reject) => {
-            Connector.getInstance().run(sql, params, function(err) {
-                if (err) {
-                    SqliteDAO.logError('run method', [err]);
-                    reject(err);
+            Connector.getInstance().run(sql, params, function(error) {
+                if (error) {
+                    console.log('HEEEEERRRRRREEEEE');
+                    SqliteDAO.logError('run method', { error });
+                    reject(error);
                 }
 
+                SqliteDAO.logError('run method', { data: this });
                 resolve(this);
             });
         });
@@ -82,19 +85,20 @@ export class SqliteDAO {
             try {
                 const stmt = Connector.getInstance().prepare(sql);
 
-                stmt.run(params, err => {
-                    if (err) {
-                        this.logError('execStatement method', [err]);
-                        reject(err);
+                stmt.run(params, error => {
+                    if (error) {
+                        this.logError('execStatement method', { error });
+                        reject(error);
                     }
                 });
 
                 stmt.finalize(() => {
-                    this.logInfo('execStatement method', [stmt]);
+                    this.logInfo('execStatement method', { data: stmt });
                     resolve(stmt);
                 });
-            } catch (err) {
-                reject(err);
+            } catch (error) {
+                this.logError('execStatement method', { error });
+                reject(error);
             }
         });
     }
@@ -106,12 +110,12 @@ export class SqliteDAO {
             });
             Promise.all(promises)
                 .then(data => {
-                    this.logInfo('setup method', [data]);
+                    this.logInfo('setup method', { data });
                     resolve(true);
                 })
-                .catch(err => {
-                    this.logError('setup method', [err]);
-                    reject(err);
+                .catch(error => {
+                    this.logError('setup method', { error });
+                    reject(error);
                 });
         });
     }
@@ -125,13 +129,13 @@ export class SqliteDAO {
             const conn = Connector.getInstance();
             if (!conn) {
                 const msg = `לא הגיוני מבחינה הגיונית`;
-                this.logWarn('close method', [msg]);
+                this.logWarn('close method', { data: msg });
                 reject(msg);
             }
-            conn.close(err => {
-                if (err) {
-                    this.logError('close method', [err]);
-                    reject(err);
+            conn.close(error => {
+                if (error) {
+                    this.logError('close method', { error });
+                    reject(error);
                 }
             });
 

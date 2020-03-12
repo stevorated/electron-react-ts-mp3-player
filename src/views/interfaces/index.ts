@@ -5,6 +5,7 @@ export type HandlerAction =
     | 'CREATE_PLAYLIST_TEMP'
     | 'SAVE_PLAYLIST'
     | 'UPDATE_PLAYLIST'
+    | 'UPDATE_SONG'
     | 'ADD_SONG_MODAL'
     | 'DELETE_PLAYLIST'
     | 'DELETE_SONG';
@@ -12,4 +13,6 @@ export type HandlerAction =
 export type StateHandlerAction =
     | 'SWITCH_PLAYLIST'
     | 'CHANGE_SONG'
+    | 'BACK_SONG'
+    | 'NEXT_SONG'
     | 'SET_STATUS';

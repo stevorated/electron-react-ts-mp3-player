@@ -58,7 +58,7 @@ export function Folder(props: Props) {
         });
 
     return (
-        <li key={id}>
+        <li key={id} className="tree-item">
             <div
                 style={{
                     display: 'flex',

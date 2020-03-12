@@ -63,18 +63,25 @@ html {
     }
 }
 
+.edit-playlist-input {
+    margin-left: 10px;
+    // background-color: #f8f8f8;
+}
+
+.move-cursor {
+    cursor: e-resize;
+}
+
 .song-play-button {
     margin: auto 10px;
     // padding: 10px;
 }
 
 .danger {
-    padding-left: 10px;
     color: rgba(170, 153, 0, 0.76);
 }
 
 .danger:hover {
-    padding-left: 10px;
     color: rgba(170, 77, 0, 0.918);
 }
 
@@ -107,10 +114,32 @@ html {
     padding: 20px 40px;
 }
 
+.spinner {
+    position: absolute;
+    z-index: 100000000;
+    top: 50%;
+    left: 60%;
+}
+
+.spin {
+    animation-name: spin;
+    animation-duration: 1500ms;
+    animation-iteration-count: infinite;
+    animation-timing-function: cubic-bezier(1, 0, 0, 1);
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
 .tree-item {
-    padding: 4px 10px;
-    width: @explorer-width;
-    margin: 0;
+    display: inline;
+    min-width: @explorer-width;
     &.active {
         color: @active-text-color;
         // background-color: none;
@@ -119,35 +148,28 @@ html {
     .tiny-text {
         color: @medium-text-color;
         margin-left: 20px;
+        padding-top: 0;
         font-size: 9px;
     }
 }
 
-.tree-item:hover {
-    cursor: grab;
-    background-color: @badge-color;
-}
-
-.tree-item:active {
-    cursor: grabbing;
-    background-color: @badge-color;
-}
+// .tree-item-title:hover {
+//     cursor: pointer;
+// }
 
 .tree-item-title {
+    min-width: @explorer-width;
     position: relative;
     display: flex;
     flex-direction: row;
     justify-content: flex-start;
     align-items: baseline;
-    padding: 0;
-    margin: 5px 0;
-    // background-color: red;
+    // padding: 3px 3px;
 }
 
 .stick-right {
     position: absolute;
-    // background-color: red;
-    right: 5%;
+    right: 1%;
 }
 
 .flexbox-parent {
@@ -161,6 +183,7 @@ html {
 .flexbox-item-grow {
     flex: 1;
     min-height: 0;
+    // box-sizing: border-box;
 }
 
 .no-pad {
@@ -185,11 +208,6 @@ html {
     }
 }
 
-.flexbox-item-grow {
-    // font-family: 'Allerta', arial, Tahoma;
-    box-sizing: border-box;
-}
-
 .flexbox-item-grow > h3 {
     text-shadow: 1px 1px 1px #fff;
 }
@@ -201,6 +219,7 @@ html {
     align-items: baseline;
     flex-direction: row;
     height: 20px;
+    margin-top: 10px;
     padding: 10px;
 }
 
@@ -215,8 +234,12 @@ html {
     overflow: hidden;
 }
 
+.padding-bottom {
+    padding-bottom: 30px;
+}
+
 .border-bottom {
-    padding-bottom: 20px;
+    padding-bottom: 5px;
     border-bottom: rgba(245, 222, 179, 0.15) solid 2px;
 }
 
@@ -245,11 +268,17 @@ html {
     }
 }
 
+h3.active {
+    color: @active-text-color;
+    // background-color: none;
+    font-weight: 700;
+}
+
 .song-container {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    padding: 0px 2rem;
+    // padding: 0px 2rem;
 
     .tiny-text {
         color: @medium-text-color;

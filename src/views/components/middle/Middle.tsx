@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { RefObject } from 'react';
 
 import { HandlerAction, TreeListType } from '@views/interfaces';
 import { StateHandlerAction } from '@views/interfaces';
@@ -6,9 +6,9 @@ import { StateHandlerAction } from '@views/interfaces';
 import { PlayerContainer, SongsListContainer } from './partials';
 
 type Props = {
+    loading: boolean;
+    flex: number;
     status: string;
-    // currentPlaylistId: number;
-    // tree?: TreeListType[];
     pointer: number;
     waitBetween: number;
     current?: TreeListType;
@@ -16,8 +16,9 @@ type Props = {
         action: HandlerAction | StateHandlerAction,
         payload?: any
     ) => void;
-    getPlayer: () => HTMLMediaElement;
+    getPlayer: () => HTMLMediaElement | null;
     play: () => void;
+    mainRef: RefObject<HTMLDivElement>;
 };
 
 export function Middle({
@@ -28,9 +29,12 @@ export function Middle({
     handleAction,
     play,
     status,
+    mainRef,
+    flex,
+    loading,
 }: Props) {
     return (
-        <div className="flexbox-item-grow main">
+        <div ref={mainRef} className="flexbox-item-grow main" style={{ flex }}>
             <PlayerContainer
                 getPlayer={getPlayer}
                 status={status}
@@ -41,6 +45,8 @@ export function Middle({
                 waitBetween={waitBetween}
             />
             <SongsListContainer
+                getPlayer={getPlayer}
+                loading={loading}
                 status={status}
                 handleAction={handleAction}
                 current={current}

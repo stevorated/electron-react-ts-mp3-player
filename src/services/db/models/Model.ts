@@ -5,15 +5,15 @@ import { Logger } from '../../../logger';
 export abstract class Model {
     private static logger = new Logger('database');
 
-    public static logWarn(desc: string, meta: any[]) {
+    public static logWarn(desc: string, meta: any) {
         this.logger.warn(`${this.name.toLowerCase()} ${desc} `, meta);
     }
 
-    public static logError(desc: string, meta: any[]) {
+    public static logError(desc: string, meta: any) {
         this.logger.error(`${this.name.toLowerCase()} ${desc} `, meta);
     }
 
-    public static logInfo(desc: string, meta: any[]) {
+    public static logInfo(desc: string, meta: any) {
         this.logger.info(`${this.name.toLowerCase()} ${desc} `, meta);
     }
 
@@ -39,12 +39,12 @@ export abstract class Model {
 
             SqliteDAO.run(sql, params)
                 .then(data => {
-                    this.logInfo('create', [data]);
+                    this.logInfo('create', { data });
                     resolve(data);
                 })
-                .catch((err: Error) => {
-                    this.logError('create', [err]);
-                    reject(err);
+                .catch((error: Error) => {
+                    this.logError('create', { error });
+                    reject(error);
                 });
         });
     }
@@ -56,7 +56,7 @@ export abstract class Model {
         return new Promise((resolve, reject) => {
             if (Object.values(payload).length === 0) {
                 const msg = 'no payload';
-                this.logWarn('updateById', [msg]);
+                this.logWarn('updateById', { data: msg });
                 reject(new Error(msg));
             }
             let fields = '';
@@ -67,7 +67,7 @@ export abstract class Model {
 
             if (keys.length === 0) {
                 const msg = 'cannot updateById without payload';
-                this.logWarn('updateById', [msg]);
+                this.logWarn('updateById', { data: msg });
                 reject(new Error(msg));
             }
 
@@ -83,13 +83,12 @@ export abstract class Model {
 
             SqliteDAO.run(sql, [...params, id])
                 .then(data => {
-                    this.logInfo('updateById', [data]);
-
+                    this.logInfo('updateById', { data });
                     resolve(data);
                 })
-                .catch(err => {
-                    this.logError('updateById', [err]);
-                    reject(err);
+                .catch(error => {
+                    this.logError('updateById', { error });
+                    reject(error);
                 });
         });
     }
@@ -137,12 +136,12 @@ export abstract class Model {
 
             SqliteDAO.run(sql, [...params, ...whereValues])
                 .then(data => {
-                    this.logInfo('update', [data]);
+                    this.logInfo('update', { data });
                     resolve(data);
                 })
-                .catch(err => {
-                    this.logError('update', [err]);
-                    reject(err);
+                .catch(error => {
+                    this.logError('update', { error });
+                    reject(error);
                 });
         });
     }
@@ -153,12 +152,12 @@ export abstract class Model {
 
             SqliteDAO.run(sql, [id])
                 .then(data => {
-                    this.logInfo('removeById', [data]);
+                    this.logInfo('removeById', { data });
                     resolve(data);
                 })
-                .catch(err => {
-                    this.logError('removeById', [err]);
-                    reject(err);
+                .catch(error => {
+                    this.logError('removeById', { error });
+                    reject(error);
                 });
         });
     }
@@ -182,12 +181,12 @@ export abstract class Model {
 
             SqliteDAO.run(sql, Object.values(by))
                 .then(data => {
-                    this.logInfo('remove', [data]);
+                    this.logInfo('remove', { data });
                     resolve(data);
                 })
-                .catch(err => {
-                    this.logError('remove', [err]);
-                    reject(err);
+                .catch(error => {
+                    this.logError('remove', { error });
+                    reject(error);
                 });
         });
     }

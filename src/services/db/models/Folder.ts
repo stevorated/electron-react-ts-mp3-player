@@ -19,7 +19,7 @@ export class Folder extends Model {
                 ? await SqliteDAO.all<IFolder>(sql1, [folderId])
                 : await SqliteDAO.all<IFolder>(sql1, []);
             if (!withNested) {
-                this.logInfo('find', [folders]);
+                this.logInfo('find', { data: folders });
                 return folders;
             }
 
@@ -28,7 +28,7 @@ export class Folder extends Model {
             );
             const nested = await Promise.all(promises);
 
-            const res = [];
+            const data = [];
 
             for (let i = 0; i < folders.length; i++) {
                 const withNested = {
@@ -36,15 +36,15 @@ export class Folder extends Model {
                     length: nested[i].length,
                     nested: nested[i],
                 };
-                res.push(withNested);
+                data.push(withNested);
             }
 
-            this.logInfo('find', [res]);
+            this.logInfo('find', { data });
 
-            return res;
-        } catch (err) {
-            this.logError('find', err);
-            throw new Error(err.text);
+            return data;
+        } catch (error) {
+            this.logError('find', { error });
+            throw new Error(error.text);
         }
     }
 
@@ -58,12 +58,12 @@ export class Folder extends Model {
 
             SqliteDAO.all<IPlaylist>(sql, [folderId])
                 .then(data => {
-                    this.logInfo('findItem', [data]);
+                    this.logInfo('findItem', { data });
                     resolve(data);
                 })
-                .catch(err => {
-                    this.logError('findItems', err);
-                    reject(err);
+                .catch(error => {
+                    this.logError('findItems', { error });
+                    reject(error);
                 });
         });
     }

@@ -28,7 +28,7 @@ export class DataHandler {
 
     static async createPlaylist(title: string): Promise<any> {
         const res = await Playlist.create({ title });
-        this.logger.info('playlist created', [res]);
+        this.logger.info('playlist created', { data: res });
         return res.lastID;
     }
 
@@ -45,12 +45,12 @@ export class DataHandler {
         return res;
     }
 
-    static async findSong(id?: number) {
+    static async findSongById(id?: number) {
         try {
-            const song = await Song.find(id);
+            const data = await Song.find(id);
 
-            this.logger.info('fetched song', [song]);
-            return song;
+            this.logger.info('fetched song', { data });
+            return data;
         } catch (err) {
             this.logger.error(err.message);
             throw new Error(err.message);
@@ -69,28 +69,39 @@ export class DataHandler {
         index: number
     ): Promise<any> {
         try {
-            const res = await Song.create({ title, path, length: duration });
-            this.logger.info('created Song ', [res]);
-            await Playlist.pushItem(res.lastID, playlistId, index);
-            return res.lastID;
-        } catch (err) {
-            this.logger.error(err.message, err);
-            throw new Error(err.message);
+            const data = await Song.create({ title, path, length: duration });
+            this.logger.info('created Song ', { data });
+            await Playlist.pushItem(data.lastID, playlistId, index);
+            return data.lastID;
+        } catch (error) {
+            this.logger.error(error.message, { error });
+            throw new Error(error.message);
+        }
+    }
+
+    static async updateSong(song: ISong) {
+        try {
+            const res = await Song.updateById(song?.id || -2, {
+                title: song.title,
+            });
+            return res;
+        } catch (error) {
+            throw new Error(error.text);
         }
     }
 
     static async fetchPlaylists(id?: number) {
         try {
-            let res: IPlaylist[];
+            let data: IPlaylist[];
             if (id) {
-                res = await Playlist.find(true, false, id);
+                data = await Playlist.find(true, false, id);
             } else {
-                res = await Playlist.find(true, false);
+                data = await Playlist.find(true, false);
             }
-            this.logger.info('fetched Playlist', res);
-            return res;
-        } catch (err) {
-            this.logger.error(err.message, err);
+            this.logger.info('fetched Playlist', { data });
+            return data;
+        } catch (error) {
+            this.logger.error(error.message, { error });
             throw new Error('ERROR: in fetchAllPlaylists');
         }
     }
@@ -99,8 +110,7 @@ export class DataHandler {
         const sql = `SELECT * FROM
         (
         SELECT f.id, f.title, "folder" as type, COUNT(*) length FROM folders f
-        JOIN playlists p ON f.id = p.parent
-        WHERE f.id != 1
+        LEFT JOIN playlists p ON f.id = p.parent
         GROUP BY f.id
         
         UNION
@@ -135,11 +145,11 @@ export class DataHandler {
                 });
             }
 
-            this.logger.info('fetched Tree', res);
+            this.logger.info('fetched Tree', { data: res });
 
             return res;
         } catch (err) {
-            this.logger.error(err.message, err);
+            this.logger.error(err.message, { error: err });
             throw new Error(err.message);
         }
     }

@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, KeyboardEvent } from 'react';
-import { FaMusic, FaPoo, FaTimes } from 'react-icons/fa';
+import { FaMusic, FaTimes } from 'react-icons/fa';
 import { TreeListType } from '../../../interfaces';
 
 type Props = {
@@ -37,15 +37,15 @@ export function Editable({
 
     useEffect(() => {
         if (isEditing && inputRef?.current) {
-            inputRef?.current?.focus && inputRef?.current?.focus();
+            inputRef.current?.focus();
         }
     }, [isEditing]);
 
     return (
-        <section>
+        <section style={{ height: '3rem' }}>
             {isEditing ? (
                 <li
-                    className={`tree-item ${
+                    className={`tree-item playlist ${
                         currentPlaylistId === id ? 'active' : ''
                     }`}
                     key={id}
@@ -55,38 +55,52 @@ export function Editable({
                     onBlur={onBlur}
                 >
                     <div className="tree-item-title">
-                        <FaMusic />
+                        <FaMusic size="12px" />
                         <input
+                            type="text"
+                            className="edit-playlist-input"
                             ref={inputRef}
                             value={afterEdit}
                             onChange={e => setAfterEdit(e.target.value)}
-                            style={{ marginLeft: '10px' }}
-                            type="text"
                         />
-                        <FaPoo />
                     </div>
                 </li>
             ) : (
                 <li
-                    className={`tree-item ${
+                    className={`tree-item playlist ${
                         currentPlaylistId === id ? 'active' : ''
                     }`}
                     key={id}
-                    onClick={handleClick}
-                    onDoubleClick={handleDoubleClick}
+                    style={{ flex: 'inline' }}
                 >
                     <div className="tree-item-title">
-                        <FaMusic />
-                        <div style={{ marginLeft: '10px', maxWidth: '250px' }}>
+                        <FaMusic size="12px" />
+                        <div
+                            className="hoverable-alt"
+                            style={{ marginLeft: '10px' }}
+                            onClick={handleClick}
+                            onDoubleClick={handleDoubleClick}
+                        >
                             {afterEdit || placeholder}
-                            <span className="tiny-text">
-                                {item?.nested.length} songs
-                            </span>
                         </div>
-                        <div className="stick-right">
-                            <FaTimes size={'10px'} />
+                        <div
+                            className="stick-right hoverable-alt"
+                            onClick={() => {
+                                console.log('DELETE');
+                            }}
+                        >
+                            <FaTimes
+                                size="10px"
+                                style={{
+                                    marginRight: '20px',
+                                    marginBottom: '0',
+                                }}
+                            />
                         </div>
                     </div>
+                    <span className="tiny-text">
+                        {item?.nested.length} songs
+                    </span>
                 </li>
             )}
         </section>

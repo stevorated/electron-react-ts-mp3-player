@@ -26,7 +26,7 @@ export function MediaPlayer({ src, nextsong, handleAction }: Props) {
                 nextsong();
             }}
             className="audio"
-            controls
+            // controls 
             src={src}
         >
             <source src={src} type="audio/mp3" />

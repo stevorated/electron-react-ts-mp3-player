@@ -5,8 +5,7 @@ export type Channels =
     | 'FETCH_TREE'
     | 'SAVE_PLAYLIST'
     | 'UPDATE_PLAYLIST'
-    | 'FETCH_PLAYLISTS'
-    | 'FETCH_PLAYLIST'
+    | 'UPDATE_SONG'
     | 'ADD_SONG'
     | 'DELETE_SONG';
 
@@ -17,7 +16,7 @@ export const handleEvent = (
     handler: (event: IpcMainInvokeEvent, args: any) => any
 ) => {
     ipcMain.handle(channel, (event, args) => {
-        logger.info(`Ipc Action - ${channel}`, [args, event]);
+        logger.info(`Ipc Action - ${channel}`, { data: args });
         return handler(event, args);
     });
 };

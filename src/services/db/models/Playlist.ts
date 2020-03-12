@@ -17,12 +17,12 @@ export class Playlist extends Model {
                 [songId, playlistId, index]
             )
                 .then(data => {
-                    this.logInfo('pushItem', [data]);
+                    this.logInfo('pushItem', { data });
                     resolve(data);
                 })
-                .catch(err => {
-                    this.logInfo('pushItem', err);
-                    reject(err);
+                .catch(error => {
+                    this.logInfo('pushItem', { error });
+                    reject(error);
                 });
         });
     }
@@ -46,7 +46,7 @@ export class Playlist extends Model {
             SqliteDAO.all<IPlaylist>(sql1, params)
                 .then(pls => {
                     if (!withSongs) {
-                        this.logInfo('find', pls);
+                        this.logInfo('find', { data: pls });
                         resolve(pls);
                     }
 
@@ -56,26 +56,26 @@ export class Playlist extends Model {
                         )
                     )
                         .then(songs => {
-                            const res = [];
+                            const data = [];
                             for (let i = 0; i < pls.length; i++) {
                                 const recordWithSongs = {
                                     ...pls[i],
                                     songs: songs[i],
                                 };
-                                res.push(recordWithSongs);
+                                data.push(recordWithSongs);
                             }
                             // console.log(res);
-                            this.logInfo('find', res);
-                            resolve(res);
+                            this.logInfo('find', { data });
+                            resolve(data);
                         })
-                        .catch(err => {
-                            this.logError('find', err);
-                            reject(err);
+                        .catch(error => {
+                            this.logError('find', { error });
+                            reject(error);
                         });
                 })
-                .catch(err => {
-                    this.logError('find', err);
-                    reject(err);
+                .catch(error => {
+                    this.logError('find', { error });
+                    reject(error);
                 });
         });
     }
@@ -104,12 +104,12 @@ export class Playlist extends Model {
 
             SqliteDAO.all<ISong>(sql, params)
                 .then(data => {
-                    this.logInfo('findItems', [data]);
+                    this.logInfo('findItems', { data });
                     resolve(data);
                 })
-                .catch(err => {
-                    this.logError('findItems', err);
-                    reject(err);
+                .catch(error => {
+                    this.logError('findItems', { error });
+                    reject(error);
                 });
         });
     }
@@ -123,12 +123,14 @@ export class Playlist extends Model {
                 [playlistId]
             )
                 .then(({ count }) => {
-                    this.logInfo('countItems', [`${count} items found.`]);
+                    this.logInfo('countItems', {
+                        data: `${count} items found.`,
+                    });
                     resolve(count);
                 })
-                .catch(err => {
-                    this.logError('countItems', err);
-                    reject(err);
+                .catch(error => {
+                    this.logError('countItems', { error });
+                    reject(error);
                 });
         });
     }
@@ -165,22 +167,24 @@ export class Playlist extends Model {
                                 [res.sid, playlistId]
                             )
                                 .then(() => {
-                                    // this.logInfo('popItem', ['success']);
+                                    this.logInfo('popItem', {
+                                        data: 'success',
+                                    });
                                     resolve(true);
                                 })
-                                .catch(err => {
-                                    this.logError('popItem', [err]);
-                                    reject(err);
+                                .catch(error => {
+                                    this.logError('popItem', { error });
+                                    reject(error);
                                 });
                         })
-                        .catch(err => {
-                            this.logError('popItem', [err]);
-                            reject(err);
+                        .catch(error => {
+                            this.logError('popItem', { error });
+                            reject(error);
                         });
                 })
-                .catch(err => {
-                    this.logError('popItem', [err]);
-                    reject(err);
+                .catch(error => {
+                    this.logError('popItem', { error });
+                    reject(error);
                 });
         });
     }
@@ -212,17 +216,17 @@ export class Playlist extends Model {
                         [newIndex, songId, playlistId]
                     )
                         .then(data => {
-                            this.logInfo('swap', [data]);
+                            this.logInfo('swap', { data });
                             resolve(data);
                         })
-                        .catch(err => {
-                            this.logError('swap', [err]);
-                            reject(err);
+                        .catch(error => {
+                            this.logError('swap', { error });
+                            reject(error);
                         });
                 })
-                .catch(err => {
-                    this.logError('swap', err);
-                    reject(err);
+                .catch(error => {
+                    this.logError('swap', { error });
+                    reject(error);
                 });
         });
     }

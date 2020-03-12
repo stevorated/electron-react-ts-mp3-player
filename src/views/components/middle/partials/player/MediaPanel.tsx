@@ -23,7 +23,7 @@ export function MediaPanel({
     const statusClass = playlistTitle ? 'hoverable' : 'disabled';
 
     return (
-        <div className="container-audio current-song-container">
+        <div className="container-audio0 current-song-container">
             <FaCogs
                 className={`btn action-icon ${statusClass}`}
                 style={{ bottom: '5px', left: '5px' }}

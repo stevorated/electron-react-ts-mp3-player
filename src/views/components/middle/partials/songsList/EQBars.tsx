@@ -15,7 +15,7 @@ export function EQBars(props: Props) {
     };
 
     return (
-        <div className="container-audio centered border-bottom">
+        <div className="container-audio centered border-bottom padding-bottom">
             {renderBars()}
         </div>
     );

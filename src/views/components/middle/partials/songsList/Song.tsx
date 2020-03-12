@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import {
     FaPlayCircle,
     FaPauseCircle,
@@ -29,21 +29,32 @@ export function Song({
     handleAction,
     playlistId,
 }: Props) {
+    const inputRef = useRef<HTMLInputElement>(null);
     const [isEditable, setIsEditable] = useState(false);
+    const [newTitle, setNewTitle] = useState('');
     const { title, length, song_index: songIndex } = song;
     const smallIconSize = '.9rem';
-    const midIconSize = '1.4rem';
+    const midIconSize = '1.1rem';
     const bigIconSize = '1.7rem';
     const iconClassName = 'song-play-button';
     const childId = `float-text-${title}-${song.id}`;
     const parentId = `float-text-wrapper-${title}-${song.id}`;
     const float = shouldFloat({ childId, parentId, ratio: 13, title });
 
+    const handleSave = () => {
+        setIsEditable(false);
+        newTitle !== '' &&
+            newTitle !== title &&
+            handleAction('UPDATE_SONG', {
+                ...song,
+                title: newTitle,
+            });
+    };
+
     return (
         <div className="dropable">
             <div
                 id={parentId}
-                draggable
                 onDragOver={e => {
                     e.preventDefault();
                 }}
@@ -53,8 +64,6 @@ export function Song({
                     style={{
                         display: 'flex',
                         alignItems: 'center',
-                        // backgroundColor: 'red',
-                        // padding: '30px',
                     }}
                     onClick={() =>
                         handleAction('CHANGE_SONG', (song.song_index ?? 0) - 1)
@@ -85,7 +94,12 @@ export function Song({
                             )
                         }
                     >
-                        <h3 id={childId} className={float ? 'float-text' : ''}>
+                        <h3
+                            id={childId}
+                            className={`hoverable ${
+                                float ? 'float-text' : ''
+                            } ${active ? 'active' : ''}`}
+                        >
                             {title}{' '}
                             <span className="tiny-text">
                                 {formatMillsToTime(length || 0)}
@@ -96,13 +110,30 @@ export function Song({
                     <div
                         className={float ? 'float-text-wrapper' : ''}
                         onClick={() =>
+                            !isEditable &&
                             handleAction(
                                 'CHANGE_SONG',
                                 (song.song_index ?? 0) - 1
                             )
                         }
                     >
-                        <input type="text" className="song-title-input" />
+                        <div>
+                            <input
+                                ref={inputRef}
+                                value={newTitle || title}
+                                onChange={e => setNewTitle(e.target.value)}
+                                onKeyDown={e => {
+                                    if (e.keyCode === 13) {
+                                        setIsEditable(false);
+                                        handleSave();
+                                    }
+                                }}
+                                onBlur={handleSave}
+                                type="text"
+                                style={{ margin: '10px' }}
+                                className="song-title-input"
+                            />
+                        </div>
                     </div>
                 )}
                 <div style={{ display: 'flex' }}>
@@ -115,6 +146,9 @@ export function Song({
                         className={`${iconClassName} hoverable`}
                         onClick={() => {
                             setIsEditable(true);
+                            setTimeout(() => {
+                                inputRef.current?.focus();
+                            }, 50);
                         }}
                     />
                     <FaPoo

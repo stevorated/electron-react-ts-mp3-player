@@ -3,21 +3,23 @@
 aside {
     overflow-x: hidden;
     &.sidebar {
-        min-width: 120px;
+        min-width: 150px;
+        border-right: 5px solid rgba(255, 255, 255, 0.05);
         width: @explorer-width;
         padding: 10px;
         overflow-y: auto;
         background-color: @light-primary-color;
         color: @light-text-color;
     }
+
     &.info-sidebar {
         min-width: 120px;
         padding: 8px;
         overflow-y: auto;
-        background-color: @light-primary-color;
+        // background-color: @light-primary-color;
         color: @light-text-color;
     }
     ul {
-        padding: 0 1rem;
+        padding: 6px;
     }
 }

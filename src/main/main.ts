@@ -5,6 +5,7 @@ import { DataHandler } from './DataHandler';
 import { handleEvent } from './Ipc';
 import { parseFileName } from './helpers';
 import ffmpeg from 'fluent-ffmpeg';
+import { ISong } from '@services/db';
 
 // require('electron-reload')(__dirname + './dist/electron.js');
 
@@ -33,17 +34,8 @@ handleEvent('FETCH_TREE', async () => {
     return result;
 });
 
-handleEvent('FETCH_PLAYLISTS', async () => {
-    const result = await DataHandler.fetchPlaylists();
-    return result;
-});
-
-handleEvent('FETCH_PLAYLIST', async (_, id) => {
-    const result = await DataHandler.fetchPlaylists(id);
-    return result;
-});
-
 handleEvent('SAVE_PLAYLIST', async (_, title) => {
+    console.log(title);
     const id = await DataHandler.createPlaylist(title);
     return id;
 });
@@ -54,42 +46,72 @@ handleEvent('UPDATE_PLAYLIST', async (_, title) => {
 });
 
 handleEvent('ADD_SONG', async (_, args) => {
-    // try {
-    return new Promise((resolve, reject) => {
-        dialog
-            .showOpenDialog({
-                title: 'Add Song To Playlist',
-                properties: ['openFile', 'multiSelections'],
-                filters: [{ name: 'Audio Files', extensions: ['mp3'] }],
-            })
-            .then(res => {
-                if (res.filePaths.length) {
-                    ffmpeg.ffprobe(res.filePaths[0], async (_, data) => {
-                        DataHandler.createSong(
-                            parseFileName(data?.format?.filename),
-                            (data?.format?.duration || 0) * 1000,
-                            res.filePaths?.[0],
-                            args.playlistId,
-                            args.index
-                        )
-                            .then(newSongId => {
-                                DataHandler.findSong(newSongId)
-                                    .then(song => {
-                                        resolve(song);
-                                    })
-                                    .catch(err => {
-                                        reject(err);
-                                    });
-                            })
-                            .catch(err => {
-                                reject(err);
-                            });
-                    });
-                }
-            })
-            .catch(err => {
-                reject(err);
+    try {
+        const dialogData = await dialog.showOpenDialog({
+            title: 'Add Song To Playlist',
+            properties: ['openFile', 'multiSelections'],
+            filters: [{ name: 'Audio Files', extensions: ['mp3'] }],
+        });
+
+        if (dialogData.filePaths?.length === 1) {
+            const [filePath] = dialogData.filePaths;
+
+            const { format } = await parseMp3(filePath);
+            const newSongId = await DataHandler.createSong(
+                parseFileName(format.filename),
+                (format.duration || 0) * 1000,
+                filePath,
+                args.playlistId,
+                args.index
+            );
+
+            return DataHandler.findSongById(newSongId);
+        }
+        if (dialogData.filePaths?.length > 1) {
+            const filePaths = dialogData.filePaths;
+
+            const probes = await Promise.all(
+                filePaths.map(filePath => {
+                    return parseMp3(filePath);
+                })
+            );
+
+            const songsIdsPromises = probes.map(({ format }, index) => {
+                return DataHandler.createSong(
+                    parseFileName(format.filename),
+                    (format.duration || 0) * 1000,
+                    filePaths[index],
+                    args.playlistId,
+                    args.index + index
+                );
             });
-    });
-    // } catch (_) {}
+
+            const songIds = await Promise.all(songsIdsPromises);
+            const res = await Promise.all(
+                songIds.map(id => {
+                    return DataHandler.findSongById(id);
+                })
+            );
+
+            return res.map(([item]) => item);
+        }
+    } catch (err) {
+        console.log(err);
+    }
 });
+
+handleEvent('UPDATE_SONG', async (_, args) => {
+    try {
+        await DataHandler.updateSong(args);
+        return true;
+    } catch (error) {
+        return false;
+    }
+});
+
+const parseMp3 = (path: string): Promise<ffmpeg.FfprobeData> =>
+    new Promise(resolve => {
+        ffmpeg.ffprobe(path, (_, data) => {
+            resolve(data);
+        });
+    });

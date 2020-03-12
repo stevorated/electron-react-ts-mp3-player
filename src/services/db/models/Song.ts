@@ -14,13 +14,14 @@ export class Song extends Model {
             const sql = `SELECT * FROM songs ${where};`;
 
             SqliteDAO.all<ISong>(sql, params)
-                .then(song => {
-                    this.logInfo('find', song);
+                .then(data => {
+                    this.logInfo('find', { data });
 
-                    resolve(song);
+                    resolve(data);
                 })
-                .catch(err => {
-                    reject(err);
+                .catch(error => {
+                    this.logError('find', { error });
+                    reject(error);
                 });
         });
     }
