@@ -104,11 +104,12 @@ export class App extends Component<Props, State> {
             case 'CHANGE_SONG':
                 const songsArr = current.nested;
                 const src = (songsArr[payload.pointer] as ISong).path;
+                if (src === this.state.src && payload.pointer !== pointer) {
+                    this.setCurrentTime(0);
+                }
 
                 if (songsArr.length) {
-                    if (src === this.state.src) {
-                        this.setCurrentTime(0);
-                    }
+                    // click on same song
                     if (payload.click && pointer === payload.pointer) {
                         setTimeout(() => {
                             this.state.status === 'playing'
