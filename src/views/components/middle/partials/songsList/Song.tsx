@@ -66,7 +66,10 @@ export function Song({
                         alignItems: 'center',
                     }}
                     onClick={() =>
-                        handleAction('CHANGE_SONG', (song.song_index ?? 0) - 1)
+                        handleAction('CHANGE_SONG', {
+                            pointer: (song.song_index ?? 0) - 1,
+                            click: true,
+                        })
                     }
                 >
                     <span className="tiny-text" style={{ marginRight: '10px' }}>
@@ -88,10 +91,10 @@ export function Song({
                     <div
                         className={float ? 'float-text-wrapper' : ''}
                         onClick={() =>
-                            handleAction(
-                                'CHANGE_SONG',
-                                (song.song_index ?? 0) - 1
-                            )
+                            handleAction('CHANGE_SONG', {
+                                pointer: (song.song_index ?? 0) - 1,
+                                click: true,
+                            })
                         }
                     >
                         <h3

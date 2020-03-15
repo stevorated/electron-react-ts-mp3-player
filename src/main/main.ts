@@ -5,7 +5,6 @@ import { DataHandler } from './DataHandler';
 import { handleEvent } from './Ipc';
 import { parseFileName } from './helpers';
 import ffmpeg from 'fluent-ffmpeg';
-import { ISong } from '@services/db';
 
 // require('electron-reload')(__dirname + './dist/electron.js');
 

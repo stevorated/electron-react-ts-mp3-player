@@ -21,6 +21,25 @@ html {
     background: none; /* Gecko Browsers */
 }
 
+input[type='text'] {
+    display: block;
+    min-width: 100px;
+    margin: 0 0 20px;
+    padding: 8px 12px 10px 12px;
+    border: none;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.5);
+    background: none;
+    color: whitesmoke;
+}
+
+input[type='text']:active,
+input[type='text']:focus {
+    outline: none;
+    // outline-bottom: 1px solid rgba(0, 0, 0, 0.5);
+    border: none;
+    border-bottom: 2px solid rgba(180, 20, 20, 0.5);
+}
+
 .float-text-wrapper {
     overflow: hidden;
     width: 50%;
@@ -102,9 +121,9 @@ html {
     transition: all 0.1s ease;
 }
 
-.border-bottom {
-    border-bottom: rgba(245, 222, 179, 0.15) solid 2px;
-}
+// .border-bottom {
+//     border-bottom: rgba(245, 222, 179, 0.15) solid 2px;
+// }
 
 .border-bottom-light {
     border-bottom: rgba(245, 222, 179, 0.05) solid 2px;
@@ -114,11 +133,20 @@ html {
     padding: 20px 40px;
 }
 
+.hr {
+    height: 3px;
+    border: 0;
+    box-shadow: 0 10px 10px -10px #8c8b8b inset;
+    color: @light-primary-color;
+    background-color: @light-primary-color;
+}
+
 .spinner {
+    color: rgba(245, 245, 245, 0.6);
     position: absolute;
     z-index: 100000000;
     top: 50%;
-    left: 60%;
+    left: 50%;
 }
 
 .spin {
@@ -218,19 +246,26 @@ html {
     justify-content: space-around;
     align-items: baseline;
     flex-direction: row;
-    height: 20px;
+    height: 30px;
     margin-top: 10px;
     padding: 10px;
+    .title-text {
+        color: @light-text-color;
+        margin-top: 5px;
+        padding-top: 0;
+        font-size: 13px;
+    }
 }
 
 .container-audio {
-    width: 90%;
+    width: 95%;
     min-height: fit-content;
     // padding: 20px;
     border-radius: 5px;
     // background-color: @badge-color;
     color: #d4d4d4;
-    margin: 8px auto;
+    margin: 0px auto;
+    padding-bottom: 0;
     overflow: hidden;
 }
 

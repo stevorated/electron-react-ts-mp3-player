@@ -1,5 +1,5 @@
 import React, { DragEvent, MouseEvent, RefObject } from 'react';
-import { FaPlusCircle, FaFolderPlus } from 'react-icons/fa';
+import { FaPlusCircle } from 'react-icons/fa';
 
 import {
     HandlerAction,
@@ -9,7 +9,7 @@ import {
 
 import { ExplorerBtn } from './partials';
 import { Playlists } from './partials';
-import { DropZone } from '../shared';
+import { DropZone, Hr } from '../shared';
 
 import './Explorer.style.less';
 
@@ -44,6 +44,7 @@ export function Explorer({
             onDragStart={e => e.preventDefault()}
             onDragEnd={e => e.preventDefault()}
         >
+            <DropZone />
             <ExplorerBtn
                 icon={
                     <FaPlusCircle
@@ -60,24 +61,7 @@ export function Explorer({
                     handleAction('CREATE_PLAYLIST_TEMP');
                 }}
             />
-            <ExplorerBtn
-                icon={
-                    <FaFolderPlus
-                        style={{
-                            fontSize: '12px',
-                            marginRight: '5px',
-                            padding: '0px 5px',
-                            borderRadius: '100%',
-                        }}
-                    />
-                }
-                text="new folder"
-                onClick={() => {
-                    console.log('NEW FOLDER');
-                }}
-            />
-
-            <DropZone />
+            <Hr />
             <Playlists
                 currentPlaylistId={currentPlaylistId}
                 tree={tree}

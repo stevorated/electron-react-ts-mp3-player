@@ -2,52 +2,69 @@ import React, { Component } from 'react';
 import { Dispatch } from 'redux';
 import { connect } from 'react-redux';
 
+import { ISong } from '@services/db';
+
 import { TreeListType, HandlerAction, StateHandlerAction } from './interfaces';
 import { RootState, fetchTree, deleteSong } from './store';
 import { savePlaylist, deleteFromTree } from './store';
 import { createTempPlaylist, updatePlaylist } from './store';
-
-import { IPlaylist, ISong } from '@services/db';
 import { Ipc } from './tools';
-
 import { MainPage } from './pages';
-
-import './App.style.less';
 import { Logger } from '../logger/logger';
+import { AudioSample } from './utils';
+import './layout.style.less';
 
-type ComponentProps = {
-    theme?: string;
-};
+type Status = 'ready' | 'playing' | 'paused' | 'stopped' | 'done';
 
-type Props = ComponentProps & DispatchProps & StateProps;
+type Props = DispatchProps & StateProps;
 
 type State = {
-    theme: string;
     currentPlaylistId: number;
     pointer: number;
+    time: number;
+    src: string;
     waitBetween: number;
-    current?: IPlaylist;
-    status: string;
+    status: Status;
     loading: boolean;
+    track?: AudioSample;
 };
 
 export class App extends Component<Props, State> {
+    player: HTMLAudioElement | null = null;
+
     constructor(props: Props) {
         super(props);
     }
 
     componentDidMount = async () => {
+        if (this.player) {
+            const parent = this;
+            this.player.onended = function() {
+                parent.nextsong();
+            };
+        }
         await Ipc.invokeAndHandle('FETCH_TREE', this.handleAction);
+        const [current] = this.getCurrentList();
+        const src = (current.nested[this.state.pointer] as ISong).path;
+        this.setState({ src });
     };
 
+    // componentDidUpdate = () => {
+
+    // if (current && src !== this.state.src) {
+    //     const track = new AudioSample(src);
+    // }
+    // };
+
     state: State = {
-        theme: 'dark',
         currentPlaylistId:
             this.props.tree.filter(item => item.type === 'playlist')[0]?.id ||
             1,
         pointer: 0,
-        waitBetween: 0.5,
-        status: 'stoped',
+        src: '',
+        waitBetween: 0,
+        time: 0,
+        status: 'stopped',
         loading: false,
     };
 
@@ -56,7 +73,7 @@ export class App extends Component<Props, State> {
         payload?: any,
         extra?: any
     ) => {
-        const { pointer, status, currentPlaylistId } = this.state;
+        const { currentPlaylistId, pointer } = this.state;
         const {
             tree,
             fetchTreeDispatch,
@@ -73,11 +90,11 @@ export class App extends Component<Props, State> {
             item => item.type === 'playlist' && item?.id === currentPlaylistId
         );
 
-        const player = this.getPlayer();
         logger.info(`Action Hander dispatched "${action}"`, [payload, extra]);
 
         switch (action) {
             case 'SWITCH_PLAYLIST':
+                this.pause(true);
                 return this.setState({
                     pointer: 0,
                     status: 'ready',
@@ -85,63 +102,27 @@ export class App extends Component<Props, State> {
                 });
 
             case 'CHANGE_SONG':
-                if (current?.nested?.length) {
-                    if (current.nested[payload]) {
-                        if (payload === pointer) {
-                            status === 'playing' ? this.pause() : this.play();
-                        } else {
-                            this.play();
-                        }
-                        this.setState({ pointer: payload });
-                    } else {
-                        this.pause();
+                const songsArr = current.nested;
+                const src = (songsArr[payload.pointer] as ISong).path;
+
+                if (songsArr.length) {
+                    if (src === this.state.src) {
+                        this.setCurrentTime(0);
                     }
-                }
-                return;
-
-            case 'NEXT_SONG':
-                if (!player || !current) {
-                    return;
-                }
-                if (current.nested.length) {
-                    if (current.nested[payload]) {
-                        this.setState({
-                            pointer: pointer + 1,
-                        });
-                        if (status === 'playing') {
-                            setTimeout(() => {
-                                player.play();
-                            }, 50);
-                        }
-                    }
-                }
-                return;
-
-            case 'BACK_SONG':
-                if (!player || !current) {
-                    return;
-                }
-                if (current.nested.length) {
-                    const wait = 2;
-
-                    if (player.currentTime > wait || payload === -1) {
-                        player.currentTime = 0;
+                    if (payload.click && pointer === payload.pointer) {
+                        setTimeout(() => {
+                            this.state.status === 'playing'
+                                ? this.pause()
+                                : this.play();
+                        }, 20);
                         return;
-                    }
-
-                    if (current.nested[payload]) {
-                        if (player.currentTime < wait) {
-                            this.setState({
-                                pointer: pointer - 1,
-                            });
-                            if (status === 'playing') {
-                                setTimeout(() => {
-                                    player.play();
-                                }, 50);
-                            }
-                        }
+                    } else {
+                        setTimeout(() => {
+                            this.play();
+                        }, 20);
                     }
                 }
+                this.setState({ src, pointer: payload.pointer });
                 return;
 
             case 'SET_STATUS':
@@ -198,7 +179,6 @@ export class App extends Component<Props, State> {
                             item.type === 'playlist' && item.id === current.id
                     );
                     this.setState({ loading: true });
-                    // let songs: ISong[];
                     if (res.length === 1) {
                         const songs = (current?.nested as ISong[])?.concat({
                             ...res[0],
@@ -240,6 +220,7 @@ export class App extends Component<Props, State> {
                 }
 
                 return;
+
             case 'UPDATE_SONG':
                 const res = await Ipc.invokeAndReturn<ISong[]>(
                     'UPDATE_SONG',
@@ -265,13 +246,14 @@ export class App extends Component<Props, State> {
                     });
                 }
                 return;
+
             case 'DELETE_SONG':
                 Ipc.invokeAndReturn('DELETE_SONG', payload);
                 if (!current) {
                     return;
                 }
 
-                const songs = (current.nested as ISong[])?.filter(
+                const songsAfterDelete = (current.nested as ISong[])?.filter(
                     song => song.id !== payload[0].id
                 );
 
@@ -280,10 +262,11 @@ export class App extends Component<Props, State> {
                         item =>
                             item.type === 'playlist' && item.id === current.id
                     )[0],
-                    nested: songs || [],
+                    nested: songsAfterDelete || [],
                 };
 
                 return deleteSongDispatch(updatedTreeItem);
+
             default:
                 console.log(
                     `unknown action: ${action}, with payload: ${payload}`
@@ -292,23 +275,110 @@ export class App extends Component<Props, State> {
         }
     };
 
-    getPlayer = () =>
-        document?.getElementById('media-player') as HTMLMediaElement;
-
-    play = () => {
-        const { waitBetween } = this.state;
-        const player = this.getPlayer();
-        this.setState({ status: 'playing' });
-        setTimeout(() => {
-            player.currentTime = 0;
-            player.play();
-        }, waitBetween * 1000);
+    getPlayer = () => {
+        return this.player;
     };
 
-    pause = () => {
-        const player = this.getPlayer();
-        this.setState({ status: 'paused' });
-        player.pause();
+    getCurrentList = () =>
+        this.props.tree.filter(
+            item =>
+                item.type === 'playlist' &&
+                item?.id === this.state.currentPlaylistId
+        );
+
+    play = async () => {
+        if (!this.player) {
+            return;
+        }
+        console.log('play');
+        this.setState({ status: 'playing' });
+        this.player.play();
+        return;
+    };
+
+    pause = (stop?: boolean) => {
+        if (!this.player) {
+            return;
+        }
+
+        if (stop) {
+            this.player.pause();
+            this.player.currentTime = 0;
+            return this.setState({ status: 'stopped', time: 0 });
+        }
+
+        this.player.pause();
+        return this.setState({ status: 'paused' });
+    };
+
+    nextsong = async () => {
+        if (!this.player) {
+            return;
+        }
+        const [current] = this.getCurrentList();
+
+        if (this.state.pointer + 1 === current.nested.length) {
+            this.pause(true);
+            this.setState({ status: 'done', time: 0, pointer: 0 });
+            return;
+        }
+
+        this.handleAction('CHANGE_SONG', {
+            pointer: this.state.pointer + 1,
+        });
+    };
+
+    lastsong = () => {
+        if (!this.player) {
+            return;
+        }
+
+        if (this.player.currentTime > 3) {
+            this.player.currentTime = 0;
+
+            return;
+        }
+
+        if (this.state.pointer > 0) {
+            this.handleAction('CHANGE_SONG', {
+                pointer: this.state.pointer - 1,
+            });
+
+            return;
+        }
+    };
+
+    rewind = () => {
+        if (!this.player) {
+            return;
+        }
+
+        this.setCurrentTime(
+            this.player.currentTime < 5 ? 0 : this.player.currentTime - 5
+        );
+    };
+
+    forward = () => {
+        if (!this.player) {
+            return;
+        }
+
+        this.setCurrentTime(this.player.currentTime + 5);
+    };
+
+    getCurrentTime = () => {
+        return this.player?.currentTime || 0;
+    };
+
+    setCurrentTime = (time: number) => {
+        this.setState({ time });
+        if (this.player) {
+            this.player.currentTime = time;
+        }
+    };
+
+    addSongModal = () => {
+        this.handleAction('ADD_SONG_MODAL');
     };
 
     render() {
@@ -322,17 +392,28 @@ export class App extends Component<Props, State> {
         } = this.state;
 
         return (
-            <MainPage
-                loading={loading}
-                currentPlaylistId={currentPlaylistId}
-                tree={tree}
-                getPlayer={this.getPlayer}
-                handleAction={this.handleAction}
-                status={status}
-                play={this.play}
-                pointer={pointer}
-                waitBetween={waitBetween}
-            />
+            <>
+                <audio ref={el => (this.player = el)} src={this.state.src} />
+                <MainPage
+                    pause={this.pause}
+                    play={this.play}
+                    nextsong={this.nextsong}
+                    lastsong={this.lastsong}
+                    rewind={this.rewind}
+                    forward={this.forward}
+                    getCurrentTime={this.getCurrentTime}
+                    setCurrentTime={this.setCurrentTime}
+                    addSongModal={this.addSongModal}
+                    loading={loading}
+                    currentPlaylistId={currentPlaylistId}
+                    tree={tree}
+                    getPlayer={this.getPlayer}
+                    handleAction={this.handleAction}
+                    status={status}
+                    pointer={pointer}
+                    waitBetween={waitBetween}
+                />
+            </>
         );
     }
 }

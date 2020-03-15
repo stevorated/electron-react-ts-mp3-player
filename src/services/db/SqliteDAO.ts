@@ -62,11 +62,9 @@ export class SqliteDAO {
     }
 
     static run(sql: string, params: (string | number)[]): Promise<RunResult> {
-        console.log(sql, params);
         return new Promise((resolve, reject) => {
             Connector.getInstance().run(sql, params, function(error) {
                 if (error) {
-                    console.log('HEEEEERRRRRREEEEE');
                     SqliteDAO.logError('run method', { error });
                     reject(error);
                 }

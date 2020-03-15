@@ -4,24 +4,22 @@ import { FaPlay, FaPause } from 'react-icons/fa';
 type Props = {
     status: string;
     size: string;
-    getPlayer: () => HTMLMediaElement | null;
+    play: () => Promise<void>;
+    pause: (stop?: boolean) => void;
 };
 
-export function PlayBtn({ size, getPlayer, status }: Props) {
-    const player = getPlayer();
+export function PlayBtn({ size, status, play, pause }: Props) {
     return status !== 'playing' ? (
         <FaPlay
             className="btn hoverable"
             size={size}
-            onClick={() => {
-                player && player.play();
-            }}
+            onClick={async () => await play()}
         />
     ) : (
         <FaPause
             className="btn hoverable"
             size={size}
-            onClick={() => player && player.pause()}
+            onClick={() => pause()}
         />
     );
 }

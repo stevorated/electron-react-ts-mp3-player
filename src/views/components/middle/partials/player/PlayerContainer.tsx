@@ -1,15 +1,12 @@
 import React from 'react';
 
 import { ISong } from '@services/db';
-import {
-    HandlerAction,
-    TreeListType,
-    StateHandlerAction,
-} from '@views/interfaces';
+import { TreeListType } from '@views/interfaces';
 
 import { MediaPanel } from './MediaPanel';
-import { MediaPlayerWrap } from './MediaPlayerWrap';
+import { MediaPlayer } from './MediaPlayer';
 import './PlayerContainer.style.less';
+import { Hr } from '../../../shared';
 
 type Props = {
     status: string;
@@ -17,55 +14,61 @@ type Props = {
     waitBetween: number;
     current?: TreeListType;
     getPlayer: () => HTMLMediaElement | null;
-    play: () => void;
-    handleAction: (
-        action: HandlerAction | StateHandlerAction,
-        payload?: any
-    ) => void;
+    play: (dontRewind?: boolean) => Promise<void>;
+    pause: (stop?: boolean) => void;
+    nextsong: () => void;
+    lastsong: () => void;
+    rewind: () => void;
+    forward: () => void;
+    setCurrentTime: (time: number) => void;
+    getCurrentTime: () => number;
+    addSongModal: () => void;
 };
 
 export function PlayerContainer({
     status,
     pointer,
-    handleAction,
+    addSongModal,
     current,
     getPlayer,
     play,
+    pause,
+    nextsong,
+    lastsong,
+    rewind,
+    forward,
+    getCurrentTime,
+    setCurrentTime,
 }: Props) {
-    const nextsong = () => {
-        if (current?.nested && pointer + 1 < current?.nested?.length) {
-            const nextSongPointer = pointer + 1;
-            handleAction('SET_STATUS', 'changing Song...');
-            handleAction('CHANGE_SONG', nextSongPointer);
-            play();
-        } else {
-            handleAction('SET_STATUS', 'end of list');
-        }
-    };
-
-    const src = (current?.nested?.[pointer] as ISong)?.path || '';
     const size = '20px';
     const bigSize = '30px';
 
     return (
-        <div className="container-audio centered transition border-bottom">
-            <MediaPlayerWrap
+        <div className="container-audio centered transition padding-top">
+            <MediaPlayer
+                getPlayer={getPlayer}
+                play={play}
+                pause={pause}
+                nextsong={nextsong}
+                lastsong={lastsong}
+                rewind={rewind}
+                forward={forward}
+                setCurrentTime={setCurrentTime}
+                getCurrentTime={getCurrentTime}
                 song={current?.nested[pointer] as ISong}
                 status={status}
-                nextsong={nextsong}
-                handleAction={handleAction}
-                getPlayer={getPlayer}
                 pointer={pointer}
-                src={src}
                 size={size}
                 bigSize={bigSize}
             />
+            <Hr />
             <MediaPanel
                 pointer={pointer}
-                handleAction={handleAction}
+                addSongModal={addSongModal}
                 playlistTitle={current?.title}
                 songs={current?.nested as ISong[]}
             />
+            <Hr />
         </div>
     );
 }

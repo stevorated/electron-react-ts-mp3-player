@@ -6,3 +6,5 @@ declare interface NodeModule {
         accept(path?: () => void, callback?: () => void): void;
     };
 }
+
+// declare module ''

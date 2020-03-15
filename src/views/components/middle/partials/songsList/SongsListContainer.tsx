@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 
 import { HandlerAction, TreeListType } from '@views/interfaces';
 import { StateHandlerAction } from '@views/interfaces';
 
-import { Canvas } from './Canvas';
-import { EQBars } from './EQBars';
+// import { Hr } from '../../../shared';
+// import { EQBars } from './EQBars';
 import { Songs } from './Songs';
 import { ISong } from '@services/db';
 import { FaSpinner } from 'react-icons/fa';
@@ -27,23 +27,20 @@ export function SongsListContainer({
     handleAction,
     status,
     loading,
-    getPlayer,
 }: Props) {
-    const [width, setWidth] = useState(window.innerWidth);
+    // const [width, setWidth] = useState(window.innerWidth);
 
-    const updateWidth = () => {
-        setWidth(window.innerWidth);
-    };
+    // const updateWidth = () => {
+    //     setWidth(window.innerWidth);
+    // };
 
-    useEffect(() => {
-        window.addEventListener('resize', updateWidth);
-        return () => window.removeEventListener('resize', updateWidth);
-    });
+    // useEffect(() => {
+    //     window.addEventListener('resize', updateWidth);
+    //     return () => window.removeEventListener('resize', updateWidth);
+    // });
 
     return (
         <div className="main-body playlist-container">
-            {current && <EQBars cols={Math.round((width - 300) / 41)} />}
-            <Canvas getPlayer={getPlayer} />
             <Songs
                 playlistId={current?.id}
                 status={status}
@@ -51,7 +48,10 @@ export function SongsListContainer({
                 pointer={pointer}
                 handleAction={handleAction}
             />
-            {loading && <FaSpinner className="spinner spin" size="40px" />}
+            {loading && <FaSpinner className="spinner spin" size="200px" />}
         </div>
     );
 }
+
+// <Hr width="95%" />;
+// {current && <EQBars cols={Math.round((width - 300) / 41)} />}

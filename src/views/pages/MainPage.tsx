@@ -5,13 +5,21 @@ import { TreeListType } from '../interfaces';
 import { HandlerAction, StateHandlerAction } from '../interfaces';
 
 type Props = {
-    getPlayer: () => HTMLMediaElement;
+    getPlayer: () => HTMLMediaElement | null;
     handleAction: (
         action: HandlerAction | StateHandlerAction,
         payload: any
     ) => void;
     tree: TreeListType[];
-    play: () => void;
+    play: (dontRewind?: boolean) => Promise<void>;
+    pause: (stop?: boolean) => void;
+    nextsong: () => void;
+    lastsong: () => void;
+    rewind: () => void;
+    forward: () => void;
+    getCurrentTime: () => number;
+    setCurrentTime: (time: number) => void;
+    addSongModal: () => void;
     pointer: number;
     currentPlaylistId: number;
     waitBetween: number;
@@ -21,9 +29,17 @@ type Props = {
 
 export function MainPage({
     getPlayer,
+    play,
+    pause,
+    nextsong,
+    lastsong,
+    rewind,
+    forward,
+    getCurrentTime,
+    setCurrentTime,
+    addSongModal,
     handleAction,
     tree,
-    play,
     currentPlaylistId,
     pointer,
     waitBetween,
@@ -122,11 +138,19 @@ export function MainPage({
                 />
 
                 <Middle
+                    addSongModal={addSongModal}
                     loading={loading}
                     flex={flex}
                     mainRef={mainRef}
                     getPlayer={getPlayer}
                     play={play}
+                    pause={pause}
+                    nextsong={nextsong}
+                    rewind={rewind}
+                    forward={forward}
+                    lastsong={lastsong}
+                    setCurrentTime={setCurrentTime}
+                    getCurrentTime={getCurrentTime}
                     current={current}
                     pointer={pointer}
                     status={status}

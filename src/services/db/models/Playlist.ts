@@ -64,7 +64,6 @@ export class Playlist extends Model {
                                 };
                                 data.push(recordWithSongs);
                             }
-                            // console.log(res);
                             this.logInfo('find', { data });
                             resolve(data);
                         })

@@ -1,8 +1,9 @@
 import React, { ReactNode } from 'react';
 
 type Props = {
-    icon: ReactNode;
+    className?: string;
     text: string;
+    icon: ReactNode;
     onClick: () => void;
 };
 
@@ -13,6 +14,7 @@ export function ExplorerBtn({ icon, text, onClick }: Props) {
                 display: 'flex',
                 flexDirection: 'row',
                 alignItems: 'center',
+                marginTop: '10px',
                 height: '2.5rem',
                 width: '90%',
             }}

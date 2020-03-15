@@ -1,6 +1,7 @@
 import React, { useRef, useEffect, KeyboardEvent } from 'react';
-import { FaMusic, FaTimes } from 'react-icons/fa';
+import { FaMusic } from 'react-icons/fa';
 import { TreeListType } from '../../../interfaces';
+import { CloseBtn } from './CloseBtn';
 
 type Props = {
     id: number;
@@ -83,20 +84,8 @@ export function Editable({
                         >
                             {afterEdit || placeholder}
                         </div>
-                        <div
-                            className="stick-right hoverable-alt"
-                            onClick={() => {
-                                console.log('DELETE');
-                            }}
-                        >
-                            <FaTimes
-                                size="10px"
-                                style={{
-                                    marginRight: '20px',
-                                    marginBottom: '0',
-                                }}
-                            />
-                        </div>
+
+                        <CloseBtn id={id} />
                     </div>
                     <span className="tiny-text">
                         {item?.nested.length} songs

@@ -13,6 +13,4 @@ export type HandlerAction =
 export type StateHandlerAction =
     | 'SWITCH_PLAYLIST'
     | 'CHANGE_SONG'
-    | 'BACK_SONG'
-    | 'NEXT_SONG'
     | 'SET_STATUS';
