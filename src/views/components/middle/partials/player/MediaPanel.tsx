@@ -2,19 +2,27 @@ import React from 'react';
 import { FaCogs, FaRandom, FaUndo, FaFolderPlus } from 'react-icons/fa';
 
 import { ISong } from '@services/db';
+import { HandlerAction, StateHandlerAction } from '@views/interfaces';
 // import { HandlerAction } from '@views/interfaces';
 
 type Props = {
+    loop: boolean;
+    random: boolean;
     pointer: number;
     playlistTitle?: string;
     songs?: ISong[];
     addSongModal: () => void;
-    // handleAction: (action: HandlerAction, payload?: any) => void;
+    handleAction: (
+        action: HandlerAction | StateHandlerAction,
+        payload?: any
+    ) => void;
 };
 
 export function MediaPanel({
+    random,
+    loop,
     playlistTitle,
-    // handleAction,
+    handleAction,
     songs,
     pointer,
     addSongModal,
@@ -35,16 +43,22 @@ export function MediaPanel({
                 onClick={addSongModal}
                 style={{ bottom: '5px', left: '45px' }}
             />
-            <h4 className="no-pad centered title-text">{playlistTitle}</h4>
+            <h4 className="no-pad centered title-text hide">{playlistTitle}</h4>
             <h4 className="no-pad centered title-text">
                 {songs?.[pointer]?.title}
             </h4>
             <FaUndo
-                className={`btn action-icon ${statusClass}`}
+                className={`btn action-icon ${statusClass} ${
+                    loop ? 'active' : ''
+                }`}
+                onClick={() => handleAction('SET_STATE', { loop: !loop })}
                 style={{ bottom: '5px', right: '40px' }}
             />
             <FaRandom
-                className={`btn action-icon ${statusClass}`}
+                onClick={() => handleAction('SET_STATE', { random: !random })}
+                className={`btn action-icon ${statusClass} ${
+                    random ? 'active' : ''
+                }`}
                 style={{ bottom: '5px', right: '0px' }}
             />
         </div>

@@ -2,24 +2,26 @@ import React from 'react';
 import { FaPlay, FaPause } from 'react-icons/fa';
 
 type Props = {
+    disabled: boolean;
     status: string;
     size: string;
     play: () => Promise<void>;
     pause: (stop?: boolean) => void;
 };
 
-export function PlayBtn({ size, status, play, pause }: Props) {
+export function PlayBtn({ disabled, size, status, play, pause }: Props) {
+    const className = disabled ? 'disabled' : 'hoverable';
     return status !== 'playing' ? (
         <FaPlay
-            className="btn hoverable"
+            className={`btn ${className}`}
             size={size}
-            onClick={async () => await play()}
+            onClick={!disabled ? async () => await play() : () => {}}
         />
     ) : (
         <FaPause
-            className="btn hoverable"
+            className={`btn ${className}`}
             size={size}
-            onClick={() => pause()}
+            onClick={!disabled ? () => pause() : () => {}}
         />
     );
 }

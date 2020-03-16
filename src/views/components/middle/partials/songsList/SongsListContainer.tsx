@@ -2,7 +2,7 @@ import React from 'react';
 
 import { HandlerAction, TreeListType } from '@views/interfaces';
 import { StateHandlerAction } from '@views/interfaces';
-
+import img from '../../../../assets/img/Record-Album-02.jpg';
 // import { Hr } from '../../../shared';
 // import { EQBars } from './EQBars';
 import { Songs } from './Songs';
@@ -41,7 +41,48 @@ export function SongsListContainer({
 
     return (
         <div className="main-body playlist-container">
+            <div
+                style={{
+                    margin: '20px',
+                    display: 'flex',
+                    flexDirection: 'row',
+                }}
+            >
+                <div
+                    style={{
+                        display: 'flex',
+                        height: '14vh',
+                        width: '14vh',
+                        // padding: '1rem',
+                        border: '2px dashed rgba(200, 200, 200, 0.2)',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                    }}
+                >
+                    <img
+                        style={{
+                            display: 'flex',
+                            height: '14vh',
+                            width: '14vh',
+                            // padding: '1rem',
+                            padding: 0,
+                            margin: 0,
+                            alignItems: 'censter',
+                            justifyContent: 'center',
+                        }}
+                        src={img}
+                        alt=""
+                    />
+                </div>
+                <h3 className="title-text">
+                    {current?.title},{' '}
+                    <small className="tiny-text">
+                        {current?.nested?.length || 0} songs
+                    </small>
+                </h3>
+            </div>
             <Songs
+                loading={loading}
                 playlistId={current?.id}
                 status={status}
                 songs={current?.nested as ISong[]}

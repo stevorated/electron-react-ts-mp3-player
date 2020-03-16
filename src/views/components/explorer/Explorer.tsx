@@ -1,5 +1,6 @@
 import React, { DragEvent, MouseEvent, RefObject } from 'react';
 import { FaPlusCircle } from 'react-icons/fa';
+import styled from 'styled-components';
 
 import {
     HandlerAction,
@@ -46,16 +47,7 @@ export function Explorer({
         >
             <DropZone />
             <ExplorerBtn
-                icon={
-                    <FaPlusCircle
-                        style={{
-                            fontSize: '12px',
-                            marginRight: '5px',
-                            padding: '0px 5px',
-                            borderRadius: '100%',
-                        }}
-                    />
-                }
+                icon={<StylePlayIcon />}
                 text="new playlist…"
                 onClick={() => {
                     handleAction('CREATE_PLAYLIST_TEMP');
@@ -71,20 +63,9 @@ export function Explorer({
     );
 }
 
-// <Modal
-//                 modalLabel="somthing_else_modal"
-//                 buttonText="somthing else…"
-//                 modalTitle="Ya Alla"
-//                 buttonIcon={
-//                     <FaPoo
-//                         style={{
-//                             fontSize: '12px',
-//                             marginRight: '5px',
-//                             padding: '0px 5px',
-//                             borderRadius: '100%',
-//                         }}
-//                     />
-//                 }
-//             >
-//                 <h1>DO SOMETHING FORM</h1>
-//             </Modal>
+const StylePlayIcon = styled(FaPlusCircle)`
+    font-size: 12px;
+    margin-right: 5px;
+    padding: 0px 5px;
+    border-radius: 100%;
+`;

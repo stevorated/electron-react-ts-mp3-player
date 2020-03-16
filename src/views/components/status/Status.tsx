@@ -1,14 +1,14 @@
 import React from 'react';
 import { FaMagic, FaSmile, FaList, FaSnowman } from 'react-icons/fa';
 
-import { IPlaylist } from '@services/db';
+import { TreeListType } from '@views/interfaces';
 
 import './Status.style.less';
 
 type Props = {
     status: string;
     pointer: number;
-    current?: IPlaylist;
+    current?: TreeListType;
 };
 
 export function Status({ status, current, pointer }: Props) {
@@ -26,7 +26,7 @@ export function Status({ status, current, pointer }: Props) {
                     </li>
                     <li style={{ display: 'flex', alignItems: 'base' }}>
                         <FaList size="12px" style={{ marginRight: '6px' }} />{' '}
-                        {current?.songs?.length || '-'}
+                        {current?.nested?.length || '-'}
                     </li>
                     <li
                         style={{
@@ -41,7 +41,7 @@ export function Status({ status, current, pointer }: Props) {
                                 marginRight: '6px',
                             }}
                         />{' '}
-                        {current?.songs?.[pointer]?.title}
+                        {current?.nested?.[pointer]?.title}
                     </li>
                 </ul>
             </div>

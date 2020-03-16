@@ -9,6 +9,7 @@ import {
 } from '../services/db';
 
 import { Logger } from '../logger';
+import { RunResult } from 'sqlite3';
 
 interface ITreeItem {
     id: string;
@@ -32,7 +33,9 @@ export class DataHandler {
         return res.lastID;
     }
 
-    static async updatePlaylist(payload: Partial<IPlaylist>): Promise<any> {
+    static async updatePlaylist(
+        payload: Partial<IPlaylist>
+    ): Promise<RunResult | void> {
         if (!payload.id || !payload) {
             return;
         }
@@ -43,6 +46,10 @@ export class DataHandler {
         });
 
         return res;
+    }
+
+    static async deletePlaylist(id: number): Promise<RunResult> {
+        return Playlist.removeById(id);
     }
 
     static async findSongById(id?: number) {

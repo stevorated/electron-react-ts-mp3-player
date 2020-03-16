@@ -2,15 +2,13 @@ import React from 'react';
 import { FaTimes } from 'react-icons/fa';
 
 type Props = {
-    id: number;
+    handleDelete: (temp: boolean) => void;
 };
 
-export function CloseBtn({ id }: Props) {
+export function DeleteBtn({ handleDelete }: Props) {
     return (
         <div
-            onClick={() => {
-                console.log('close ', id);
-            }}
+            onClick={() => handleDelete(false)}
             className="stick-right hoverable-alt"
         >
             <FaTimes

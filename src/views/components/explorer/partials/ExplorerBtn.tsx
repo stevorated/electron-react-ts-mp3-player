@@ -1,4 +1,5 @@
 import React, { ReactNode } from 'react';
+import styled from 'styled-components';
 
 type Props = {
     className?: string;
@@ -9,27 +10,25 @@ type Props = {
 
 export function ExplorerBtn({ icon, text, onClick }: Props) {
     return (
-        <div
-            style={{
-                display: 'flex',
-                flexDirection: 'row',
-                alignItems: 'center',
-                marginTop: '10px',
-                height: '2.5rem',
-                width: '90%',
-            }}
-        >
+        <ExplorerBtnContainer>
             {icon}
-            <div
-                className="hoverable"
-                onClick={onClick}
-                style={{
-                    fontSize: '12px',
-                    textTransform: 'uppercase',
-                }}
-            >
+            <ExplorerBtnInner className="hoverable" onClick={onClick}>
                 {text}
-            </div>
-        </div>
+            </ExplorerBtnInner>
+        </ExplorerBtnContainer>
     );
 }
+
+const ExplorerBtnContainer = styled.div`
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-top: 10px;
+    height: 2.5rem;
+    width: 90%;
+`;
+
+const ExplorerBtnInner = styled.div`
+    font-size: 12px;
+    text-transform: uppercase;
+`;

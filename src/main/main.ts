@@ -108,6 +108,15 @@ handleEvent('UPDATE_SONG', async (_, args) => {
     }
 });
 
+handleEvent('DELETE_PLAYLIST', async (_, args) => {
+    try {
+        await DataHandler.deletePlaylist(args);
+        return true;
+    } catch (err) {
+        return false;
+    }
+});
+
 const parseMp3 = (path: string): Promise<ffmpeg.FfprobeData> =>
     new Promise(resolve => {
         ffmpeg.ffprobe(path, (_, data) => {

@@ -2,22 +2,24 @@ import React from 'react';
 import { FaForward, FaFastForward } from 'react-icons/fa';
 
 type Props = {
+    disabled: boolean;
     size: string;
     nextsong: () => void;
     forward: () => void;
 };
 
-export function ForwardBtns({ size, nextsong, forward }: Props) {
+export function ForwardBtns({ disabled, size, nextsong, forward }: Props) {
+    const className = disabled ? 'disabled' : 'hoverable';
     return (
         <div>
             <FaForward
-                className="btn hoverable"
+                className={`btn ${className}`}
                 size={size}
                 style={{ marginRight: '10px' }}
                 onClick={forward}
             />
             <FaFastForward
-                className="btn hoverable"
+                className={`btn ${className}`}
                 size={size}
                 onClick={nextsong}
             />

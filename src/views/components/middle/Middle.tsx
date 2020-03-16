@@ -6,12 +6,15 @@ import { StateHandlerAction } from '@views/interfaces';
 import { PlayerContainer, SongsListContainer, Analyser } from './partials';
 
 type Props = {
+    loop: boolean;
+    random: boolean;
     loading: boolean;
     flex: number;
     status: string;
     pointer: number;
     waitBetween: number;
     current?: TreeListType;
+    handleAnalyse: () => void;
     handleAction: (
         action: HandlerAction | StateHandlerAction,
         payload?: any
@@ -44,14 +47,18 @@ export function Middle({
     pointer,
     waitBetween,
     handleAction,
+    handleAnalyse,
     status,
     mainRef,
     flex,
     loading,
+    loop,
+    random,
 }: Props) {
     return (
         <div ref={mainRef} className="flexbox-item-grow main" style={{ flex }}>
             <PlayerContainer
+                handleAction={handleAction}
                 getPlayer={getPlayer}
                 play={play}
                 pause={pause}
@@ -63,11 +70,13 @@ export function Middle({
                 getCurrentTime={getCurrentTime}
                 addSongModal={addSongModal}
                 status={status}
+                loop={loop}
+                random={random}
                 current={current}
                 pointer={pointer}
                 waitBetween={waitBetween}
             />
-            <Analyser getPlayer={getPlayer} />
+            <Analyser handleAnalyse={handleAnalyse} getPlayer={getPlayer} />
             <SongsListContainer
                 getPlayer={getPlayer}
                 loading={loading}

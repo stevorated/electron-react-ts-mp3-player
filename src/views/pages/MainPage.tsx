@@ -5,12 +5,15 @@ import { TreeListType } from '../interfaces';
 import { HandlerAction, StateHandlerAction } from '../interfaces';
 
 type Props = {
-    getPlayer: () => HTMLMediaElement | null;
-    handleAction: (
-        action: HandlerAction | StateHandlerAction,
-        payload: any
-    ) => void;
+    pointer: number;
+    currentPlaylistId: number;
+    waitBetween: number;
+    status: string;
+    loading: boolean;
+    loop: boolean;
+    random: boolean;
     tree: TreeListType[];
+    getPlayer: () => HTMLMediaElement | null;
     play: (dontRewind?: boolean) => Promise<void>;
     pause: (stop?: boolean) => void;
     nextsong: () => void;
@@ -20,11 +23,11 @@ type Props = {
     getCurrentTime: () => number;
     setCurrentTime: (time: number) => void;
     addSongModal: () => void;
-    pointer: number;
-    currentPlaylistId: number;
-    waitBetween: number;
-    status: string;
-    loading: boolean;
+    handleAnalyse: () => void;
+    handleAction: (
+        action: HandlerAction | StateHandlerAction,
+        payload: any
+    ) => void;
 };
 
 export function MainPage({
@@ -39,12 +42,15 @@ export function MainPage({
     setCurrentTime,
     addSongModal,
     handleAction,
+    handleAnalyse,
     tree,
     currentPlaylistId,
     pointer,
     waitBetween,
     status,
     loading,
+    loop,
+    random,
 }: Props) {
     const [current] = tree.filter(
         item => item.type === 'playlist' && item.id === currentPlaylistId
@@ -154,12 +160,15 @@ export function MainPage({
                     current={current}
                     pointer={pointer}
                     status={status}
+                    loop={loop}
+                    random={random}
                     waitBetween={waitBetween}
                     handleAction={handleAction}
+                    handleAnalyse={handleAnalyse}
                 />
                 <Info />
             </div>
-            <Status status={status} pointer={pointer} />
+            <Status status={status} pointer={pointer} current={current} />
         </>
     );
 }

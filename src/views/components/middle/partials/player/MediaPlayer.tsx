@@ -10,7 +10,7 @@ type Props = {
     bigSize: string;
     size: string;
     pointer: number;
-    song: ISong;
+    song?: ISong;
     play: (dontRewind?: boolean) => Promise<void>;
     pause: (stop?: boolean) => void;
     nextsong: () => void;
@@ -38,10 +38,10 @@ export function MediaPlayer({
     song,
 }: Props) {
     const player = getPlayer();
-
-    const [volume, setVolume] = useState(0);
+    const [volume, setVolume] = useState(50);
     const [pos, setPos] = useState(0);
     const [seek, setSeek] = useState(false);
+    const noSong = !song;
 
     const updatePos = () => {
         if (!seek) {
@@ -49,7 +49,6 @@ export function MediaPlayer({
         }
 
         setSeek(false);
-        console.log('here', pos);
         setCurrentTime(pos);
     };
 
@@ -78,18 +77,36 @@ export function MediaPlayer({
     return (
         <div className="media-player-wrap">
             <Volume
+                disabled={noSong}
                 setVolume={setVolume}
                 handleChangeVolume={handleChangeVolume}
                 player={player}
                 volume={volume}
             />
-            <BackBtns size={size} lastsong={lastsong} rewind={rewind} />
-            <StopBtn size={bigSize} pause={pause} />
-            <PlayBtn pause={pause} play={play} size={bigSize} status={status} />
-            <ForwardBtns forward={forward} nextsong={nextsong} size={size} />
+            <BackBtns
+                disabled={noSong}
+                size={size}
+                lastsong={lastsong}
+                rewind={rewind}
+            />
+            <StopBtn disabled={noSong} size={bigSize} pause={pause} />
+            <PlayBtn
+                disabled={noSong}
+                pause={pause}
+                play={play}
+                size={bigSize}
+                status={status}
+            />
+            <ForwardBtns
+                disabled={noSong}
+                forward={forward}
+                nextsong={nextsong}
+                size={size}
+            />
             <Seek
+                disabled={noSong}
                 pos={pos}
-                duration={song?.length}
+                duration={song?.length || 0}
                 handleChangePos={handleChangePos}
             />
         </div>

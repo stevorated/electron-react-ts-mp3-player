@@ -7,6 +7,7 @@ export type Channels =
     | 'UPDATE_PLAYLIST'
     | 'UPDATE_SONG'
     | 'ADD_SONG'
+    | 'DELETE_PLAYLIST'
     | 'DELETE_SONG';
 
 const logger = new Logger('main');

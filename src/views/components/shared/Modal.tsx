@@ -1,17 +1,8 @@
-import React, { ReactNode, useState } from 'react';
+import React, { ReactNode, useState, useEffect, useRef } from 'react';
 import ReactModal from 'react-modal';
-import { ExplorerBtn } from '../explorer/partials/ExplorerBtn';
+import styled from 'styled-components';
 
-const customStyles = {
-    content: {
-        top: '50%',
-        left: '50%',
-        right: 'auto',
-        bottom: 'auto',
-        marginRight: '-50%',
-        transform: 'translate(-50%, -50%)',
-    },
-};
+import { ExplorerBtn } from '../explorer/partials/ExplorerBtn';
 
 type Props = {
     modalLabel: string;
@@ -23,6 +14,10 @@ type Props = {
     handleAfterModal?: () => void;
     isOpen?: boolean;
     handleClosing?: () => void;
+    top?: number;
+    left?: number;
+    width?: number;
+    height?: number;
 };
 
 ReactModal.setAppElement('#root');
@@ -37,8 +32,33 @@ export function Modal({
     handleClosing,
     isOpen,
     buttonIcon,
+    top,
+    left,
+    width,
+    height,
 }: Props) {
     const [modalIsOpen, setIsOpen] = useState(false);
+
+    const topS = `${top}px`;
+    const leftS = `${left}px`;
+
+    const customStyles = {
+        overlay: {
+            background: 'rgba(255, 255, 255, 0.05)',
+        },
+        content: {
+            background: 'rgba(0, 0, 0, 0.9)',
+            color: 'white',
+            top: top || top === 0 ? topS : '50%',
+            left: left || left === 0 ? leftS : '50%',
+            minWidth: '280px',
+            maxWidth: width || '340px',
+            height: height || '250px',
+            border: '3px solid rgba(255, 255,255, 0.6)',
+            borderRadious: '3px',
+            boxShadow: '-5px 7px 42px 0px rgba(0, 0, 0, 0.75)',
+        },
+    };
 
     function openModal() {
         setIsOpen(true);
@@ -48,15 +68,16 @@ export function Modal({
         setIsOpen(false);
     }
 
+    const modalBodyRef = useRef<ReactModal>(null);
+
+    useEffect(() => {
+        if (isOpen) {
+            animateCSS(document.getElementById('modal-root'), 'fade-in');
+        }
+    }, [isOpen]);
+
     return (
-        <div
-            className="hoverable"
-            style={{
-                display: 'flex',
-                flexDirection: 'row',
-                alignItems: 'center',
-            }}
-        >
+        <div id="modal-root">
             {button ? (
                 button
             ) : (
@@ -67,23 +88,37 @@ export function Modal({
                 />
             )}
             <ReactModal
+                ref={modalBodyRef}
                 isOpen={isOpen ?? modalIsOpen}
                 onAfterOpen={handleAfterModal}
                 onRequestClose={handleClosing ?? closeModal}
                 style={customStyles}
                 contentLabel={modalLabel}
             >
-                <div
-                    style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                    }}
-                >
+                <ModalContainer className="modal-styles">
                     {modalTitle}
                     {children}
-                </div>
+                </ModalContainer>
             </ReactModal>
         </div>
     );
 }
+
+function animateCSS(element: any, animationName: string, callback?: () => {}) {
+    element.classList.add('animated', animationName);
+
+    function handleAnimationEnd() {
+        element.classList.remove('animated', animationName);
+        element.removeEventListener('animationend', handleAnimationEnd);
+
+        if (typeof callback === 'function') callback();
+    }
+
+    element.addEventListener('animationend', handleAnimationEnd);
+}
+
+const ModalContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+`;

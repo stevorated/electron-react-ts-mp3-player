@@ -73,16 +73,15 @@ export function Playlist({
         setEditing(false);
     };
 
-    const deleteItem = () => {
-        handleAction('DELETE_PLAYLIST', playlist);
-        setEditing(false);
+    const handleDelete = async (temp: boolean = false) => {
+        handleAction('DELETE_PLAYLIST', { playlist, temp });
     };
 
     const onBlurEdit = () => {
         !!afterEdit
             ? saveItem()
             : !isEditing
-            ? deleteItem()
+            ? handleDelete(true)
             : setEditing(false);
     };
 
@@ -99,6 +98,7 @@ export function Playlist({
             handleDoubleClick={handleDoubleClick}
             handleClick={handleClick}
             save={saveItem}
+            handleDelete={handleDelete}
             item={playlist}
             text="..."
             type="text"

@@ -4,18 +4,22 @@ import dayjs from 'dayjs';
 import './seek.style.less';
 
 type Props = {
+    disabled: boolean;
     pos: number;
     duration: number;
     handleChangePos: (e: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
-export function Seek({ duration, pos, handleChangePos }: Props) {
+export function Seek({ disabled, duration, pos, handleChangePos }: Props) {
     const seek = useRef<HTMLInputElement>(null);
     return (
         <>
-            <label>{dayjs(pos * 1000).format('mm:ss')}</label>
+            <label className={disabled ? 'disabled' : ''}>
+                {!disabled ? dayjs(pos * 1000).format('mm:ss') : '--:--'}
+            </label>
             <input
-                className="slider"
+                disabled={disabled}
+                className={`slider ${disabled ? 'disabled' : ''}`}
                 name="seek"
                 ref={seek}
                 type="range"
@@ -25,8 +29,8 @@ export function Seek({ duration, pos, handleChangePos }: Props) {
                 onDrop={() => console.log('eND')}
                 onChange={handleChangePos}
             />
-            <label>
-                {duration ? dayjs(duration).format('mm:ss') : '00:00'}
+            <label className={disabled ? 'disabled' : ''}>
+                {duration ? dayjs(duration).format('mm:ss') : '--:--'}
             </label>
         </>
     );

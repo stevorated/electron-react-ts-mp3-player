@@ -1,7 +1,11 @@
 import React from 'react';
 
 import { ISong } from '@services/db';
-import { TreeListType } from '@views/interfaces';
+import {
+    TreeListType,
+    HandlerAction,
+    StateHandlerAction,
+} from '@views/interfaces';
 
 import { MediaPanel } from './MediaPanel';
 import { MediaPlayer } from './MediaPlayer';
@@ -12,6 +16,8 @@ type Props = {
     status: string;
     pointer: number;
     waitBetween: number;
+    loop: boolean;
+    random: boolean;
     current?: TreeListType;
     getPlayer: () => HTMLMediaElement | null;
     play: (dontRewind?: boolean) => Promise<void>;
@@ -23,9 +29,14 @@ type Props = {
     setCurrentTime: (time: number) => void;
     getCurrentTime: () => number;
     addSongModal: () => void;
+    handleAction: (
+        action: HandlerAction | StateHandlerAction,
+        payload?: any
+    ) => void;
 };
 
 export function PlayerContainer({
+    handleAction,
     status,
     pointer,
     addSongModal,
@@ -39,6 +50,8 @@ export function PlayerContainer({
     forward,
     getCurrentTime,
     setCurrentTime,
+    loop,
+    random,
 }: Props) {
     const size = '20px';
     const bigSize = '30px';
@@ -63,10 +76,13 @@ export function PlayerContainer({
             />
             <Hr />
             <MediaPanel
+            random={random}
                 pointer={pointer}
                 addSongModal={addSongModal}
                 playlistTitle={current?.title}
                 songs={current?.nested as ISong[]}
+                loop={loop}
+                handleAction={handleAction}
             />
             <Hr />
         </div>

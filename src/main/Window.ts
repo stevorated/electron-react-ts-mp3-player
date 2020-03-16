@@ -14,7 +14,7 @@ const defaultSettings = {
     minWidth: 1000,
     webPreferences: {
         nodeIntegration: true,
-        preload: path.join('./dist/bundle.min.js'),
+        preload: path.join('./bundle.min.js'),
     },
 };
 
@@ -24,7 +24,7 @@ export class Window extends BrowserWindow {
 
         this.loadFile(file);
         if (process.env.NODE_ENV === 'development') {
-            // this.webContents.openDevTools();
+            this.webContents.openDevTools();
         }
 
         this.once('ready-to-show', () => {

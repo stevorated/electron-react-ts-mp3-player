@@ -7,6 +7,7 @@
 
 @import './constants.less';
 @import './scrollbar.less';
+@import './buttons.less';
 
 // ========================================================================
 
@@ -105,6 +106,11 @@ input[type='text']:focus {
 }
 
 .disabled {
+    cursor: default !important;
+    color: rgba(245, 235, 179, 0.3);
+}
+
+.disabled:hover {
     color: rgba(245, 235, 179, 0.3);
 }
 
@@ -127,6 +133,10 @@ input[type='text']:focus {
 
 .border-bottom-light {
     border-bottom: rgba(245, 222, 179, 0.05) solid 2px;
+}
+
+.border-top-light {
+    border-top: rgba(245, 222, 179, 0.05) solid 2px;
 }
 
 .song-list-container {
@@ -223,6 +233,10 @@ input[type='text']:focus {
     display: none;
 }
 
+.uppercase {
+    text-transform: uppercase;
+}
+
 .toolbar {
     width: 50px;
     padding: 8px 2px;
@@ -243,8 +257,8 @@ input[type='text']:focus {
 .current-song-container {
     position: relative;
     display: flex;
-    justify-content: space-around;
-    align-items: baseline;
+    justify-content: center;
+    align-items: center;
     flex-direction: row;
     height: 30px;
     margin-top: 10px;
@@ -254,6 +268,12 @@ input[type='text']:focus {
         margin-top: 5px;
         padding-top: 0;
         font-size: 13px;
+    }
+    .active {
+        color: @active-text-color;
+        // background-color: none;
+        background-color: rgba(180, 40, 40, 0.6);
+        font-weight: 700;
     }
 }
 
@@ -300,6 +320,22 @@ input[type='text']:focus {
         overflow: auto;
         height: auto;
         padding: 0 10px;
+    }
+
+    .title-text {
+        color: @light-text-color;
+        margin-left: 20px;
+        padding: 10px;
+        font-size: 1rem;
+        text-align: center;
+    }
+
+    .tiny-text {
+        color: @medium-text-color;
+        // margin-left: 20px;
+        padding-top: 0;
+        font-size: 10px;
+        text-align: center;
     }
 }
 

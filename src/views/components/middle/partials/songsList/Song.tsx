@@ -52,13 +52,15 @@ export function Song({
     };
 
     return (
-        <div className="dropable">
+        <div>
             <div
                 id={parentId}
                 onDragOver={e => {
                     e.preventDefault();
                 }}
-                className="song-container border-bottom-light"
+                className={`song-container border-bottom-light ${
+                    song.song_index === 1 ? 'border-top-light' : ''
+                }`}
             >
                 <div
                     style={{

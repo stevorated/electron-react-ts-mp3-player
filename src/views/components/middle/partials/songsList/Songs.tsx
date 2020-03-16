@@ -8,6 +8,7 @@ import { Song } from './Song';
 import { DropZone } from '../../../shared';
 
 type Props = {
+    loading: boolean;
     playlistId?: number;
     pointer: number;
     status: string;
@@ -24,6 +25,7 @@ export function Songs({
     handleAction,
     status,
     playlistId,
+    loading,
 }: Props) {
     const renderSongs = () => {
         return songs && songs.length > 0 ? (
@@ -45,8 +47,10 @@ export function Songs({
                         />
                     </li>
                 ))
-        ) : (
+        ) : !loading ? (
             <DropZone height="50vh" />
+        ) : (
+            <div></div>
         );
     };
 
