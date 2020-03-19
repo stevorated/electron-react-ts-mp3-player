@@ -3,6 +3,7 @@ import {
     FETCH_TREE,
     CREATE_PLAYLIST_TREE,
     SAVE_PLAYLIST_TREE,
+    SORT_PLAYLIST_TREE,
     DELETE_PLAYLIST_TREE,
     DELETE_SONG_TREE,
     UPDATE_PLAYLIST_TREE,
@@ -33,6 +34,15 @@ export const treeReducer = (
                     return payload[0];
                 }
 
+                return item;
+            });
+
+        case SORT_PLAYLIST_TREE:
+            return state.map(item => {
+                // console.log(payload, id);
+                if (item.id === id) {
+                    return payload[0];
+                }
                 return item;
             });
         case UPDATE_PLAYLIST_TREE:

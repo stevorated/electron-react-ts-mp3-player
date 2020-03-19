@@ -7,6 +7,7 @@ import {
     UPDATE_PLAYLIST_TREE,
     DELETE_PLAYLIST_TREE,
     DELETE_SONG_TREE,
+    SORT_PLAYLIST_TREE,
 } from '@views/store';
 
 export type TreeListType = {
@@ -30,6 +31,12 @@ export interface CreateTempPlaylist {
 
 export interface SaveTreePlaylist {
     type: typeof SAVE_PLAYLIST_TREE;
+    payload: TreeListType[];
+    id?: number;
+}
+
+export interface SortTreePlaylist {
+    type: typeof SORT_PLAYLIST_TREE;
     payload: TreeListType[];
     id?: number;
 }
@@ -58,4 +65,5 @@ export type TreeActions =
     | SaveTreePlaylist
     | UpdateTreePlaylist
     | DeletePlaylistTree
-    | DeleteSongTree;
+    | DeleteSongTree
+    | SortTreePlaylist;

@@ -1,4 +1,5 @@
 import React from 'react';
+import styled from 'styled-components';
 import { FaPlay, FaPause } from 'react-icons/fa';
 
 type Props = {
@@ -12,16 +13,24 @@ type Props = {
 export function PlayBtn({ disabled, size, status, play, pause }: Props) {
     const className = disabled ? 'disabled' : 'hoverable';
     return status !== 'playing' ? (
-        <FaPlay
+        <Play
             className={`btn ${className}`}
             size={size}
             onClick={!disabled ? async () => await play() : () => {}}
         />
     ) : (
-        <FaPause
+        <Pause
             className={`btn ${className}`}
             size={size}
             onClick={!disabled ? () => pause() : () => {}}
         />
     );
 }
+
+const Pause = styled(FaPause)`
+    margin: 0 5px;
+`;
+
+const Play = styled(FaPlay)`
+    margin: 0 5px;
+`;

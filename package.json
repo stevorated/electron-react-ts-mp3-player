@@ -1,38 +1,46 @@
 {
-    "name": "api",
+    "name": "pleya",
     "version": "1.0.0",
     "description": "",
-    "productName": "Pleya-beta",
-    "main": "src/main/main.js",
+    "main": "./dist/index.js",
+    "author": {
+        "name": "stevorated"
+    },
+    "build": {
+        "appId": "com.stevorated.pleya",
+        "files": [
+            "dist/**/*",
+            "node_modules/**/*",
+            "package.json"
+        ],
+        "directories": {
+            "buildResources": "assets",
+            "output": "build/"
+        },
+        "icon": "assets/logo.png",
+        "publish": null
+    },
     "scripts": {
-        "package": "electron-packager ./dist/electron.js Pleya-beta --overwrite --asar=true --platform=win32 --arch=ia32 --icon=assets/icons/win/icon.ico --prune=true --out=release-builds --version-string.ProductName='Pleya-beta'",
-        "start": "yarn clean && cross-env NODE_ENV=production yarn build:ui && cross-env NODE_ENV=production  yarn build:app",
+        "start": "yarn clean && cross-env NODE_ENV=development yarn bundle:ui && cross-env NODE_ENV=development yarn bundle:app",
         "dev": "yarn clean && concurrently \"yarn watch:ui\" \"yarn watch:app\"",
         "debug": "yarn clean && cross-env DEBUG=true concurrently \"yarn watch:ui\" \"yarn watch:app\"",
-        "build:ui": "yarn clean && webpack --mode development --config webpack.config.ui.js",
-        "build:app": "webpack --config ./webpack.config.main.js",
+        "bundle": "yarn clean && cross-env NODE_ENV=production yarn bundle:ui && cross-env NODE_ENV=production yarn bundle:app",
+        "bundle:ui": "yarn clean && webpack --mode development --config webpack.config.ui.js",
+        "bundle:app": "webpack --config ./webpack.config.main.js",
         "watch:ui": "yarn clean && webpack --watch --mode development --config webpack.config.ui.js",
         "watch:app": "webpack --watch --config ./webpack.config.main.js",
         "postinstall": "electron-builder install-app-deps",
-        "run:electron": "electron ./dist/electron.js",
+        "run:electron": "electron ./dist/index.js",
         "run:app": "electron ./dist/main/main.js",
         "schema": "tsc --build tsconfig.main.json && node ./dist/services/db/playground.js",
         "schema:watch": "tsc-watch --build tsconfig.main.json --onSuccess \"node ./dist/services/db/playground.js\"",
         "scss": "node-sass scss -o html",
         "clean": "rimraf ./dist",
-        "less:junk": "lessc ./junk/audio.less ./junk/audio.css"
-    },
-    "electronWebpack": {
-        "main": {
-            "extraEntries": [
-                "@/preload.js"
-            ],
-            "sourceDirectory": "src/main",
-            "webpackConfig": "dist/bundle.webpackmain.js"
-        }
+        "clean:build": "rimraf ./build",
+        "less:junk": "lessc ./junk/audio.less ./junk/audio.css",
+        "build": "yarn clean:build && yarn && yarn bundle && electron-builder"
     },
     "keywords": [],
-    "author": "",
     "license": "ISC",
     "dependencies": {
         "compression": "^1.7.4",
@@ -42,10 +50,12 @@
         "file-loader": "^5.1.0",
         "fluent-ffmpeg": "^2.1.2",
         "gsap": "^3.2.4",
+        "immutability-helper": "^3.0.1",
         "react": "16.12.0",
         "react-dnd": "^10.0.2",
         "react-dnd-html5-backend": "^10.0.2",
         "react-dom": "16.12.0",
+        "react-helmet": "^5.2.1",
         "react-icons": "^3.9.0",
         "react-modal": "3.11.2",
         "react-redux": "^7.2.0",
@@ -60,7 +70,7 @@
         "ts-node": "^8.6.2",
         "url-loader": "^3.0.0",
         "uuid": "7.0.2",
-        "webpack-merge": "4.2.2",
+        "webpack-merge": "^4.2.2",
         "webpack-shell-plugin": "0.5.0",
         "winston": "^3.2.1"
     },
@@ -74,6 +84,7 @@
         "@types/file-loader": "^4.2.0",
         "@types/fluent-ffmpeg": "^2.1.14",
         "@types/gsap": "^1.20.2",
+        "@types/immutability-helper": "^2.6.3",
         "@types/less": "^3.0.1",
         "@types/lorem-ipsum": "^2.0.0",
         "@types/node": "^12.7.12",
@@ -96,8 +107,7 @@
         "concurrently": "^5.1.0",
         "css-loader": "^3.4.2",
         "electron": "^8.0.1",
-        "electron-builder": "^22.3.2",
-        "electron-packager": "^14.2.1",
+        "electron-builder": "^22.4.1",
         "html-webpack-plugin": "^3.2.0",
         "less": "^3.11.1",
         "less-loader": "^5.0.0",

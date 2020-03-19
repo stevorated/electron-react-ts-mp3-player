@@ -8,14 +8,14 @@ import {
 } from 'react-icons/fa';
 
 import { ISong } from '@services/db';
-import { shouldFloat, formatMillsToTime } from '../../../../utils';
+import { shouldFloat, formatMillsToTime } from '../../../../../utils';
 import { HandlerAction, StateHandlerAction } from '@views/interfaces';
 
 type Props = {
     song: ISong;
     active: boolean;
     status: string;
-    playlistId?: number;
+    playlistId: number;
     handleAction: (
         action: HandlerAction | StateHandlerAction,
         payload?: any

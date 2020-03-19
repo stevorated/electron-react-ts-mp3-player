@@ -1,4 +1,5 @@
 import React from 'react';
+import styled from 'styled-components';
 import { FaForward, FaFastForward } from 'react-icons/fa';
 
 type Props = {
@@ -11,18 +12,28 @@ type Props = {
 export function ForwardBtns({ disabled, size, nextsong, forward }: Props) {
     const className = disabled ? 'disabled' : 'hoverable';
     return (
-        <div>
-            <FaForward
+        <ContainerDiv>
+            <Forward
                 className={`btn ${className}`}
                 size={size}
                 style={{ marginRight: '10px' }}
                 onClick={forward}
             />
-            <FaFastForward
+            <FastForward
                 className={`btn ${className}`}
                 size={size}
                 onClick={nextsong}
             />
-        </div>
+        </ContainerDiv>
     );
 }
+
+const ContainerDiv = styled.div`
+    margin: 0 5px;
+`;
+
+const Forward = styled(FaForward)`
+    margin-right: 10px;
+`;
+
+const FastForward = styled(FaFastForward)``;

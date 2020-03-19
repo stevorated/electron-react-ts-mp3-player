@@ -9,6 +9,7 @@ import {
 
 type Props = {
     disabled: boolean;
+    width: number;
     volume: number;
     player: HTMLMediaElement | null;
     handleChangeVolume: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -21,6 +22,7 @@ export function Volume({
     player,
     handleChangeVolume,
     disabled,
+    width,
 }: Props) {
     const currentVolume = player?.volume;
     if (currentVolume && currentVolume !== volume) {
@@ -44,7 +46,7 @@ export function Volume({
             <IoIosVolumeLow size={size} style={style} className={className} />
         );
     return (
-        <VolumeContainer>
+        <ContainerDiv>
             <VolumeIcon
                 className={`${disabled ? 'disabled' : 'slider'}`}
                 size="30px"
@@ -56,15 +58,20 @@ export function Volume({
                 max={100}
                 value={(currentVolume && currentVolume * 100) || volume}
                 onChange={handleChangeVolume}
-                style={{ width: '80px', height: '5px' }}
+                style={{
+                    // width: `${width * 0.09}px`,
+                    height: '5px',
+                }}
                 className={`${disabled ? 'disabled' : 'slider'}`}
             />
-        </VolumeContainer>
+        </ContainerDiv>
     );
 }
 
-const VolumeContainer = styled.div`
-    align-items: center;
+const ContainerDiv = styled.div`
     display: flex;
+    align-items: center;
+    justify-content: flex-end;
     transition: all 0.4s ease;
+    flex: 1;
 `;

@@ -8,13 +8,15 @@ type Props = {
     windowSettings?: BrowserWindowConstructorOptions;
 };
 
-const defaultSettings = {
+const defaultSettings: BrowserWindowConstructorOptions = {
     width: 1300,
     height: 800,
     minWidth: 1000,
+    icon: path.join(__dirname, '/icon.png'),
     webPreferences: {
         nodeIntegration: true,
         preload: path.join('./bundle.min.js'),
+        // webSecurity: false,
     },
 };
 
@@ -22,7 +24,7 @@ export class Window extends BrowserWindow {
     constructor({ file, windowSettings }: Props) {
         super({ ...defaultSettings, ...windowSettings });
 
-        this.loadFile(file);
+        this.loadURL(file);
         if (process.env.NODE_ENV === 'development') {
             this.webContents.openDevTools();
         }

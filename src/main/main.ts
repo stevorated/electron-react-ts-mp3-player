@@ -1,18 +1,16 @@
 import { app, dialog } from 'electron';
-import path from 'path';
 import { Window } from './Window';
 import { DataHandler } from './DataHandler';
 import { handleEvent } from './Ipc';
 import { parseFileName } from './helpers';
 import ffmpeg from 'fluent-ffmpeg';
 
-// require('electron-reload')(__dirname + './dist/electron.js');
-
 app.allowRendererProcessReuse = true;
 function main() {
     DataHandler.startup().then(() => {
         new Window({
-            file: `${path.join(app.getAppPath(), './index.html')}`,
+            // file: `${path.join(app.getAppPath(), 'index.html')}`,
+            file: `file://${__dirname}/index.html`,
             windowSettings: {},
         });
     });

@@ -5,6 +5,7 @@ export type HandlerAction =
     | 'CREATE_PLAYLIST_TEMP'
     | 'SAVE_PLAYLIST'
     | 'UPDATE_PLAYLIST'
+    | 'SORT_SONGS'
     | 'UPDATE_SONG'
     | 'ADD_SONG_MODAL'
     | 'DELETE_PLAYLIST'

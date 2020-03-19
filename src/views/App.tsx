@@ -8,13 +8,13 @@ import { TreeListType, HandlerAction, StateHandlerAction } from './interfaces';
 import { RootState, fetchTree, deleteSong } from './store';
 import { savePlaylist, deleteFromTree } from './store';
 import { createTempPlaylist, updatePlaylist } from './store';
+import { sortPlaylist } from './store';
 import { Ipc } from './tools';
 import { Randomize } from './utils';
 import { MainPage } from './pages';
 import { Logger } from '../logger/logger';
 
 import './app.style.less';
-import { createAnalyser } from './analyser';
 
 type Status = 'ready' | 'playing' | 'paused' | 'stopped' | 'done' | 'loading';
 
@@ -48,7 +48,6 @@ export class App extends Component<Props, State> {
         ) as HTMLCanvasElement;
         if (this.player && this.canvas) {
             const parent = this;
-            createAnalyser(parent, this.canvas, this.player);
             this.player.volume = 0.5;
             this.player.onended = function() {
                 parent.nextsong();
@@ -109,6 +108,7 @@ export class App extends Component<Props, State> {
             fetchTreeDispatch,
             createPlaylistDispatch,
             savePlaylistDispatch,
+            sortPlaylistDispatch,
             updatePlaylistDispatch,
             deletePlaylistDispatch,
             deleteSongDispatch,
@@ -190,6 +190,15 @@ export class App extends Component<Props, State> {
                     status: 'ready',
                 });
 
+                return;
+
+            case 'SORT_SONGS':
+                // console.log(payload);
+                // console.log({ ...current, nested: payload }, currentPlaylistId);
+                sortPlaylistDispatch(
+                    { ...current, nested: payload },
+                    currentPlaylistId
+                );
                 return;
 
             case 'UPDATE_PLAYLIST':
@@ -332,7 +341,7 @@ export class App extends Component<Props, State> {
 
     handleAnalyse = () => {
         if (this.canvas && this.player) {
-            createAnalyser(parent, this.canvas, this.player);
+            // createAnalyser(parent, this.canvas, this.player);
         }
     };
 
@@ -491,7 +500,6 @@ export class App extends Component<Props, State> {
         return (
             <>
                 <audio ref={el => (this.player = el)} src={this.state.src} />
-
                 <MainPage
                     handleAnalyse={this.handleAnalyse}
                     pause={this.pause}
@@ -534,6 +542,7 @@ type DispatchProps = {
     deletePlaylistDispatch: (payload: TreeListType) => void;
     deleteSongDispatch: (payload: TreeListType) => void;
     updatePlaylistDispatch: (payload: TreeListType) => void;
+    sortPlaylistDispatch: (payload: TreeListType, extra: number) => void;
 };
 
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
@@ -549,6 +558,8 @@ const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
         dispatch(deleteSong(payload)),
     updatePlaylistDispatch: (payload: TreeListType) =>
         dispatch(updatePlaylist(payload)),
+    sortPlaylistDispatch: (payload: TreeListType, extra: number) =>
+        dispatch(sortPlaylist(payload, extra)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);

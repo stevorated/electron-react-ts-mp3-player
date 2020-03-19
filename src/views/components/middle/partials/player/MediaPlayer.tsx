@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 import { ISong } from '@services/db';
 
-import { Volume, Seek, PlayBtn, StopBtn } from './partials';
-import { ForwardBtns, BackBtns } from './partials';
+import { Volume, Seek } from './partials';
+import { Controls } from './Controls';
 
 type Props = {
     status: string;
@@ -38,6 +38,7 @@ export function MediaPlayer({
     song,
 }: Props) {
     const player = getPlayer();
+    const container = useRef<HTMLDivElement>(null);
     const [volume, setVolume] = useState(50);
     const [pos, setPos] = useState(0);
     const [seek, setSeek] = useState(false);
@@ -75,35 +76,29 @@ export function MediaPlayer({
     });
 
     return (
-        <div className="media-player-wrap">
+        <div ref={container} className="media-player-wrap">
             <Volume
                 disabled={noSong}
                 setVolume={setVolume}
                 handleChangeVolume={handleChangeVolume}
                 player={player}
                 volume={volume}
+                width={container.current?.clientWidth || 0}
             />
-            <BackBtns
-                disabled={noSong}
+            <Controls
+                status={status}
+                noSong={noSong}
                 size={size}
+                bigSize={bigSize}
+                play={play}
+                pause={pause}
+                nextsong={nextsong}
                 lastsong={lastsong}
                 rewind={rewind}
-            />
-            <StopBtn disabled={noSong} size={bigSize} pause={pause} />
-            <PlayBtn
-                disabled={noSong}
-                pause={pause}
-                play={play}
-                size={bigSize}
-                status={status}
-            />
-            <ForwardBtns
-                disabled={noSong}
                 forward={forward}
-                nextsong={nextsong}
-                size={size}
             />
             <Seek
+                width={container.current?.clientWidth || 0}
                 disabled={noSong}
                 pos={pos}
                 duration={song?.length || 0}

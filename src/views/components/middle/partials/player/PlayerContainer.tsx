@@ -53,8 +53,7 @@ export function PlayerContainer({
     loop,
     random,
 }: Props) {
-    const size = '20px';
-    const bigSize = '30px';
+    const size = 20;
 
     return (
         <div className="container-audio centered transition padding-top">
@@ -71,12 +70,12 @@ export function PlayerContainer({
                 song={current?.nested[pointer] as ISong}
                 status={status}
                 pointer={pointer}
-                size={size}
-                bigSize={bigSize}
+                size={`${size}px`}
+                bigSize={`${size * 1.05}px`}
             />
             <Hr />
             <MediaPanel
-            random={random}
+                random={random}
                 pointer={pointer}
                 addSongModal={addSongModal}
                 playlistTitle={current?.title}
