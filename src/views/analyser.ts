@@ -33,7 +33,6 @@ export const createAnalyser = (
             bar_x = i * 8;
             bar_width = 4;
             bar_height = -(fbc_array[i] / 2);
-            console.log(bar_x, parent.canvas.height, bar_width, bar_height);
             //  fillRect( x, y, width, height ) // Explanation of the parameters below
             ctx.fillRect(bar_x, parent.canvas.height, bar_width, bar_height);
         }

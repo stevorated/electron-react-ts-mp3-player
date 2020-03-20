@@ -135,7 +135,7 @@ export class App extends Component<Props, State> {
 
             case 'CHANGE_SONG':
                 const songsArr = current.nested;
-                console.log(payload.pointer);
+
                 const src = (songsArr[payload.pointer] as ISong).path;
                 if (src === this.state.src && payload.pointer !== pointer) {
                     this.setCurrentTime(0);

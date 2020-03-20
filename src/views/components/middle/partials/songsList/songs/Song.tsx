@@ -56,8 +56,6 @@ export function Song({
         <ContainerDiv first={song.song_index === 1} id={parentId}>
             <TitleDiv
                 onClick={() => {
-                    console.log('HERE');
-                    console.log(index - 1);
                     handleAction('CHANGE_SONG', {
                         pointer: index - 1,
                         click: true,
