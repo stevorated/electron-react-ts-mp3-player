@@ -6,7 +6,6 @@ import { ISong } from '@services/db';
 import { HandlerAction, StateHandlerAction } from '@views/interfaces';
 
 import { colors } from '../../../../assets/styles/consts';
-// import { HandlerAction } from '@views/interfaces';
 
 type Props = {
     loop: boolean;
@@ -30,9 +29,6 @@ export function MediaPanel({
     pointer,
     addSongModal,
 }: Props) {
-    // const addSongModal = () => {
-    //     handleAction('ADD_SONG_MODAL');
-    // };
     const statusClass = playlistTitle ? 'hoverable' : 'disabled';
 
     return (
@@ -74,15 +70,12 @@ const ContainerDiv = styled.div`
     justify-content: center;
     align-items: center;
     flex-direction: row;
+    min-height: 42px;
 `;
 
 const TitleText = styled.h4`
-    /* margin: 0 5px; */
-    /* font-size: 13px; */
-
     color: ${colors.lightTextColor};
     margin-left: 20px;
-    padding: 0;
     margin: 12px 0;
     font-size: 1rem;
     text-align: center;

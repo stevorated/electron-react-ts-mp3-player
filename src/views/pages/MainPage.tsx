@@ -94,7 +94,14 @@ export function MainPage({
         }
     };
 
+    const handleOnMouseOut = () => {
+        setDraggin(false);
+    };
+
     const handleOnMouseMove = (e: MouseEvent) => {
+        if (!draggin) {
+            return;
+        }
         const layout = layoutRef.current;
         const panel = panelRef.current;
         if (!layout || !panel) {
@@ -105,7 +112,7 @@ export function MainPage({
         const layoutWidth = layout.clientWidth;
         const newFlex = (layoutWidth - e.clientX) / panelWidth;
 
-        if (newFlex < 1.3 || newFlex > 6.5) {
+        if (newFlex < 1.2 || newFlex > 4) {
             return;
         }
 
@@ -132,6 +139,7 @@ export function MainPage({
                 onMouseMove={handleOnMouseMove}
                 onMouseOut={handleOnMouseMove}
                 onMouseUp={handleOnMouseUp}
+                onMouseLeave={handleOnMouseOut}
                 className="fill-area flexbox-item-grow"
             >
                 <Explorer

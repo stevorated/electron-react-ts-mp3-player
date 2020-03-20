@@ -48,6 +48,15 @@ export class DataHandler {
         return res;
     }
 
+    static async sortPlaylist(
+        currentPlaylistId: number,
+        songId: number,
+        newIndex: number,
+        oldIndex: number
+    ) {
+        return Playlist.swap(currentPlaylistId, songId, newIndex, oldIndex);
+    }
+
     static async deletePlaylist(id: number): Promise<RunResult> {
         return Playlist.removeById(id);
     }

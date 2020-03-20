@@ -144,7 +144,7 @@ export class Playlist extends Model {
                 [songId, playlistId]
             )
                 .then(res => {
-                    if (!res?.sid) {
+                    if (!res?.sid && res?.sid !== 0) {
                         throw new Error('Record Not Found');
                     }
 
@@ -188,21 +188,26 @@ export class Playlist extends Model {
         });
     }
 
-    static swap(playlistId: string, songId: string, newIndex: string) {
+    static swap(
+        playlistId: number,
+        songId: number,
+        newIndex: number,
+        oldIndex: number
+    ) {
         return new Promise((resolve, reject) => {
             SqliteDAO.run(
                 `
             UPDATE playlist_song_list 
             SET song_index = CASE 
-            WHEN song_index <= 
-            (SELECT song_index FROM playlist_song_list WHERE playlist_id = ? AND song_id = ?) 
-            
-            THEN song_index + 1 ELSE song_index END 
+            WHEN song_index ${newIndex < oldIndex ? '<=' : '>='} ? 
+            THEN song_index ${
+                newIndex < oldIndex ? '+' : '-'
+            } 1 ELSE song_index END 
             WHERE playlist_id = ? 
-            AND song_index >= ? 
+            AND song_index ${newIndex < oldIndex ? '>=' : '<='}  ? 
             AND song_id <> ? ;
             `,
-                [playlistId, songId, playlistId, newIndex, songId]
+                [oldIndex, playlistId, newIndex, songId]
             )
                 .then(() => {
                     SqliteDAO.run(

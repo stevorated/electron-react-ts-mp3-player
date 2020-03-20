@@ -135,6 +135,7 @@ export class App extends Component<Props, State> {
 
             case 'CHANGE_SONG':
                 const songsArr = current.nested;
+                console.log(payload.pointer);
                 const src = (songsArr[payload.pointer] as ISong).path;
                 if (src === this.state.src && payload.pointer !== pointer) {
                     this.setCurrentTime(0);
@@ -192,11 +193,18 @@ export class App extends Component<Props, State> {
 
                 return;
 
-            case 'SORT_SONGS':
-                // console.log(payload);
-                // console.log({ ...current, nested: payload }, currentPlaylistId);
+            case 'SORT_PLAYLIST':
+                const sorted = await Ipc.invokeAndReturn('SORT_PLAYLIST', {
+                    ...payload,
+                    currentPlaylistId,
+                });
+
+                if (!sorted) {
+                    return;
+                }
+
                 sortPlaylistDispatch(
-                    { ...current, nested: payload },
+                    { ...current, nested: payload.songs },
                     currentPlaylistId
                 );
                 return;
@@ -558,8 +566,8 @@ const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
         dispatch(deleteSong(payload)),
     updatePlaylistDispatch: (payload: TreeListType) =>
         dispatch(updatePlaylist(payload)),
-    sortPlaylistDispatch: (payload: TreeListType, extra: number) =>
-        dispatch(sortPlaylist(payload, extra)),
+    sortPlaylistDispatch: (payload: TreeListType) =>
+        dispatch(sortPlaylist(payload)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);

@@ -11,5 +11,5 @@ export const colors = {
 };
 
 export const sizes = {
-    explorerWidth: '250px',
+    explorerWidth: '140px',
 };

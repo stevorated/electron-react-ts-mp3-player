@@ -17,7 +17,11 @@ export interface Props {
     song: ISong;
     index: number;
     moveCard: (dragIndex: number, hoverIndex: number) => void;
-
+    handleSortSongs: (
+        songId: number,
+        newIndex: number,
+        oldIndex: number
+    ) => void;
     pointer: number;
     status: string;
     playlistId: number;
@@ -41,6 +45,7 @@ export function SongContainer({
     playlistId,
     pointer,
     handleAction,
+    handleSortSongs,
 }: Props) {
     const { song_index: songIndex } = song;
     const ref = useRef<HTMLDivElement>(null);
@@ -78,6 +83,13 @@ export function SongContainer({
             moveCard(oldPos, newPos);
             item.index = newPos;
         },
+        drop(item: DragItem, _: DropTargetMonitor) {
+            handleSortSongs(
+                parseInt(item.id),
+                item.index + 1,
+                song?.song_index || -1
+            );
+        },
     });
 
     const [{ isDragging }, drag] = useDrag({
@@ -90,9 +102,11 @@ export function SongContainer({
     const opacity = isDragging ? 0 : 1;
 
     drag(drop(ref));
+
     return (
         <div ref={ref} style={{ ...style, opacity }}>
             <Song
+                index={index + 1}
                 song={song}
                 active={songIndex === pointer + 1}
                 status={status}

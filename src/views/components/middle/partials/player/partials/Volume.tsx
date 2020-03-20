@@ -1,6 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 
+import { RangeInput, disableable } from '../../../../shared';
+
 import {
     IoIosVolumeHigh,
     IoIosVolumeLow,
@@ -9,7 +11,6 @@ import {
 
 type Props = {
     disabled: boolean;
-    width: number;
     volume: number;
     player: HTMLMediaElement | null;
     handleChangeVolume: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -22,7 +23,6 @@ export function Volume({
     player,
     handleChangeVolume,
     disabled,
-    width,
 }: Props) {
     const currentVolume = player?.volume;
     if (currentVolume && currentVolume !== volume) {
@@ -33,36 +33,48 @@ export function Volume({
         style,
         size,
         className,
+        disabled,
     }: {
         style: object;
         size: string;
-        className: string;
+        className?: string;
+        disabled: boolean;
     }) =>
         volume > 0.5 ? (
-            <IoIosVolumeHigh size={size} style={style} className={className} />
+            <StyledHigh
+                disabled={disabled}
+                size={size}
+                style={style}
+                className={className}
+            />
         ) : volume === 0 ? (
-            <IoIosVolumeMute size={size} style={style} className={className} />
+            <StyledMute
+                disabled={disabled}
+                size={size}
+                style={style}
+                className={className}
+            />
         ) : (
-            <IoIosVolumeLow size={size} style={style} className={className} />
+            <StyledLow
+                disabled={disabled}
+                size={size}
+                style={style}
+                className={className}
+            />
         );
     return (
         <ContainerDiv>
             <VolumeIcon
-                className={`${disabled ? 'disabled' : 'slider'}`}
+                disabled={disabled}
                 size="30px"
                 style={{ marginRight: '5px', transition: 'all 0.4s ease' }}
             />
-            <input
+            <RangeInput
                 disabled={disabled}
                 type="range"
                 max={100}
                 value={(currentVolume && currentVolume * 100) || volume}
                 onChange={handleChangeVolume}
-                style={{
-                    // width: `${width * 0.09}px`,
-                    height: '5px',
-                }}
-                className={`${disabled ? 'disabled' : 'slider'}`}
             />
         </ContainerDiv>
     );
@@ -74,4 +86,16 @@ const ContainerDiv = styled.div`
     justify-content: flex-end;
     transition: all 0.4s ease;
     flex: 1;
+`;
+
+const StyledHigh = styled(IoIosVolumeHigh)`
+    ${disableable}
+`;
+
+const StyledMute = styled(IoIosVolumeMute)`
+    ${disableable}
+`;
+
+const StyledLow = styled(IoIosVolumeLow)`
+    ${disableable}
 `;

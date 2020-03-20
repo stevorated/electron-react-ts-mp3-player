@@ -9,7 +9,7 @@ type Props = {
     size: number;
 };
 
-export default function DeletePlaylistModal({
+export function DeletePlaylistModal({
     handleDelete,
     closeModal,
     title,

@@ -19,7 +19,6 @@ function main() {
 app.on('ready', main);
 
 handleEvent('DELETE_SONG', async (_, args) => {
-    console.log(args);
     if (args.length === 2) {
         const result = await DataHandler.deleteSong(args[0].id, args[1]);
         return result;
@@ -32,10 +31,23 @@ handleEvent('FETCH_TREE', async () => {
 });
 
 handleEvent('SAVE_PLAYLIST', async (_, title) => {
-    console.log(title);
     const id = await DataHandler.createPlaylist(title);
     return id;
 });
+
+handleEvent(
+    'SORT_PLAYLIST',
+    async (_, { songId, newIndex, oldIndex, currentPlaylistId }) => {
+        await DataHandler.sortPlaylist(
+            currentPlaylistId,
+            songId,
+            newIndex,
+            oldIndex
+        );
+
+        return true;
+    }
+);
 
 handleEvent('UPDATE_PLAYLIST', async (_, title) => {
     await DataHandler.updatePlaylist(title);
@@ -92,9 +104,7 @@ handleEvent('ADD_SONG', async (_, args) => {
 
             return res.map(([item]) => item);
         }
-    } catch (err) {
-        console.log(err);
-    }
+    } catch (err) {}
 });
 
 handleEvent('UPDATE_SONG', async (_, args) => {

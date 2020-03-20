@@ -1,9 +1,11 @@
 import React, { RefObject } from 'react';
+import styled from 'styled-components';
 
 import { HandlerAction, TreeListType } from '@views/interfaces';
 import { StateHandlerAction } from '@views/interfaces';
 
 import { PlayerContainer, SongsListContainer, Analyser } from './partials';
+import { colors } from './../../assets/styles/consts';
 
 type Props = {
     loop: boolean;
@@ -56,7 +58,7 @@ export function Middle({
     random,
 }: Props) {
     return (
-        <div ref={mainRef} className="flexbox-item-grow main" style={{ flex }}>
+        <ContainerDiv ref={mainRef} style={{ flex }}>
             <PlayerContainer
                 handleAction={handleAction}
                 getPlayer={getPlayer}
@@ -85,6 +87,16 @@ export function Middle({
                 current={current}
                 pointer={pointer}
             />
-        </div>
+        </ContainerDiv>
     );
 }
+
+const ContainerDiv = styled.div`
+    overflow: auto;
+    height: auto;
+    flex: 4;
+    display: flex;
+    flex-direction: column;
+    background-color: ${colors.darkPrimaryColor};
+    color: #d4d4d4;
+`;

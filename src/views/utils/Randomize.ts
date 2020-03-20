@@ -9,6 +9,9 @@ export class Randomize {
     }
 
     private createRange = (min: number, max: number): number[] => {
+        if (max === 0) {
+            return [];
+        }
         if (min === max - 1) return [min];
         return [min, ...this.createRange(min + 1, max)];
     };

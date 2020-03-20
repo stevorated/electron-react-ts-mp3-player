@@ -1,4 +1,5 @@
 import React from 'react';
+import styled from 'styled-components';
 import { FaTimes } from 'react-icons/fa';
 
 type Props = {
@@ -7,17 +8,24 @@ type Props = {
 
 export function DeleteBtn({ handleDelete }: Props) {
     return (
-        <div
-            onClick={() => handleDelete(false)}
-            className="stick-right hoverable-alt"
-        >
+        <ContainerDiv onClick={() => handleDelete(false)}>
             <FaTimes
                 size="10px"
                 style={{
-                    marginRight: '20px',
+                    marginRight: '1px',
                     marginBottom: '0',
                 }}
             />
-        </div>
+        </ContainerDiv>
     );
 }
+
+const ContainerDiv = styled.div`
+    position: absolute;
+    right: 1%;
+    top: 0;
+    &:hover {
+        cursor: pointer;
+        transform: translateY(-1px);
+    }
+`;

@@ -17,7 +17,7 @@ export function PlaylistDetailsBar({ title, size }: Props) {
             </ImageDiv>
             <Title>
                 {title}
-                <small className="tiny-text">{size} songs</small>
+                <SmallTitle>{size} songs</SmallTitle>
             </Title>
         </ContainerDiv>
     );
@@ -53,5 +53,13 @@ const Title = styled.h3`
     margin-left: 20px;
     padding: 10px;
     font-size: 1rem;
+    text-align: center;
+`;
+
+const SmallTitle = styled.small`
+    color: ${colors.mediumTextColor};
+    padding-top: 0;
+    padding-left: 4px;
+    font-size: 10px;
     text-align: center;
 `;

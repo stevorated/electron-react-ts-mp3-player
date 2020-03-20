@@ -127,7 +127,7 @@
         "webpack-dev-server": "^3.10.3"
     },
     "alias": {
-        "@views": "src/views",
-        "@main": "src/main"
+        "@views": "./src/views",
+        "@main": "./src/main"
     }
 }

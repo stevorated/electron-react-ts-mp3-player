@@ -2,6 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 import { FaPlay, FaPause } from 'react-icons/fa';
 
+import { btnStyle } from '../../../../shared';
+
 type Props = {
     disabled: boolean;
     status: string;
@@ -28,9 +30,9 @@ export function PlayBtn({ disabled, size, status, play, pause }: Props) {
 }
 
 const Pause = styled(FaPause)`
-    margin: 0 5px;
+    ${btnStyle}
 `;
 
 const Play = styled(FaPlay)`
-    margin: 0 5px;
+    ${btnStyle}
 `;

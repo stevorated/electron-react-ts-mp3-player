@@ -38,9 +38,17 @@ export const treeReducer = (
             });
 
         case SORT_PLAYLIST_TREE:
+            // console.log(
+            //     state.map(item => {
+            //         if (item.id === payload[0].id) {
+            //             return payload[0];
+            //         }
+            //         return item;
+            //     })[0].nested[0]
+            // );
             return state.map(item => {
-                // console.log(payload, id);
-                if (item.id === id) {
+                if (item.id === payload[0].id) {
+                    // console.log(payload[0]);
                     return payload[0];
                 }
                 return item;

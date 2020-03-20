@@ -26,7 +26,7 @@ export default class MenuBuilder {
         this.mainWindow.webContents.on('context-menu', (_, props) => {
             const { x, y } = props;
 
-            console.log(x, y);
+            // console.log(x, y);
 
             Menu.buildFromTemplate([
                 {

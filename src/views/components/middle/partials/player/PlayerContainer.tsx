@@ -1,4 +1,5 @@
 import React from 'react';
+import styled from 'styled-components';
 
 import { ISong } from '@services/db';
 import {
@@ -56,7 +57,7 @@ export function PlayerContainer({
     const size = 20;
 
     return (
-        <div className="container-audio centered transition padding-top">
+        <ContainerDiv>
             <MediaPlayer
                 getPlayer={getPlayer}
                 play={play}
@@ -84,6 +85,20 @@ export function PlayerContainer({
                 handleAction={handleAction}
             />
             <Hr />
-        </div>
+        </ContainerDiv>
     );
 }
+
+const ContainerDiv = styled.div`
+    width: 97%;
+    min-height: fit-content;
+    border-radius: 5px;
+    color: #d4d4d4;
+    margin: 0px auto;
+    padding-top: 14px;
+    padding-bottom: 0;
+    overflow: hidden;
+    text-justify: auto;
+    text-align: center;
+    transition: all 0.1s ease;
+`;

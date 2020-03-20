@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import styled from 'styled-components';
 
 import { ISong } from '@services/db';
 
@@ -76,14 +77,13 @@ export function MediaPlayer({
     });
 
     return (
-        <div ref={container} className="media-player-wrap">
+        <ContainerDiv ref={container}>
             <Volume
                 disabled={noSong}
                 setVolume={setVolume}
                 handleChangeVolume={handleChangeVolume}
                 player={player}
                 volume={volume}
-                width={container.current?.clientWidth || 0}
             />
             <Controls
                 status={status}
@@ -98,12 +98,18 @@ export function MediaPlayer({
                 forward={forward}
             />
             <Seek
-                width={container.current?.clientWidth || 0}
                 disabled={noSong}
                 pos={pos}
                 duration={song?.length || 0}
                 handleChangePos={handleChangePos}
             />
-        </div>
+        </ContainerDiv>
     );
 }
+
+const ContainerDiv = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 5px;
+`;

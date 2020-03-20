@@ -1,21 +1,21 @@
 import React, { useState, useRef } from 'react';
-import {
-    FaPlayCircle,
-    FaPauseCircle,
-    FaEdit,
-    FaListUl,
-    FaPoo,
-} from 'react-icons/fa';
+import styled from 'styled-components';
+import { FaEdit, FaListUl, FaPoo } from 'react-icons/fa';
 
 import { ISong } from '@services/db';
-import { shouldFloat, formatMillsToTime } from '../../../../../utils';
 import { HandlerAction, StateHandlerAction } from '@views/interfaces';
 
+import { colors } from '../../../../../assets/styles/consts';
+import { shouldFloat } from '../../../../../utils';
+import { SongPlayBtn } from './SongPlayBtn';
+import { SongInner } from './SongInner';
+
 type Props = {
-    song: ISong;
     active: boolean;
     status: string;
     playlistId: number;
+    index: number;
+    song: ISong;
     handleAction: (
         action: HandlerAction | StateHandlerAction,
         payload?: any
@@ -23,6 +23,7 @@ type Props = {
 };
 
 export function Song({
+    index,
     song,
     active,
     status,
@@ -32,7 +33,7 @@ export function Song({
     const inputRef = useRef<HTMLInputElement>(null);
     const [isEditable, setIsEditable] = useState(false);
     const [newTitle, setNewTitle] = useState('');
-    const { title, length, song_index: songIndex } = song;
+    const { title, length } = song;
     const smallIconSize = '.9rem';
     const midIconSize = '1.1rem';
     const bigIconSize = '1.7rem';
@@ -52,119 +53,92 @@ export function Song({
     };
 
     return (
-        <div>
-            <div
-                id={parentId}
-                onDragOver={e => {
-                    e.preventDefault();
+        <ContainerDiv first={song.song_index === 1} id={parentId}>
+            <TitleDiv
+                onClick={() => {
+                    console.log('HERE');
+                    console.log(index - 1);
+                    handleAction('CHANGE_SONG', {
+                        pointer: index - 1,
+                        click: true,
+                    });
                 }}
-                className={`song-container border-bottom-light ${
-                    song.song_index === 1 ? 'border-top-light' : ''
-                }`}
             >
-                <div
-                    style={{
-                        display: 'flex',
-                        alignItems: 'center',
+                <TinyText>{index}</TinyText>
+                <SongPlayBtn
+                    status={status}
+                    active={active}
+                    iconClassName={iconClassName}
+                    size={bigIconSize}
+                />
+            </TitleDiv>
+            <SongInner
+                index={index}
+                length={length}
+                inputRef={inputRef}
+                title={title}
+                newTitle={newTitle}
+                setNewTitle={setNewTitle}
+                setIsEditable={setIsEditable}
+                childId={childId}
+                active={active}
+                float={float}
+                song={song}
+                isEditable={isEditable}
+                handleAction={handleAction}
+                handleSave={handleSave}
+            />
+            <ActionContainer>
+                <FaListUl
+                    size={midIconSize}
+                    className={`${iconClassName} hoverable`}
+                />
+                <FaEdit
+                    size={midIconSize}
+                    className={`${iconClassName} hoverable`}
+                    onClick={() => {
+                        setIsEditable(true);
+                        setTimeout(() => {
+                            inputRef.current?.focus();
+                        }, 50);
                     }}
-                    onClick={() =>
-                        handleAction('CHANGE_SONG', {
-                            pointer: (song.song_index ?? 0) - 1,
-                            click: true,
-                        })
-                    }
-                >
-                    <span className="tiny-text" style={{ marginRight: '10px' }}>
-                        {songIndex}
-                    </span>
-                    {status === 'playing' && active ? (
-                        <FaPauseCircle
-                            size={bigIconSize}
-                            className={`${iconClassName} hoverable round`}
-                        />
-                    ) : (
-                        <FaPlayCircle
-                            size={bigIconSize}
-                            className={`${iconClassName} hoverable round`}
-                        />
-                    )}
-                </div>
-                {!isEditable ? (
-                    <div
-                        className={float ? 'float-text-wrapper' : ''}
-                        onClick={() =>
-                            handleAction('CHANGE_SONG', {
-                                pointer: (song.song_index ?? 0) - 1,
-                                click: true,
-                            })
-                        }
-                    >
-                        <h3
-                            id={childId}
-                            className={`hoverable ${
-                                float ? 'float-text' : ''
-                            } ${active ? 'active' : ''}`}
-                        >
-                            {title}{' '}
-                            <span className="tiny-text">
-                                {formatMillsToTime(length || 0)}
-                            </span>
-                        </h3>
-                    </div>
-                ) : (
-                    <div
-                        className={float ? 'float-text-wrapper' : ''}
-                        onClick={() =>
-                            !isEditable &&
-                            handleAction(
-                                'CHANGE_SONG',
-                                (song.song_index ?? 0) - 1
-                            )
-                        }
-                    >
-                        <div>
-                            <input
-                                ref={inputRef}
-                                value={newTitle || title}
-                                onChange={e => setNewTitle(e.target.value)}
-                                onKeyDown={e => {
-                                    if (e.keyCode === 13) {
-                                        setIsEditable(false);
-                                        handleSave();
-                                    }
-                                }}
-                                onBlur={handleSave}
-                                type="text"
-                                style={{ margin: '10px' }}
-                                className="song-title-input"
-                            />
-                        </div>
-                    </div>
-                )}
-                <div style={{ display: 'flex' }}>
-                    <FaListUl
-                        size={midIconSize}
-                        className={`${iconClassName} hoverable`}
-                    />
-                    <FaEdit
-                        size={midIconSize}
-                        className={`${iconClassName} hoverable`}
-                        onClick={() => {
-                            setIsEditable(true);
-                            setTimeout(() => {
-                                inputRef.current?.focus();
-                            }, 50);
-                        }}
-                    />
-                    <FaPoo
-                        onClick={() => {
-                            handleAction('DELETE_SONG', [song, playlistId]);
-                        }}
-                        size={smallIconSize}
-                        className={`${iconClassName} danger hoverable`}
-                    />
-                </div>
-            </div>
-        </div>
+                />
+                <FaPoo
+                    onClick={() => {
+                        handleAction('DELETE_SONG', [song, playlistId]);
+                    }}
+                    size={smallIconSize}
+                    className={`${iconClassName} danger hoverable`}
+                />
+            </ActionContainer>
+        </ContainerDiv>
     );
 }
+
+const ContainerDiv = styled.div`
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: 'center';
+    border-bottom: rgba(245, 222, 179, 0.05) solid 2px;
+    border-top: ${({ first }: { first: boolean }) =>
+        first && `rgba(245, 222, 179, 0.05) solid 2px`};
+`;
+
+const TitleDiv = styled.div`
+    display: flex;
+    align-items: center;
+`;
+
+const ActionContainer = styled.div`
+    display: flex;
+    alignitems: center;
+`;
+
+const TinyText = styled.span`
+    color: ${colors.mediumTextColor};
+    align-self: center;
+    margin-left: 20px;
+    margin-right: 10px;
+    font-size: 11px;
+`;

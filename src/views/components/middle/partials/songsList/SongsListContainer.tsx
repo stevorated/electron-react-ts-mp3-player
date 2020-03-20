@@ -1,4 +1,5 @@
 import React from 'react';
+import styled, { keyframes } from 'styled-components';
 import { FaSpinner } from 'react-icons/fa';
 
 import { HandlerAction, TreeListType } from '@views/interfaces';
@@ -31,7 +32,7 @@ export function SongsListContainer({
     const { nested } = current || { nested: [] };
     const songs = nested as ISong[];
     return (
-        <div className="main-body playlist-container">
+        <ContainerDiv>
             <PlaylistDetailsBar
                 size={songs.length || 0}
                 title={current?.title}
@@ -47,10 +48,36 @@ export function SongsListContainer({
                     loading={loading}
                 />
             )}
-            {loading && <FaSpinner className="spinner spin" size="200px" />}
-        </div>
+            {loading && <Spinner size="200px" />}
+        </ContainerDiv>
     );
 }
 
-// <Hr width="95%" />;
-// {current && <EQBars cols={Math.round((width - 300) / 41)} />}
+const ContainerDiv = styled.div`
+    overflow: auto;
+    height: auto;
+    padding: 0 10px;
+`;
+
+const spin = keyframes`
+from {
+    transform: rotate(0deg);
+}
+to {
+    transform: rotate(360deg);
+}
+
+`;
+
+const Spinner = styled(FaSpinner)`
+    color: rgba(245, 245, 245, 0.6);
+    position: absolute;
+    z-index: 100000000;
+    top: 50%;
+    left: 50%;
+
+    animation-name: ${spin};
+    animation-duration: 1500ms;
+    animation-iteration-count: infinite;
+    animation-timing-function: cubic-bezier(1, 0, 0, 1);
+`;

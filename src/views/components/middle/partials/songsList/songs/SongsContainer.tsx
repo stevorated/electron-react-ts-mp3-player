@@ -41,9 +41,7 @@ export function CardsContainer({
                     />
                 </DndProvider>
             ) : !loading ? (
-                <div>
-                    <DropZone height="50vh" />
-                </div>
+                <DropZone height="50vh" />
             ) : (
                 <div></div>
             )}

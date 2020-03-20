@@ -35,11 +35,10 @@ export function savePlaylist(item: TreeListType, oldId?: number): TreeActions {
 }
 
 export const SORT_PLAYLIST_TREE = 'SORT_PLAYLIST_TREE';
-export function sortPlaylist(item: TreeListType, id: number): TreeActions {
+export function sortPlaylist(item: TreeListType): TreeActions {
     return {
         type: SORT_PLAYLIST_TREE,
         payload: [item],
-        id,
     };
 }
 

@@ -81,11 +81,13 @@ export function Modal({
             {button ? (
                 button
             ) : (
-                <ExplorerBtn
-                    icon={buttonIcon}
-                    text={buttonText}
-                    onClick={openModal}
-                />
+                <div>
+                    <ExplorerBtn
+                        icon={buttonIcon}
+                        text={buttonText}
+                        onClick={openModal}
+                    />
+                </div>
             )}
             <ReactModal
                 ref={modalBodyRef}

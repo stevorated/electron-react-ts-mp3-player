@@ -35,7 +35,10 @@ export function Cards({
     playlistId,
     handleAction,
 }: Props) {
-    const [songs, setSongs] = useState(currentState);
+    // console.log(currentState);
+    const [songs, setSongs] = useState(
+        currentState?.sort((a, b) => by<ISong>(a, b, 'song_index'))
+    );
     useEffect(() => {
         setSongs(currentState?.sort((a, b) => by<ISong>(a, b, 'song_index')));
     }, [currentState]);
@@ -55,6 +58,22 @@ export function Cards({
         [songs]
     );
 
+    const handleSortSongs = (
+        songId: number,
+        newIndex: number,
+        oldIndex: number
+    ) => {
+        handleAction('SORT_PLAYLIST', {
+            songs: songs.map((song, index) => ({
+                ...song,
+                song_index: index + 1,
+            })),
+            songId,
+            newIndex,
+            oldIndex,
+        });
+    };
+
     const renderCard = (song: ISong, index: number) => {
         return (
             <SongContainer
@@ -62,6 +81,7 @@ export function Cards({
                 index={index}
                 id={song.id}
                 moveCard={moveCard}
+                handleSortSongs={handleSortSongs}
                 song={song}
                 pointer={pointer}
                 status={status}
@@ -72,10 +92,6 @@ export function Cards({
     };
 
     return (
-        <>
-            <div style={style}>
-                {songs.map((song, i) => renderCard(song, i))}
-            </div>
-        </>
+        <div style={style}>{songs.map((song, i) => renderCard(song, i))}</div>
     );
 }

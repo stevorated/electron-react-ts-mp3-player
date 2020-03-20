@@ -1,11 +1,12 @@
 import React, { useRef, useEffect, KeyboardEvent, useState } from 'react';
 import { FaMusic } from 'react-icons/fa';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
-import { TreeListType } from '../../../interfaces';
 import { DeleteBtn } from './DeleteBtn';
+import { DeletePlaylistModal } from './DeletePlaylistModal';
 import { Modal } from '../../shared';
-import DeletePlaylistModal from './DeletePlaylistModal';
+import { TreeListType } from '../../../interfaces';
+import { colors } from '../../../assets/styles/consts';
 
 type Props = {
     id: number;
@@ -55,36 +56,27 @@ export function Editable({
     return (
         <section style={{ height: '3rem' }}>
             {isEditing ? (
-                <li
-                    className={`tree-item playlist ${
-                        currentPlaylistId === id ? 'active' : ''
-                    }`}
+                <TreeItem
+                    active={currentPlaylistId === id}
                     key={id}
                     onClick={handleClick}
                     onDoubleClick={handleDoubleClick}
                     onKeyDown={e => handleKeyDown(e)}
                     onBlur={onBlur}
                 >
-                    <div className="tree-item-title">
+                    <TreeItemTitle>
                         <FaMusic size="12px" />
-                        <input
+                        <EditPlaylistInput
                             type="text"
-                            className="edit-playlist-input"
                             ref={inputRef}
                             value={afterEdit}
                             onChange={e => setAfterEdit(e.target.value)}
                         />
-                    </div>
-                </li>
+                    </TreeItemTitle>
+                </TreeItem>
             ) : (
-                <li
-                    className={`tree-item playlist ${
-                        currentPlaylistId === id ? 'active' : ''
-                    }`}
-                    key={id}
-                    style={{ flex: 'inline' }}
-                >
-                    <div ref={titleRef} className="tree-item-title">
+                <TreeItem active={currentPlaylistId === id} key={id}>
+                    <TreeItemTitle ref={titleRef}>
                         <FaMusic size="12px" />
                         <TitleDiv
                             onClick={handleClick}
@@ -106,7 +98,6 @@ export function Editable({
                             }}
                             button={
                                 <DeleteBtn
-                                    // handleDelete={() => handleDelete(false)}
                                     handleDelete={() => {
                                         setIsDeleteModalOpen(true);
                                     }}
@@ -122,15 +113,45 @@ export function Editable({
                                 handleDelete={() => handleDelete(false)}
                             />
                         </Modal>
-                    </div>
-                    <span className="tiny-text">
+                    </TreeItemTitle>
+                    <TinyText className="tiny-text">
                         {item?.nested.length} songs
-                    </span>
-                </li>
+                    </TinyText>
+                </TreeItem>
             )}
         </section>
     );
 }
+
+const EditPlaylistInput = styled.input`
+    margin-left: 10px;
+`;
+
+const TreeItem = styled.li`
+    display: inline;
+    flex: inline;
+    ${({ active }: { active: boolean }) =>
+        active &&
+        css`
+            color: ${colors.activeTextColor};
+            font-weight: 700;
+        `}
+`;
+
+const TinyText = styled.span`
+    color: ${colors.mediumTextColor};
+    margin-left: 20px;
+    padding-top: 0;
+    font-size: 9px;
+`;
+
+const TreeItemTitle = styled.div`
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: baseline;
+`;
 
 const TitleDiv = styled.div`
     margin-left: 10px;
@@ -139,26 +160,3 @@ const TitleDiv = styled.div`
         transform: translateY(-1px);
     }
 `;
-
-// function EditableItem({
-//     onBlur,
-//     handleKeyDown,
-//     afterEdit,
-//     setAfterEdit,
-// }: Partial<Props>) {
-//     return (
-//         <div
-//             className="tree-item-title"
-//             onBlur={onBlur}
-//             onKeyDown={e => handleKeyDown && handleKeyDown(e)}
-//         >
-//             <FaMusic />
-//             <input
-//                 value={afterEdit}
-//                 onChange={e => setAfterEdit && setAfterEdit(e.target.value)}
-//                 style={{ marginLeft: '10px' }}
-//                 type="text"
-//             />
-//         </div>
-//     );
-// }

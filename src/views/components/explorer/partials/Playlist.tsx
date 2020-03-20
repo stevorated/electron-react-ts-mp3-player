@@ -43,7 +43,6 @@ export function Playlist({
     const saveItem = async () => {
         try {
             if (!isEditing) {
-                console.log(afterEdit);
                 const id = await Ipc.invoke<number>('SAVE_PLAYLIST', afterEdit);
                 setNewId(id);
                 handleAction(

@@ -1,5 +1,8 @@
 import React from 'react';
+import styled from 'styled-components';
 import { FaStop } from 'react-icons/fa';
+
+import { btnStyle } from '../../../../shared';
 
 type Props = {
     disabled: boolean;
@@ -10,11 +13,14 @@ type Props = {
 export function StopBtn({ disabled, size, pause }: Props) {
     const className = disabled ? 'disabled' : 'hoverable';
     return (
-        <FaStop
-            style={{ margin: '0 5px' }}
+        <Stop
             size={size}
             className={`btn ${className}`}
             onClick={!disabled ? () => pause(true) : () => {}}
         />
     );
 }
+
+const Stop = styled(FaStop)`
+    ${btnStyle}
+`;

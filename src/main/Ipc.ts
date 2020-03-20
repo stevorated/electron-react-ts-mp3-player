@@ -4,6 +4,7 @@ import { Logger } from '../logger/logger';
 export type Channels =
     | 'FETCH_TREE'
     | 'SAVE_PLAYLIST'
+    | 'SORT_PLAYLIST'
     | 'UPDATE_PLAYLIST'
     | 'UPDATE_SONG'
     | 'ADD_SONG'
