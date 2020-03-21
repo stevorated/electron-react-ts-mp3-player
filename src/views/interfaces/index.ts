@@ -8,6 +8,7 @@ export type HandlerAction =
     | 'SORT_PLAYLIST'
     | 'UPDATE_SONG'
     | 'ADD_SONG_MODAL'
+    | 'ADD_SONG_DROP'
     | 'DELETE_PLAYLIST'
     | 'DELETE_SONG';
 

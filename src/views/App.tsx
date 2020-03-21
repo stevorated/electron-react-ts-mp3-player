@@ -43,9 +43,6 @@ export class App extends Component<Props, State> {
     }
 
     componentDidMount = async () => {
-        this.canvas = document.getElementById(
-            'analyser_render'
-        ) as HTMLCanvasElement;
         if (this.player && this.canvas) {
             const parent = this;
             this.player.volume = 0.5;
@@ -69,8 +66,14 @@ export class App extends Component<Props, State> {
                   .map(song => song.path);
 
         const randomizer = new Randomize(
-            this.props.tree.filter(item => item.type === 'playlist')[0].nested
+            this.props.tree.filter(item => item.type === 'playlist')[0]?.nested
                 .length || 0
+        );
+
+        console.log(
+            (this.getCurrentList()[0]?.nested as ISong[])?.map(
+                song => song.song_index
+            )
         );
 
         this.setState({
@@ -95,6 +98,14 @@ export class App extends Component<Props, State> {
         loading: true,
         loop: true,
         random: false,
+    };
+
+    componentDidUpdate = () => {
+        console.log(
+            (this.getCurrentList()[0]?.nested as ISong[])?.map(
+                song => song.song_index
+            )
+        );
     };
 
     handleAction = async (
@@ -291,11 +302,35 @@ export class App extends Component<Props, State> {
 
                 return;
 
-            case 'UPDATE_SONG':
-                const res = await Ipc.invokeAndReturn<ISong[]>(
-                    'UPDATE_SONG',
-                    payload
+            case 'ADD_SONG_DROP':
+                const droppedReturn = await Ipc.invokeAndReturn<ISong[]>(
+                    'DROP_SONG',
+                    {
+                        paths: payload,
+                        playlistId: currentPlaylistId,
+                        index: current?.nested?.length + 1,
+                    }
                 );
+
+                const [oldTreeItem] = tree.filter(
+                    item => item.type === 'playlist' && item.id === current.id
+                );
+
+                const songsAfterDrop = [
+                    ...oldTreeItem.nested,
+                    ...droppedReturn,
+                ] as ISong[];
+
+                const updated = {
+                    ...oldTreeItem,
+                    nested: songsAfterDrop,
+                };
+
+                savePlaylistDispatch(updated);
+                return;
+
+            case 'UPDATE_SONG':
+                const res = await Ipc.invokeAndReturn('UPDATE_SONG', payload);
                 const songsAfterUpdate = (current?.nested as ISong[]).map(
                     song => {
                         if (song.id === payload.id) {

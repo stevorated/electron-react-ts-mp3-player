@@ -18,13 +18,18 @@ export const treeReducer = (
     switch (type) {
         case FETCH_TREE:
             return payload;
+
         case CREATE_PLAYLIST_TREE:
             return state.concat(payload);
+
         case DELETE_PLAYLIST_TREE:
             return state.filter(
                 item => item.id !== payload?.[0]?.id && item.type === 'playlist'
             );
+
         case SAVE_PLAYLIST_TREE:
+            console.log(payload);
+            // return state;
             return state.map(item => {
                 if (id && id === item.id) {
                     return payload[0];
@@ -38,14 +43,6 @@ export const treeReducer = (
             });
 
         case SORT_PLAYLIST_TREE:
-            // console.log(
-            //     state.map(item => {
-            //         if (item.id === payload[0].id) {
-            //             return payload[0];
-            //         }
-            //         return item;
-            //     })[0].nested[0]
-            // );
             return state.map(item => {
                 if (item.id === payload[0].id) {
                     // console.log(payload[0]);
@@ -53,6 +50,7 @@ export const treeReducer = (
                 }
                 return item;
             });
+
         case UPDATE_PLAYLIST_TREE:
             return state.map(item => {
                 if (item?.id === payload[0].id) {
@@ -60,6 +58,7 @@ export const treeReducer = (
                 }
                 return item;
             });
+
         case DELETE_SONG_TREE:
             return state.map(item => {
                 if (item.type === 'playlist' && item.id === payload[0]?.id) {

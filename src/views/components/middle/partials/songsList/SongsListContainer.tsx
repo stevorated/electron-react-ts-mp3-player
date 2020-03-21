@@ -7,7 +7,7 @@ import { StateHandlerAction } from '@views/interfaces';
 import { ISong } from '@services/db';
 
 import { PlaylistDetailsBar } from './PlaylistDetailsBar';
-import { CardsContainer } from './songs';
+import { SongsContainer } from './songs';
 import { Hr } from '../../../shared';
 
 type Props = {
@@ -33,20 +33,22 @@ export function SongsListContainer({
     const songs = nested as ISong[];
     return (
         <ContainerDiv>
-            <PlaylistDetailsBar
-                size={songs.length || 0}
-                title={current?.title}
-            />
-            <Hr />
-            {songs && (
-                <CardsContainer
-                    playlistId={current?.id || -1}
-                    songs={songs}
-                    pointer={pointer}
-                    status={status}
-                    handleAction={handleAction}
-                    loading={loading}
-                />
+            {current && (
+                <>
+                    <PlaylistDetailsBar
+                        size={songs.length || 0}
+                        title={current?.title}
+                    />
+                    <Hr />
+                    <SongsContainer
+                        playlistId={current?.id || -1}
+                        songs={songs}
+                        pointer={pointer}
+                        status={status}
+                        handleAction={handleAction}
+                        loading={loading}
+                    />
+                </>
             )}
             {loading && <Spinner size="200px" />}
         </ContainerDiv>

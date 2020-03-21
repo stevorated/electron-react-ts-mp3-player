@@ -2,8 +2,7 @@ import { app, dialog } from 'electron';
 import { Window } from './Window';
 import { DataHandler } from './DataHandler';
 import { handleEvent } from './Ipc';
-import { parseFileName } from './helpers';
-import ffmpeg from 'fluent-ffmpeg';
+import { parseFileName, parseMp3 } from './helpers';
 
 app.allowRendererProcessReuse = true;
 function main() {
@@ -51,7 +50,6 @@ handleEvent(
 
 handleEvent('UPDATE_PLAYLIST', async (_, title) => {
     await DataHandler.updatePlaylist(title);
-    // return id;
 });
 
 handleEvent('ADD_SONG', async (_, args) => {
@@ -61,50 +59,44 @@ handleEvent('ADD_SONG', async (_, args) => {
             properties: ['openFile', 'multiSelections'],
             filters: [{ name: 'Audio Files', extensions: ['mp3'] }],
         });
-
-        if (dialogData.filePaths?.length === 1) {
-            const [filePath] = dialogData.filePaths;
-
-            const { format } = await parseMp3(filePath);
-            const newSongId = await DataHandler.createSong(
-                parseFileName(format.filename),
-                (format.duration || 0) * 1000,
-                filePath,
-                args.playlistId,
-                args.index
-            );
-
-            return DataHandler.findSongById(newSongId);
-        }
-        if (dialogData.filePaths?.length > 1) {
-            const filePaths = dialogData.filePaths;
-
-            const probes = await Promise.all(
-                filePaths.map(filePath => {
-                    return parseMp3(filePath);
-                })
-            );
-
-            const songsIdsPromises = probes.map(({ format }, index) => {
-                return DataHandler.createSong(
-                    parseFileName(format.filename),
-                    (format.duration || 0) * 1000,
-                    filePaths[index],
-                    args.playlistId,
-                    args.index + index
-                );
-            });
-
-            const songIds = await Promise.all(songsIdsPromises);
-            const res = await Promise.all(
-                songIds.map(id => {
-                    return DataHandler.findSongById(id);
-                })
-            );
-
-            return res.map(([item]) => item);
-        }
+        return saveSongs(dialogData.filePaths, args.playlistId, args.index);
     } catch (err) {}
+});
+
+const saveSongs = async (
+    paths: string[],
+    playlistId: number,
+    initialIndex: number
+) => {
+    const probes = await Promise.all(
+        paths.map(filePath => {
+            return parseMp3(filePath);
+        })
+    );
+
+    const songsIdsPromises = probes.map(({ format }, index) => {
+        return DataHandler.createSong(
+            parseFileName(format.filename),
+            (format.duration || 0) * 1000,
+            paths[index],
+            playlistId,
+            initialIndex + index
+        );
+    });
+
+    const songIds = await Promise.all(songsIdsPromises);
+    const res = await Promise.all(
+        songIds.map(id => {
+            return DataHandler.findSongById(id);
+        })
+    );
+
+    return res.map(([song]) => song);
+};
+
+handleEvent('DROP_SONG', async (_, { paths, playlistId, index }) => {
+    const songs = await saveSongs(paths, playlistId, index);
+    return songs;
 });
 
 handleEvent('UPDATE_SONG', async (_, args) => {
@@ -124,10 +116,3 @@ handleEvent('DELETE_PLAYLIST', async (_, args) => {
         return false;
     }
 });
-
-const parseMp3 = (path: string): Promise<ffmpeg.FfprobeData> =>
-    new Promise(resolve => {
-        ffmpeg.ffprobe(path, (_, data) => {
-            resolve(data);
-        });
-    });

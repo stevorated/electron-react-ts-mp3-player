@@ -5,8 +5,8 @@ import Backend from 'react-dnd-html5-backend';
 import { ISong } from '@services/db';
 import { HandlerAction, StateHandlerAction } from '@views/interfaces';
 
-import { Cards } from './Songs';
-import { DropZone } from '../../../../shared';
+import { Songs } from './Songs';
+import { SongContainerDropZone } from './SongContainerDropZone';
 
 type Props = {
     loading: boolean;
@@ -20,7 +20,7 @@ type Props = {
     ) => void;
 };
 
-export function CardsContainer({
+export function SongsContainer({
     songs,
     pointer,
     status,
@@ -28,23 +28,40 @@ export function CardsContainer({
     handleAction,
     loading,
 }: Props) {
+    const handleDrop = (files: File[]) => {
+        if (files.length === 0) {
+            return;
+        }
+
+        handleAction(
+            'ADD_SONG_DROP',
+            files.map(file => file.path)
+        );
+    };
     return (
-        <div>
+        <>
             {songs.length ? (
                 <DndProvider backend={Backend}>
-                    <Cards
-                        songs={songs}
-                        pointer={pointer}
-                        status={status}
-                        playlistId={playlistId}
-                        handleAction={handleAction}
-                    />
+                    <div style={{ position: 'relative' }}>
+                        <Songs
+                            songs={songs}
+                            pointer={pointer}
+                            status={status}
+                            playlistId={playlistId}
+                            handleAction={handleAction}
+                        />
+                        <SongContainerDropZone
+                            handleDrop={handleDrop}
+                            height="10vh"
+                        />
+                    </div>
                 </DndProvider>
             ) : !loading ? (
-                <DropZone height="50vh" />
+                <SongContainerDropZone handleDrop={handleDrop} height="10vh" />
             ) : (
+                // <div></div>
                 <div></div>
             )}
-        </div>
+        </>
     );
 }

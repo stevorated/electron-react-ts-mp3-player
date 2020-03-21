@@ -28,7 +28,7 @@ type Props = {
     ) => void;
 };
 
-export function Cards({
+export function Songs({
     songs: currentState,
     pointer,
     status,
@@ -84,6 +84,9 @@ export function Cards({
                 handleSortSongs={handleSortSongs}
                 song={song}
                 pointer={pointer}
+                maxPointer={
+                    currentState.length - 1 > 0 ? currentState.length - 1 : 1
+                }
                 status={status}
                 playlistId={playlistId}
                 handleAction={handleAction}

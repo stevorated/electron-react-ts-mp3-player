@@ -1,3 +1,3 @@
-import { CardsContainer } from './SongsContainer';
+import { SongsContainer } from './SongsContainer';
 
-export { CardsContainer };
+export { SongsContainer };

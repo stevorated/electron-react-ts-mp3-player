@@ -10,7 +10,7 @@ import {
 
 import { ExplorerBtn } from './partials';
 import { Playlists } from './partials';
-import { DropZone, Hr } from '../shared';
+import { Dropzone, Hr } from '../shared';
 
 import './Explorer.style.less';
 
@@ -45,7 +45,7 @@ export function Explorer({
             onDragStart={e => e.preventDefault()}
             onDragEnd={e => e.preventDefault()}
         >
-            <DropZone />
+            <Dropzone height="5vh" hide />
             <ExplorerBtn
                 icon={<StylePlayIcon />}
                 text="new playlist…"

@@ -8,6 +8,7 @@ export type Channels =
     | 'UPDATE_PLAYLIST'
     | 'UPDATE_SONG'
     | 'ADD_SONG'
+    | 'DROP_SONG'
     | 'DELETE_PLAYLIST'
     | 'DELETE_SONG';
 

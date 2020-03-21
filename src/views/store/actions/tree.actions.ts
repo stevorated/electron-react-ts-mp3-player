@@ -59,7 +59,6 @@ export function deleteFromTree(item: TreeListType) {
 }
 
 export const DELETE_SONG_TREE = 'DELETE_SONG_FROM_TREE';
-
 export function deleteSong(item: TreeListType) {
     return {
         type: DELETE_SONG_TREE,

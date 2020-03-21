@@ -1,3 +1,5 @@
+import ffmpeg from 'fluent-ffmpeg';
+
 export const parseFileName = (filename?: string) => {
     if (!filename) {
         return 'unnamed';
@@ -16,3 +18,10 @@ export const parseFileName = (filename?: string) => {
 
     return songName;
 };
+
+export const parseMp3 = (path: string): Promise<ffmpeg.FfprobeData> =>
+    new Promise(resolve => {
+        ffmpeg.ffprobe(path, (_, data) => {
+            resolve(data);
+        });
+    });

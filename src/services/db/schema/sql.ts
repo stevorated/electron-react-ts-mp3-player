@@ -52,6 +52,5 @@ export const startupSql: string[] = [
 
 export const keys: string[] = [
     `CREATE UNIQUE INDEX IF NOT EXISTS "ui_playlist_songs" ON "playlist_song_list" ("playlist_id", "song_id");`,
+    // `CREATE UNIQUE INDEX IF NOT EXISTS "ui_playlist_indexs" ON "playlist_song_list" ("playlist_id", "song_index");`,
 ];
-
-// ,`CREATE UNIQUE INDEX IF NOT EXISTS "ui_playlist_indexs" ON "playlist_song_list" ("playlist_id", "song_index");`

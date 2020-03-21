@@ -16,6 +16,7 @@ export interface Props {
     id: any;
     song: ISong;
     index: number;
+    maxPointer: number;
     moveCard: (dragIndex: number, hoverIndex: number) => void;
     handleSortSongs: (
         songId: number,
@@ -44,6 +45,7 @@ export function SongContainer({
     status,
     playlistId,
     pointer,
+    maxPointer,
     handleAction,
     handleSortSongs,
 }: Props) {
@@ -72,16 +74,27 @@ export function SongContainer({
             const hoverClientY =
                 (clientOffset as XYCoord).y - hoverBoundingRect.top;
 
-            if (oldPos < newPos && hoverClientY < hoverMiddleY) {
+            if (
+                (oldPos < newPos && hoverClientY < hoverMiddleY) ||
+                newPos >= maxPointer ||
+                newPos < 0
+            ) {
+                item.index = oldPos;
                 return;
             }
 
-            if (oldPos > newPos && hoverClientY > hoverMiddleY) {
+            if (
+                (oldPos > newPos && hoverClientY > hoverMiddleY) ||
+                newPos >= maxPointer ||
+                newPos < 0
+            ) {
+                item.index = oldPos;
                 return;
             }
-
-            moveCard(oldPos, newPos);
-            item.index = newPos;
+            if (newPos >= 0 && newPos <= maxPointer) {
+                moveCard(oldPos, newPos);
+                item.index = newPos;
+            }
         },
         drop(item: DragItem, _: DropTargetMonitor) {
             handleSortSongs(
@@ -97,6 +110,14 @@ export function SongContainer({
         collect: (monitor: any) => ({
             isDragging: monitor.isDragging(),
         }),
+        end(item) {
+            const { id, index } = item as {
+                id: string;
+                index: number;
+                rest: any[];
+            };
+            handleSortSongs(parseInt(id), index + 1, song?.song_index || -1);
+        },
     });
 
     const opacity = isDragging ? 0 : 1;
