@@ -1,15 +1,19 @@
 import React from 'react';
 import styled from 'styled-components';
-import { FaCogs, FaRandom, FaUndo, FaFolderPlus } from 'react-icons/fa';
+import { FaRandom, FaUndo, FaFolderPlus } from 'react-icons/fa';
 
 import { ISong } from '@services/db';
 import { HandlerAction, StateHandlerAction } from '@views/interfaces';
 
 import { colors } from '../../../../assets/styles/consts';
+import { PreferencesBtn } from './panel.partials';
+import { by } from './../../../../utils/sort';
 
 type Props = {
+    isPrefsOpen: boolean;
     loop: boolean;
     random: boolean;
+    waitBetween: number;
     pointer: number;
     playlistTitle?: string;
     songs?: ISong[];
@@ -17,7 +21,7 @@ type Props = {
     handleAction: (
         action: HandlerAction | StateHandlerAction,
         payload?: any
-    ) => void;
+    ) => Promise<void>;
 };
 
 export function MediaPanel({
@@ -27,15 +31,19 @@ export function MediaPanel({
     handleAction,
     songs,
     pointer,
+    waitBetween,
     addSongModal,
+    isPrefsOpen,
 }: Props) {
     const statusClass = playlistTitle ? 'hoverable' : 'disabled';
 
     return (
         <ContainerDiv className="container-audio current-song-container">
-            <FaCogs
-                className={`btn action-icon ${statusClass}`}
-                style={{ bottom: '5px', left: '5px' }}
+            <PreferencesBtn
+                handleAction={handleAction}
+                statusClass={statusClass}
+                initialState={isPrefsOpen}
+                waitBetween={waitBetween}
             />
             <FaFolderPlus
                 className={`btn action-icon ${statusClass}`}
@@ -44,7 +52,10 @@ export function MediaPanel({
             />
             <TitleText className="centered hide">{playlistTitle}</TitleText>
             <TitleText className="centered">
-                {songs?.[pointer]?.title}
+                {
+                    songs?.sort((a, b) => by(a, b, 'song_index'))?.[pointer]
+                        ?.title
+                }
             </TitleText>
             <FaUndo
                 className={`btn action-icon ${statusClass} ${

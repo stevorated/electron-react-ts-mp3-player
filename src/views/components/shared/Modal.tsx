@@ -1,6 +1,6 @@
 import React, { ReactNode, useState, useEffect, useRef } from 'react';
 import ReactModal from 'react-modal';
-import styled from 'styled-components';
+import styled, { CSSObject } from 'styled-components';
 
 import { ExplorerBtn } from '../explorer/partials/ExplorerBtn';
 
@@ -18,6 +18,7 @@ type Props = {
     left?: number;
     width?: number;
     height?: number;
+    customStyles?: CSSObject;
 };
 
 ReactModal.setAppElement('#root');
@@ -36,13 +37,14 @@ export function Modal({
     left,
     width,
     height,
+    customStyles,
 }: Props) {
     const [modalIsOpen, setIsOpen] = useState(false);
 
     const topS = `${top}px`;
     const leftS = `${left}px`;
 
-    const customStyles = {
+    const styles = {
         overlay: {
             background: 'rgba(255, 255, 255, 0.05)',
         },
@@ -52,11 +54,13 @@ export function Modal({
             top: top || top === 0 ? topS : '50%',
             left: left || left === 0 ? leftS : '50%',
             minWidth: '280px',
-            maxWidth: width || '340px',
-            height: height || '250px',
+            maxWidth: width ? `${width}px` : '340px',
+            width: width ? `${width}px` : '340px',
+            maxHeight: height ? `${height}px` : '250px',
             border: '3px solid rgba(255, 255,255, 0.6)',
             borderRadious: '3px',
             boxShadow: '-5px 7px 42px 0px rgba(0, 0, 0, 0.75)',
+            ...customStyles,
         },
     };
 
@@ -94,7 +98,7 @@ export function Modal({
                 isOpen={isOpen ?? modalIsOpen}
                 onAfterOpen={handleAfterModal}
                 onRequestClose={handleClosing ?? closeModal}
-                style={customStyles}
+                style={styles}
                 contentLabel={modalLabel}
             >
                 <ModalContainer className="modal-styles">

@@ -25,7 +25,7 @@ type Props = {
     handleAction: (
         action: HandlerAction | StateHandlerAction,
         payload?: any
-    ) => void;
+    ) => Promise<void>;
 };
 
 export function Songs({
@@ -35,7 +35,7 @@ export function Songs({
     playlistId,
     handleAction,
 }: Props) {
-    // console.log(currentState);
+    const [busy, setBusy] = useState(false);
     const [songs, setSongs] = useState(
         currentState?.sort((a, b) => by<ISong>(a, b, 'song_index'))
     );
@@ -58,20 +58,24 @@ export function Songs({
         [songs]
     );
 
-    const handleSortSongs = (
-        songId: number,
-        newIndex: number,
-        oldIndex: number
-    ) => {
-        handleAction('SORT_PLAYLIST', {
+    const handleSortSongs = async (songId: number, newIndex: number) => {
+        if (busy) {
+            return;
+        }
+
+        setBusy(true);
+        await handleAction('SORT_PLAYLIST', {
             songs: songs.map((song, index) => ({
                 ...song,
                 song_index: index + 1,
             })),
             songId,
             newIndex,
-            oldIndex,
         });
+
+        setTimeout(() => {
+            setBusy(false);
+        }, 1000);
     };
 
     const renderCard = (song: ISong, index: number) => {

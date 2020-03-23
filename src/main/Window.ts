@@ -2,6 +2,8 @@ import path from 'path';
 
 import { BrowserWindow, BrowserWindowConstructorOptions } from 'electron';
 import MenuBuilder from './Menu';
+import { Channels } from '.';
+import { Logger } from '../logger';
 
 type Props = {
     file: string;
@@ -21,6 +23,8 @@ const defaultSettings: BrowserWindowConstructorOptions = {
 };
 
 export class Window extends BrowserWindow {
+    private logger: Logger = new Logger('main');
+
     constructor({ file, windowSettings }: Props) {
         super({ ...defaultSettings, ...windowSettings });
 
@@ -40,4 +44,10 @@ export class Window extends BrowserWindow {
         const menuBuilder = new MenuBuilder(this);
         menuBuilder.buildMenu();
     }
+
+    send = (channel: Channels, ...args: any) => {
+        console.log(channel);
+        this.logger.info(`Ipc Send - ${channel}`, { data: args });
+        this.webContents.send(channel, ...args);
+    };
 }

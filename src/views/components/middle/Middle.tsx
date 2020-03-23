@@ -8,6 +8,7 @@ import { PlayerContainer, SongsListContainer, Analyser } from './partials';
 import { colors } from './../../assets/styles/consts';
 
 type Props = {
+    isPrefsOpen: boolean;
     loop: boolean;
     random: boolean;
     loading: boolean;
@@ -16,11 +17,8 @@ type Props = {
     pointer: number;
     waitBetween: number;
     current?: TreeListType;
+    mainRef: RefObject<HTMLDivElement>;
     handleAnalyse: () => void;
-    handleAction: (
-        action: HandlerAction | StateHandlerAction,
-        payload?: any
-    ) => void;
     getPlayer: () => HTMLMediaElement | null;
     play: (dontRewind?: boolean) => Promise<void>;
     pause: (stop?: boolean) => void;
@@ -31,10 +29,14 @@ type Props = {
     setCurrentTime: (time: number) => void;
     getCurrentTime: () => number;
     addSongModal: () => void;
-    mainRef: RefObject<HTMLDivElement>;
+    handleAction: (
+        action: HandlerAction | StateHandlerAction,
+        payload?: any
+    ) => Promise<void>;
 };
 
 export function Middle({
+    isPrefsOpen,
     getPlayer,
     play,
     pause,
@@ -60,6 +62,7 @@ export function Middle({
     return (
         <ContainerDiv ref={mainRef} style={{ flex }}>
             <PlayerContainer
+                isPrefsOpen={isPrefsOpen}
                 handleAction={handleAction}
                 getPlayer={getPlayer}
                 play={play}

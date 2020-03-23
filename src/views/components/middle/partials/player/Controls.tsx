@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { BackBtns, StopBtn, PlayBtn, ForwardBtns } from './partials';
+import { BackBtns, StopBtn, PlayBtn, ForwardBtns } from './player.partials';
 
 type Props = {
     status: string;

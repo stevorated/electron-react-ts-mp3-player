@@ -7,6 +7,7 @@ import { HandlerAction, StateHandlerAction } from '@views/interfaces';
 
 import { Songs } from './Songs';
 import { SongContainerDropZone } from './SongContainerDropZone';
+import { useWindowSize } from './../../../../../hooks/window';
 
 type Props = {
     loading: boolean;
@@ -17,7 +18,7 @@ type Props = {
     handleAction: (
         action: HandlerAction | StateHandlerAction,
         payload?: any
-    ) => void;
+    ) => Promise<void>;
 };
 
 export function SongsContainer({
@@ -28,6 +29,9 @@ export function SongsContainer({
     handleAction,
     loading,
 }: Props) {
+    useWindowSize();
+    const dropHeight = songs.length < 8 ? 50 - songs?.length * 5.5 : 10;
+
     const handleDrop = (files: File[]) => {
         if (files.length === 0) {
             return;
@@ -52,12 +56,12 @@ export function SongsContainer({
                         />
                         <SongContainerDropZone
                             handleDrop={handleDrop}
-                            height="10vh"
+                            height={`${dropHeight}vh`}
                         />
                     </div>
                 </DndProvider>
             ) : !loading ? (
-                <SongContainerDropZone handleDrop={handleDrop} height="10vh" />
+                <SongContainerDropZone handleDrop={handleDrop} height="51vh" />
             ) : (
                 // <div></div>
                 <div></div>

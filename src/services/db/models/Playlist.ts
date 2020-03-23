@@ -188,50 +188,61 @@ export class Playlist extends Model {
         });
     }
 
-    static swap(
-        playlistId: number,
-        songId: number,
-        newIndex: number,
-        oldIndex: number
-    ) {
-        return new Promise((resolve, reject) => {
-            SqliteDAO.run(
-                `
-            UPDATE playlist_song_list 
-            SET song_index = CASE 
-            WHEN song_index ${newIndex < oldIndex ? '<=' : '>='} ? 
-            THEN song_index ${
-                newIndex < oldIndex ? '+' : '-'
-            } 1 ELSE song_index END 
-            WHERE playlist_id = ? 
-            AND song_index ${newIndex < oldIndex ? '>=' : '<='}  ? 
-            AND song_id <> ? ;
-            `,
-                [oldIndex, playlistId, newIndex, songId]
-            )
-                .then(() => {
-                    SqliteDAO.run(
-                        `
+    static async swap(playlistId: number, songId: number, newIndex: number) {
+        try {
+            const {
+                song_index: oldIndex,
+            } = await SqliteDAO.get(
+                `SELECT song_index FROM playlist_song_list WHERE playlist_id = ? AND song_id = ?`,
+                [playlistId.toString(), songId.toString()]
+            );
+
+            const {
+                count,
+            } = await SqliteDAO.get(
+                `SELECT COUNT(*) as count FROM playlist_song_list WHERE playlist_id = ?`,
+                [playlistId.toString()]
+            );
+
+            if (oldIndex === newIndex || newIndex < 1 || newIndex > count) {
+                return;
+            }
+
+            const bigger = oldIndex < newIndex;
+            let sql = '';
+            if (bigger) {
+                sql = `
                 UPDATE playlist_song_list
-                SET song_index = ?
-                WHERE song_id = ?
-                AND playlist_id = ?;
-              `,
-                        [newIndex, songId, playlistId]
-                    )
-                        .then(data => {
-                            this.logInfo('swap', { data });
-                            resolve(data);
-                        })
-                        .catch(error => {
-                            this.logError('swap', { error });
-                            reject(error);
-                        });
-                })
-                .catch(error => {
-                    this.logError('swap', { error });
-                    reject(error);
-                });
-        });
+                SET song_index = CASE
+                WHEN song_index >= ?
+                THEN song_index - 1 ELSE song_index END
+                WHERE playlist_id = ?
+                AND song_index <= ?
+                AND song_id <> ? ;
+                `;
+            } else {
+                sql = `
+                UPDATE playlist_song_list
+                SET song_index = CASE
+                WHEN song_index <= ?
+                THEN song_index + 1 ELSE song_index END
+                WHERE playlist_id = ?
+                AND song_index >= ?
+                AND song_id <> ? ;
+                `;
+            }
+
+            await SqliteDAO.run(sql, [oldIndex, playlistId, newIndex, songId]);
+
+            await SqliteDAO.run(
+                `
+                    UPDATE playlist_song_list
+                    SET song_index = ?
+                    WHERE song_id = ?
+                    AND playlist_id = ?;
+                `,
+                [newIndex, songId, playlistId]
+            );
+        } catch (err) {}
     }
 }

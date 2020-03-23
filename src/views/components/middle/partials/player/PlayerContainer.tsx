@@ -12,8 +12,10 @@ import { MediaPanel } from './MediaPanel';
 import { MediaPlayer } from './MediaPlayer';
 import './PlayerContainer.style.less';
 import { Hr } from '../../../shared';
+import { by } from '../../../../utils';
 
 type Props = {
+    isPrefsOpen: boolean;
     status: string;
     pointer: number;
     waitBetween: number;
@@ -33,10 +35,11 @@ type Props = {
     handleAction: (
         action: HandlerAction | StateHandlerAction,
         payload?: any
-    ) => void;
+    ) => Promise<void>;
 };
 
 export function PlayerContainer({
+    isPrefsOpen,
     handleAction,
     status,
     pointer,
@@ -53,9 +56,9 @@ export function PlayerContainer({
     setCurrentTime,
     loop,
     random,
+    waitBetween,
 }: Props) {
     const size = 20;
-
     return (
         <ContainerDiv>
             <MediaPlayer
@@ -68,7 +71,11 @@ export function PlayerContainer({
                 forward={forward}
                 setCurrentTime={setCurrentTime}
                 getCurrentTime={getCurrentTime}
-                song={current?.nested[pointer] as ISong}
+                song={
+                    (current?.nested as ISong[])
+                        ?.slice()
+                        ?.sort((a, b) => by(a, b, 'song_index'))?.[pointer]
+                }
                 status={status}
                 pointer={pointer}
                 size={`${size}px`}
@@ -76,6 +83,8 @@ export function PlayerContainer({
             />
             <Hr />
             <MediaPanel
+                waitBetween={waitBetween}
+                isPrefsOpen={isPrefsOpen}
                 random={random}
                 pointer={pointer}
                 addSongModal={addSongModal}

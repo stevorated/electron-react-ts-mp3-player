@@ -24,6 +24,9 @@ export function Dropzone({ hide, height, width, handleDrop }: Props) {
 
     const style = {
         display: !hide ? 'flex' : 'none',
+        justifyContent: 'center',
+        alignItems: 'center',
+        opacity: '50%',
     };
 
     return (

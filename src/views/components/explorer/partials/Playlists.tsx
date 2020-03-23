@@ -14,7 +14,7 @@ type Props = {
     handleAction: (
         action: HandlerAction | StateHandlerAction,
         payload?: any
-    ) => void;
+    ) => Promise<void>;
 };
 
 export function Playlists(props: Props) {

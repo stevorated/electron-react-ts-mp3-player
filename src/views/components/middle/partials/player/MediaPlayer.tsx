@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 import { ISong } from '@services/db';
 
-import { Volume, Seek } from './partials';
+import { Volume, Seek } from './player.partials';
 import { Controls } from './Controls';
 
 type Props = {
@@ -52,6 +52,9 @@ export function MediaPlayer({
 
         setSeek(false);
         setCurrentTime(pos);
+        // if(song?.length === pos) {
+        //     nextsong()
+        // }
     };
 
     const handleChangePos = (e: React.ChangeEvent<HTMLInputElement>) => {

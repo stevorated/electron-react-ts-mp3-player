@@ -18,18 +18,14 @@ export interface Props {
     index: number;
     maxPointer: number;
     moveCard: (dragIndex: number, hoverIndex: number) => void;
-    handleSortSongs: (
-        songId: number,
-        newIndex: number,
-        oldIndex: number
-    ) => void;
+    handleSortSongs: (songId: number, newIndex: number) => void;
     pointer: number;
     status: string;
     playlistId: number;
     handleAction: (
         action: HandlerAction | StateHandlerAction,
         payload?: any
-    ) => void;
+    ) => Promise<void>;
 }
 
 interface DragItem {
@@ -76,32 +72,27 @@ export function SongContainer({
 
             if (
                 (oldPos < newPos && hoverClientY < hoverMiddleY) ||
-                newPos >= maxPointer ||
+                newPos > maxPointer ||
+                newPos < 0
+            ) {
+                item.index = oldPos;
+                return;
+            }
+            if (
+                (oldPos > newPos && hoverClientY > hoverMiddleY) ||
+                newPos > maxPointer ||
                 newPos < 0
             ) {
                 item.index = oldPos;
                 return;
             }
 
-            if (
-                (oldPos > newPos && hoverClientY > hoverMiddleY) ||
-                newPos >= maxPointer ||
-                newPos < 0
-            ) {
-                item.index = oldPos;
-                return;
-            }
-            if (newPos >= 0 && newPos <= maxPointer) {
-                moveCard(oldPos, newPos);
-                item.index = newPos;
-            }
+            moveCard(oldPos, newPos);
+            item.index = newPos;
+            handleAction('SET_STATE', { pointer: newPos });
         },
         drop(item: DragItem, _: DropTargetMonitor) {
-            handleSortSongs(
-                parseInt(item.id),
-                item.index + 1,
-                song?.song_index || -1
-            );
+            handleSortSongs(parseInt(item.id), item.index + 1);
         },
     });
 
@@ -116,7 +107,7 @@ export function SongContainer({
                 index: number;
                 rest: any[];
             };
-            handleSortSongs(parseInt(id), index + 1, song?.song_index || -1);
+            handleSortSongs(parseInt(id), index + 1);
         },
     });
 

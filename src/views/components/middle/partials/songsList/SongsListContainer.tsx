@@ -18,7 +18,7 @@ type Props = {
     handleAction: (
         action: HandlerAction | StateHandlerAction,
         payload: any
-    ) => void;
+    ) => Promise<void>;
     status: string;
 };
 

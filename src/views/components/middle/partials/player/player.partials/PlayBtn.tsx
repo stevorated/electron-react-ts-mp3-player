@@ -14,7 +14,7 @@ type Props = {
 
 export function PlayBtn({ disabled, size, status, play, pause }: Props) {
     const className = disabled ? 'disabled' : 'hoverable';
-    return status !== 'playing' ? (
+    return status !== 'playing' && status !== 'waiting...' ? (
         <Play
             className={`btn ${className}`}
             size={size}

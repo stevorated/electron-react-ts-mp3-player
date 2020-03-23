@@ -47,6 +47,24 @@ export const startupSql: string[] = [
   FOREIGN KEY("playlist_id") REFERENCES "playlists"("id") 
   );
 `,
+    `
+CREATE TABLE IF NOT EXISTS preferences ( 
+id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE, 
+wait_between BOOLEAN, 
+created_at DEFAULT CURRENT_TIMESTAMP
+);
+`,
+    `
+CREATE TABLE IF NOT EXISTS state ( 
+id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE, 
+volume BOOLEAN, 
+show_explorer BOOLEAN, 
+random BOOLEAN, 
+current_playlist_id INTEGER,
+created_at DEFAULT CURRENT_TIMESTAMP,
+FOREIGN KEY("current_playlist_id") REFERENCES "playlists"("id")
+);
+`,
     // `CREATE UNIQUE INDEX IF NOT EXISTS "ui_playlist_songs" ON "playlist_song_list" ("playlist_id", "song_id");`,
 ];
 

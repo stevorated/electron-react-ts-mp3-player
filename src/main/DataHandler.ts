@@ -51,10 +51,9 @@ export class DataHandler {
     static async sortPlaylist(
         currentPlaylistId: number,
         songId: number,
-        newIndex: number,
-        oldIndex: number
+        newIndex: number
     ) {
-        return Playlist.swap(currentPlaylistId, songId, newIndex, oldIndex);
+        return Playlist.swap(currentPlaylistId, songId, newIndex);
     }
 
     static async deletePlaylist(id: number): Promise<RunResult> {

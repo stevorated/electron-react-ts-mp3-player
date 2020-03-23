@@ -5,16 +5,14 @@ import { handleEvent } from './Ipc';
 import { parseFileName, parseMp3 } from './helpers';
 
 app.allowRendererProcessReuse = true;
-function main() {
-    DataHandler.startup().then(() => {
-        new Window({
-            // file: `${path.join(app.getAppPath(), 'index.html')}`,
-            file: `file://${__dirname}/index.html`,
-            windowSettings: {},
-        });
+async function main() {
+    await DataHandler.startup();
+    new Window({
+        file: `file://${__dirname}/index.html`,
+        windowSettings: {},
     });
 }
-
+    
 app.on('ready', main);
 
 handleEvent('DELETE_SONG', async (_, args) => {
@@ -36,13 +34,8 @@ handleEvent('SAVE_PLAYLIST', async (_, title) => {
 
 handleEvent(
     'SORT_PLAYLIST',
-    async (_, { songId, newIndex, oldIndex, currentPlaylistId }) => {
-        await DataHandler.sortPlaylist(
-            currentPlaylistId,
-            songId,
-            newIndex,
-            oldIndex
-        );
+    async (_, { songId, newIndex, currentPlaylistId }) => {
+        await DataHandler.sortPlaylist(currentPlaylistId, songId, newIndex);
 
         return true;
     }
@@ -68,13 +61,14 @@ const saveSongs = async (
     playlistId: number,
     initialIndex: number
 ) => {
+    console.log('saving songs');
     const probes = await Promise.all(
         paths.map(filePath => {
             return parseMp3(filePath);
         })
     );
 
-    const songsIdsPromises = probes.map(({ format }, index) => {
+    const songIdsPromises = probes.map(({ format }, index) => {
         return DataHandler.createSong(
             parseFileName(format.filename),
             (format.duration || 0) * 1000,
@@ -84,7 +78,7 @@ const saveSongs = async (
         );
     });
 
-    const songIds = await Promise.all(songsIdsPromises);
+    const songIds = await Promise.all(songIdsPromises);
     const res = await Promise.all(
         songIds.map(id => {
             return DataHandler.findSongById(id);

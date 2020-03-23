@@ -9,10 +9,13 @@ type Props = {
     currentPlaylistId: number;
     waitBetween: number;
     status: string;
+    showExplorer: boolean;
+    isPrefsOpen: boolean;
     loading: boolean;
     loop: boolean;
     random: boolean;
     tree: TreeListType[];
+    current: TreeListType;
     getPlayer: () => HTMLMediaElement | null;
     play: (dontRewind?: boolean) => Promise<void>;
     pause: (stop?: boolean) => void;
@@ -27,10 +30,13 @@ type Props = {
     handleAction: (
         action: HandlerAction | StateHandlerAction,
         payload: any
-    ) => void;
+    ) => Promise<void>;
 };
 
 export function MainPage({
+    isPrefsOpen,
+    showExplorer,
+    current,
     getPlayer,
     play,
     pause,
@@ -52,10 +58,6 @@ export function MainPage({
     loop,
     random,
 }: Props) {
-    const [current] = tree.filter(
-        item => item.type === 'playlist' && item.id === currentPlaylistId
-    );
-
     const resizeClass = 'move-cursor';
     const panelRef = useRef<HTMLElement>(null);
     const layoutRef = useRef<HTMLDivElement>(null);
@@ -143,6 +145,7 @@ export function MainPage({
                 className="fill-area flexbox-item-grow"
             >
                 <Explorer
+                    hide={!showExplorer}
                     panelRef={panelRef}
                     onMouseOver={handleOnMouseOver}
                     onMouseDown={handleOnMouseDown}
@@ -152,6 +155,7 @@ export function MainPage({
                 />
 
                 <Middle
+                    isPrefsOpen={isPrefsOpen}
                     addSongModal={addSongModal}
                     loading={loading}
                     flex={flex}

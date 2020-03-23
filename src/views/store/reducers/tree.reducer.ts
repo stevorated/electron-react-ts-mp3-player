@@ -28,8 +28,6 @@ export const treeReducer = (
             );
 
         case SAVE_PLAYLIST_TREE:
-            console.log(payload);
-            // return state;
             return state.map(item => {
                 if (id && id === item.id) {
                     return payload[0];

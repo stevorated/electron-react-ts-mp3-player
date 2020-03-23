@@ -18,7 +18,7 @@ function TargetBox(props: TargetBoxProps) {
                 onDrop(props, monitor);
             }
         },
-        
+
         collect: monitor => ({
             isOver: monitor.isOver(),
             canDrop: monitor.canDrop(),
@@ -28,10 +28,9 @@ function TargetBox(props: TargetBoxProps) {
     const style: React.CSSProperties = {
         padding: '2rem',
         textAlign: 'center',
-
         height: props.height ?? '20vh',
         width: props.width ?? '100%',
-        border: '2px dashed rgba(200, 200, 200, 0.2)',
+        display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
     };

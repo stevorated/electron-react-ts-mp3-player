@@ -1,7 +1,7 @@
 import path from 'path';
 
 import { BrowserWindow, BrowserWindowConstructorOptions } from 'electron';
-import MenuBuilder from './Menu';
+// import MenuBuilder from './Menu';
 
 type Props = {
     file: string;
@@ -36,7 +36,7 @@ export class Modal extends BrowserWindow {
             // new Window({ file: '' });
         });
 
-        const menuBuilder = new MenuBuilder(this);
-        menuBuilder.buildMenu();
+        // const menuBuilder = new MenuBuilder(this);
+        // menuBuilder.buildMenu();
     }
 }

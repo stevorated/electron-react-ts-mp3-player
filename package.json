@@ -21,7 +21,7 @@
         "publish": null
     },
     "scripts": {
-        "start": "yarn clean && cross-env NODE_ENV=development yarn bundle:ui && cross-env NODE_ENV=development yarn bundle:app",
+        "start": "yarn clean && yarn bundle:ui && yarn bundle:app && yarn run:electron",
         "dev": "yarn clean && concurrently \"yarn watch:ui\" \"yarn watch:app\"",
         "debug": "yarn clean && cross-env DEBUG=true concurrently \"yarn watch:ui\" \"yarn watch:app\"",
         "bundle": "yarn clean && cross-env NODE_ENV=production yarn bundle:ui && cross-env NODE_ENV=production yarn bundle:app",
@@ -32,8 +32,8 @@
         "postinstall": "electron-builder install-app-deps",
         "run:electron": "electron ./dist/index.js",
         "run:app": "electron ./dist/main/main.js",
-        "schema": "tsc --build tsconfig.main.json && node ./dist/services/db/playground.js",
-        "schema:watch": "tsc-watch --build tsconfig.main.json --onSuccess \"node ./dist/services/db/playground.js\"",
+        "schema": "yarn clean && tsc --build ./tsconfig.schema.json && node ./dist/services/db/playground.js",
+        "schema:watch": "yarn clean && tsc-watch --build ./tsconfig.schema.json --onSuccess \"node ./dist/services/db/playground.js\"",
         "scss": "node-sass scss -o html",
         "clean": "rimraf ./dist",
         "clean:build": "rimraf ./build",

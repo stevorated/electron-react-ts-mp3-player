@@ -13,8 +13,10 @@ import { Playlists } from './partials';
 import { Dropzone, Hr } from '../shared';
 
 import './Explorer.style.less';
+import { sizes, colors } from '../../assets/styles/consts';
 
 type Props = {
+    hide: boolean;
     panelRef: RefObject<HTMLElement>;
     currentPlaylistId: number;
     tree: TreeListType[];
@@ -23,10 +25,11 @@ type Props = {
     handleAction: (
         action: HandlerAction | StateHandlerAction,
         payload?: any
-    ) => void;
+    ) => Promise<void>;
 };
 
 export function Explorer({
+    hide,
     currentPlaylistId,
     tree,
     handleAction,
@@ -35,9 +38,10 @@ export function Explorer({
     panelRef,
 }: Props) {
     return (
-        <aside
+        <Aside
+            hide={hide}
             ref={panelRef}
-            className="flexbox-item-grow sidebar"
+            className="flexbox-item-grow"
             onMouseEnter={onMouseOver}
             onMouseOver={onMouseOver}
             onMouseDown={onMouseDown}
@@ -47,7 +51,7 @@ export function Explorer({
         >
             <Dropzone height="5vh" hide />
             <ExplorerBtn
-                icon={<StylePlayIcon />}
+                icon={<StyledPlayIcon />}
                 text="new playlist…"
                 onClick={() => {
                     handleAction('CREATE_PLAYLIST_TEMP');
@@ -59,13 +63,25 @@ export function Explorer({
                 tree={tree}
                 handleAction={handleAction}
             />
-        </aside>
+        </Aside>
     );
 }
 
-const StylePlayIcon = styled(FaPlusCircle)`
+const StyledPlayIcon = styled(FaPlusCircle)`
     font-size: 12px;
     margin-right: 5px;
     padding: 0px 5px;
     border-radius: 100%;
+`;
+
+const Aside = styled.aside`
+    display: ${(props: { hide?: boolean }) => props.hide && 'none'};
+    overflow-x: hidden;
+    min-width: 150px;
+    border-right: 5px solid rgba(255, 255, 255, 0.05);
+    width: ${sizes.explorerWidth};
+    padding: 10px;
+    overflow-y: auto;
+    background-color: ${colors.lightPrimaryColor};
+    color: ${colors.lightTextColor};
 `;

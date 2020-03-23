@@ -9,7 +9,7 @@ type Props = {
 };
 
 export function SongPlayBtn({ status, active, size, iconClassName }: Props) {
-    return status === 'playing' && active ? (
+    return (status === 'playing' || status === 'waiting...') && active ? (
         <FaPauseCircle
             size={size}
             className={`${iconClassName} hoverable round`}

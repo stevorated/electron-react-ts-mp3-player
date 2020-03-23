@@ -46,39 +46,12 @@ export class Ipc {
         });
     }
 
-    static sendAndReduce(
+    static listen(
         channel: Channels,
-        action: (payload: any) => void,
-        args?: any[]
+        listener: (event: Electron.IpcRendererEvent, ...args: any) => any
     ) {
-        return new Promise((resolve, reject) => {
-            const { ipcRenderer } = window.require('electron');
-
-            ipcRenderer.send(channel, args);
-
-            ipcRenderer
-                .invoke(channel)
-                .then(d => {
-                    action(d);
-                    resolve();
-                })
-                .catch(e => reject(e));
-        });
-    }
-
-    static sendAndRecieve(channel: Channels, args?: any): Promise<any> {
-        return new Promise((resolve, reject) => {
-            try {
-                const { ipcRenderer } = window.require('electron');
-
-                ipcRenderer.send(channel, args);
-
-                ipcRenderer.on(channel, (_, args) => {
-                    resolve(args);
-                });
-            } catch (err) {
-                reject(err);
-            }
-        });
+        try {
+            ipcRenderer.on(channel, listener);
+        } catch (err) {}
     }
 }

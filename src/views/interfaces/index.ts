@@ -14,6 +14,9 @@ export type HandlerAction =
 
 export type StateHandlerAction =
     | 'SWITCH_PLAYLIST'
+    | 'CHANGE_WAIT_BETWEEN'
     | 'CHANGE_SONG'
+    | 'OPEN_PREFRENCES'
+    | 'TOGGLE_SIDEBAR'
     | 'SET_STATUS'
     | 'SET_STATE';
