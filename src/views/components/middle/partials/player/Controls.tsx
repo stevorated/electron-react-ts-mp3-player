@@ -1,13 +1,15 @@
 import React from 'react';
 import styled from 'styled-components';
 
+import { StatusType } from '@views/interfaces';
+
 import { BackBtns, StopBtn, PlayBtn, ForwardBtns } from './player.partials';
 
 type Props = {
-    status: string;
     bigSize: string;
     size: string;
     noSong: boolean;
+    status: StatusType;
     play: (dontRewind?: boolean) => Promise<void>;
     pause: (stop?: boolean) => void;
     lastsong: () => void;

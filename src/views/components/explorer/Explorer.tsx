@@ -2,11 +2,7 @@ import React, { DragEvent, MouseEvent, RefObject } from 'react';
 import { FaPlusCircle } from 'react-icons/fa';
 import styled from 'styled-components';
 
-import {
-    HandlerAction,
-    TreeListType,
-    StateHandlerAction,
-} from '@views/interfaces';
+import { AllHandlerActions, TreeListType } from '@views/interfaces';
 
 import { ExplorerBtn } from './partials';
 import { Playlists } from './partials';
@@ -22,10 +18,7 @@ type Props = {
     tree: TreeListType[];
     onMouseOver: (e: DragEvent<HTMLElement>) => void;
     onMouseDown: (e: MouseEvent<HTMLElement>) => void;
-    handleAction: (
-        action: HandlerAction | StateHandlerAction,
-        payload?: any
-    ) => Promise<void>;
+    handleAction: (action: AllHandlerActions, payload?: any) => Promise<void>;
 };
 
 export function Explorer({

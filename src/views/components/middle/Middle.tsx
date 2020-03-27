@@ -1,10 +1,10 @@
 import React, { RefObject } from 'react';
 import styled from 'styled-components';
 
-import { HandlerAction, TreeListType } from '@views/interfaces';
-import { StateHandlerAction } from '@views/interfaces';
+import { AllHandlerActions } from '@views/interfaces';
+import { TreeListType, StatusType } from '@views/interfaces';
 
-import { PlayerContainer, SongsListContainer, Analyser } from './partials';
+import { PlayerContainer, SongsListContainer } from './partials';
 import { colors } from './../../assets/styles/consts';
 
 type Props = {
@@ -13,13 +13,14 @@ type Props = {
     random: boolean;
     loading: boolean;
     flex: number;
-    status: string;
     pointer: number;
     waitBetween: number;
+    status: StatusType;
     current?: TreeListType;
     mainRef: RefObject<HTMLDivElement>;
-    handleAnalyse: () => void;
-    getPlayer: () => HTMLMediaElement | null;
+    context: AudioContext | null;
+    source: MediaElementAudioSourceNode | null;
+    player: HTMLMediaElement | null;
     play: (dontRewind?: boolean) => Promise<void>;
     pause: (stop?: boolean) => void;
     nextsong: () => void;
@@ -29,15 +30,14 @@ type Props = {
     setCurrentTime: (time: number) => void;
     getCurrentTime: () => number;
     addSongModal: () => void;
-    handleAction: (
-        action: HandlerAction | StateHandlerAction,
-        payload?: any
-    ) => Promise<void>;
+    handleAction: (action: AllHandlerActions, payload?: any) => Promise<void>;
 };
 
 export function Middle({
     isPrefsOpen,
-    getPlayer,
+    player,
+    context,
+    source,
     play,
     pause,
     nextsong,
@@ -51,7 +51,6 @@ export function Middle({
     pointer,
     waitBetween,
     handleAction,
-    handleAnalyse,
     status,
     mainRef,
     flex,
@@ -64,7 +63,7 @@ export function Middle({
             <PlayerContainer
                 isPrefsOpen={isPrefsOpen}
                 handleAction={handleAction}
-                getPlayer={getPlayer}
+                player={player}
                 play={play}
                 pause={pause}
                 nextsong={nextsong}
@@ -81,9 +80,9 @@ export function Middle({
                 pointer={pointer}
                 waitBetween={waitBetween}
             />
-            <Analyser handleAnalyse={handleAnalyse} getPlayer={getPlayer} />
             <SongsListContainer
-                getPlayer={getPlayer}
+                context={context}
+                source={source}
                 loading={loading}
                 status={status}
                 handleAction={handleAction}

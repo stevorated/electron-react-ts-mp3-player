@@ -3,7 +3,7 @@ import { DndProvider } from 'react-dnd';
 import Backend from 'react-dnd-html5-backend';
 
 import { ISong } from '@services/db';
-import { HandlerAction, StateHandlerAction } from '@views/interfaces';
+import { AllHandlerActions, StatusType } from '@views/interfaces';
 
 import { Songs } from './Songs';
 import { SongContainerDropZone } from './SongContainerDropZone';
@@ -13,12 +13,9 @@ type Props = {
     loading: boolean;
     songs: ISong[];
     pointer: number;
-    status: string;
+    status: StatusType;
     playlistId: number;
-    handleAction: (
-        action: HandlerAction | StateHandlerAction,
-        payload?: any
-    ) => Promise<void>;
+    handleAction: (action: AllHandlerActions, payload?: any) => Promise<void>;
 };
 
 export function SongsContainer({

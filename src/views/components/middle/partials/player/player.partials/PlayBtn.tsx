@@ -2,11 +2,13 @@ import React from 'react';
 import styled from 'styled-components';
 import { FaPlay, FaPause } from 'react-icons/fa';
 
+import { StatusType } from '@views/interfaces';
+
 import { btnStyle } from '../../../../shared';
 
 type Props = {
     disabled: boolean;
-    status: string;
+    status: StatusType;
     size: string;
     play: () => Promise<void>;
     pause: (stop?: boolean) => void;

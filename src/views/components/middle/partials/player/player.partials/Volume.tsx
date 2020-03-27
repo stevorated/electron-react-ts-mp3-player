@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { RangeInput, disableable } from '../../../../shared';
+import { RangeInput, disableable, Tooltip } from '../../../../shared';
 
 import {
     IoIosVolumeHigh,
@@ -62,20 +62,34 @@ export function Volume({
                 className={className}
             />
         );
+
+    const tooltipText = `${Math.round(
+        (currentVolume || 0) * 100
+    )?.toString()}%`;
+
     return (
         <ContainerDiv>
-            <VolumeIcon
-                disabled={disabled}
-                size="30px"
-                style={{ marginRight: '5px', transition: 'all 0.4s ease' }}
-            />
-            <RangeInput
-                disabled={disabled}
-                type="range"
-                max={100}
-                value={(currentVolume && currentVolume * 100) || volume}
-                onChange={handleChangeVolume}
-            />
+            <Tooltip
+                tooltipText={tooltipText}
+                style={{
+                    display: 'flex',
+                    flexWrap: 'nowrap',
+                    alignItems: 'center',
+                }}
+            >
+                <VolumeIcon
+                    disabled={disabled}
+                    size="30px"
+                    style={{ marginRight: '5px', transition: 'all 0.4s ease' }}
+                />
+                <RangeInput
+                    disabled={disabled}
+                    type="range"
+                    max={100}
+                    value={(currentVolume && currentVolume * 100) || volume}
+                    onChange={handleChangeVolume}
+                />
+            </Tooltip>
         </ContainerDiv>
     );
 }
@@ -83,9 +97,10 @@ export function Volume({
 const ContainerDiv = styled.div`
     display: flex;
     align-items: center;
-    justify-content: flex-end;
+    justify-content: center;
     transition: all 0.4s ease;
-    flex: 1;
+    width: 18%;
+    /* flex: 0.8; */
 `;
 
 const StyledHigh = styled(IoIosVolumeHigh)`

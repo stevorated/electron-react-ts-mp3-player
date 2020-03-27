@@ -3,11 +3,7 @@ import { FaFolderOpen, FaFolder } from 'react-icons/fa';
 
 import { Playlist } from './Playlist';
 import { TreeItemBox } from './TreeItemBox';
-import {
-    TreeListType,
-    HandlerAction,
-    StateHandlerAction,
-} from '../../../interfaces';
+import { TreeListType, AllHandlerActions } from '../../../interfaces';
 
 type Props = {
     nestedItems: TreeListType[];
@@ -15,10 +11,7 @@ type Props = {
     title: string;
     id?: number;
     item: TreeListType;
-    handleAction: (
-        action: HandlerAction | StateHandlerAction,
-        payload?: any
-    ) => Promise<void>;
+    handleAction: (action: AllHandlerActions, payload?: any) => Promise<void>;
 };
 
 export function Folder(props: Props) {

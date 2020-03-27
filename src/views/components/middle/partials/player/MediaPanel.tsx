@@ -3,11 +3,11 @@ import styled from 'styled-components';
 import { FaRandom, FaUndo, FaFolderPlus } from 'react-icons/fa';
 
 import { ISong } from '@services/db';
-import { HandlerAction, StateHandlerAction } from '@views/interfaces';
+import { AllHandlerActions } from '@views/interfaces';
 
 import { colors } from '../../../../assets/styles/consts';
 import { PreferencesBtn } from './panel.partials';
-import { by } from './../../../../utils/sort';
+import { by } from '../../../../utils/shared/sort';
 
 type Props = {
     isPrefsOpen: boolean;
@@ -18,10 +18,7 @@ type Props = {
     playlistTitle?: string;
     songs?: ISong[];
     addSongModal: () => void;
-    handleAction: (
-        action: HandlerAction | StateHandlerAction,
-        payload?: any
-    ) => Promise<void>;
+    handleAction: (action: AllHandlerActions, payload?: any) => Promise<void>;
 };
 
 export function MediaPanel({
@@ -36,7 +33,8 @@ export function MediaPanel({
     isPrefsOpen,
 }: Props) {
     const statusClass = playlistTitle ? 'hoverable' : 'disabled';
-
+    const title = songs?.sort((a, b) => by(a, b, 'song_index'))?.[pointer]
+        ?.title;
     return (
         <ContainerDiv className="container-audio current-song-container">
             <PreferencesBtn
@@ -51,12 +49,7 @@ export function MediaPanel({
                 style={{ bottom: '5px', left: '45px' }}
             />
             <TitleText className="centered hide">{playlistTitle}</TitleText>
-            <TitleText className="centered">
-                {
-                    songs?.sort((a, b) => by(a, b, 'song_index'))?.[pointer]
-                        ?.title
-                }
-            </TitleText>
+            <TitleText className="centered">{title}</TitleText>
             <FaUndo
                 className={`btn action-icon ${statusClass} ${
                     loop ? 'active' : ''
@@ -76,12 +69,25 @@ export function MediaPanel({
 }
 
 const ContainerDiv = styled.div`
+    width: 97%;
+    min-height: fit-content;
+    border-radius: 5px;
+    color: #d4d4d4;
+    margin: 0px auto;
+    padding-bottom: 0;
+    overflow: hidden;
     position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: row;
     min-height: 42px;
+
+    .active {
+        color: ${colors.activeTextColor};
+        background-color: rgba(180, 40, 40, 0.6);
+        font-weight: 700;
+    }
 `;
 
 const TitleText = styled.h4`

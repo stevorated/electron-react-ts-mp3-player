@@ -151,6 +151,7 @@ const TreeItemTitle = styled.div`
     flex-direction: row;
     justify-content: flex-start;
     align-items: baseline;
+    transition: all 0.1s ease;
 `;
 
 const TitleDiv = styled.div`

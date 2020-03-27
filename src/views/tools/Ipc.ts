@@ -1,5 +1,8 @@
-import { Channels } from '../../main';
 import { ipcRenderer } from 'electron';
+
+import { AllHandlerActions } from '@views/interfaces';
+
+import { Channels } from '../../main';
 import { HandlerAction } from '../interfaces';
 
 export class Ipc {
@@ -50,8 +53,43 @@ export class Ipc {
         channel: Channels,
         listener: (event: Electron.IpcRendererEvent, ...args: any) => any
     ) {
-        try {
-            ipcRenderer.on(channel, listener);
-        } catch (err) {}
+        return ipcRenderer.on(channel, listener);
     }
 }
+
+export const setupListeners = async (
+    handler: (action: AllHandlerActions, payload?: any) => Promise<void>,
+    player: HTMLAudioElement | null
+) => {
+    Ipc.listen('MENU_ADD_SONG', async () => handler('ADD_SONG_MODAL'));
+
+    Ipc.listen('MENU_SAVE_PLAYLIST', async () =>
+        handler('CREATE_PLAYLIST_TEMP')
+    );
+
+    Ipc.listen('MENU_OPEN_PREFRENCES', async () => handler('OPEN_PREFRENCES'));
+
+    Ipc.listen('MENU_TOGGLE_SIDEBAR', async () => handler('TOGGLE_SIDEBAR'));
+
+    Ipc.listen('ACC_PLAY_PAUSE', async () => handler('ACC_PLAY_PAUSE'));
+
+    Ipc.listen('ACC_FF', async () => handler('ACC_FF'));
+
+    Ipc.listen('ACC_REWIND', async () => handler('ACC_REWIND'));
+
+    Ipc.listen('ACC_DOWN', async () => {
+        if (!player) {
+            return;
+        }
+
+        await handler('SET_VOLUME', player.volume - 0.05);
+    });
+
+    Ipc.listen('ACC_UP', async () => {
+        if (!player) {
+            return;
+        }
+
+        await handler('SET_VOLUME', player.volume + 0.05);
+    });
+};

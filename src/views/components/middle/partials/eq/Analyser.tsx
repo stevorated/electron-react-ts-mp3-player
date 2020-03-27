@@ -1,29 +1,32 @@
-import React, { useState, useEffect } from 'react';
-import { Hr } from '../../../shared';
+import React, { useRef } from 'react';
+import { colors } from '../../../../assets/styles/consts';
 
 type Props = {
-    handleAnalyse: () => void;
-    getPlayer: () => HTMLAudioElement | null;
+    source: MediaElementAudioSourceNode | null;
+    context: AudioContext | null;
 };
 
 export function Analyser({}: Props) {
-    const [first, setFirst] = useState(true);
-    // const canvas = useRef<HTMLCanvasElement>(null);
-    if (first) {
-        setFirst(false);
-    }
+    const canvasRef = useRef<HTMLCanvasElement>(null);
 
-    useEffect(() => {
-        // handleAnalyse();
-    });
+    // let ctx: CanvasRenderingContext2D | null = null;
+    // let analyser: AnalyserNode | null;
+    // let fbcArray: Uint8Array;
+    // let bars: number = 100;
+    // let barX: number;
+    // let barWidth: number;
+    // let barHeight: number;
 
     return (
-        <div className="canvas-container container-audio centered hide">
-            <div id="mp3_player">
-                <div id="audio_box"></div>
-                <canvas id="analyser_render"></canvas>
-            </div>
-            <Hr />
-        </div>
+        <canvas
+            ref={canvasRef}
+            style={{
+                border: `2px ${colors.lightTextColor} dotted`,
+                display: 'flex',
+                flex: 1,
+                justifyContent: 'center',
+                alignItems: 'center',
+            }}
+        />
     );
 }

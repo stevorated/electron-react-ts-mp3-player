@@ -3,19 +3,19 @@ import { ISong } from './../interfaces';
 import { SqliteDAO } from '../SqliteDAO';
 
 export class Song extends Model {
-    static find(songId?: number): Promise<ISong[]> {
+    static find(id?: number): Promise<ISong[]> {
         return new Promise((resolve, reject) => {
             let where = '';
-            const params = [];
-            if (songId) {
+            const params: string[] = [];
+            if (id) {
                 where = 'WHERE id = ?';
-                params.push(songId.toString());
+                params.push(id.toString());
             }
             const sql = `SELECT * FROM songs ${where};`;
 
             SqliteDAO.all<ISong>(sql, params)
                 .then(data => {
-                    this.logInfo('find', { data });
+                    this.logInfo('find', { data, sql, params });
 
                     resolve(data);
                 })

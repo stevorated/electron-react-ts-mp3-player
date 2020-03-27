@@ -1,9 +1,18 @@
 import { Model } from './Model';
 import { ISong, IPlaylist } from '../interfaces';
 import { SqliteDAO } from '../SqliteDAO';
-import { Statement } from 'sqlite3';
+import { Statement, RunResult } from 'sqlite3';
+import { Query } from './../utils/Query';
 
 export class Playlist extends Model {
+    static async create(entity: Partial<IPlaylist>): Promise<RunResult> {
+        const count = await this.count({ parent: null });
+        return super.create<IPlaylist>({
+            ...entity,
+            playlist_index: count + 1,
+        });
+    }
+
     static pushItem(
         songId: number,
         playlistId: number,
@@ -21,7 +30,7 @@ export class Playlist extends Model {
                     resolve(data);
                 })
                 .catch(error => {
-                    this.logInfo('pushItem', { error });
+                    this.logError('pushItem', { error });
                     reject(error);
                 });
         });
@@ -115,15 +124,16 @@ export class Playlist extends Model {
 
     static countItems(playlistId: string): Promise<number> {
         return new Promise((resolve, reject) => {
-            SqliteDAO.get<{ count: number }>(
-                `
-        SELECT COUNT(*) count FROM playlist_song_list WHERE playlist_id = ? ;
-      `,
-                [playlistId]
-            )
+            const sql = `
+            SELECT COUNT(*) count FROM playlist_song_list WHERE playlist_id = ? ;
+          `;
+
+            SqliteDAO.get<{ count: number }>(sql, [playlistId])
                 .then(({ count }) => {
                     this.logInfo('countItems', {
                         data: `${count} items found.`,
+                        sql,
+                        params: [playlistId],
                     });
                     resolve(count);
                 })
@@ -243,6 +253,83 @@ export class Playlist extends Model {
                 `,
                 [newIndex, songId, playlistId]
             );
+
+            this.logInfo('swap', { sql });
         } catch (err) {}
+    }
+
+    static count(entity?: Partial<IPlaylist>): Promise<number> {
+        return new Promise((resolve, reject) => {
+            if (!entity) {
+                const sql = `SELECT COUNT(*) as count FROM ${this.name}s ORDER BY id;`;
+                SqliteDAO.get<{ count: number }>(sql, [])
+                    .then(({ count }) => {
+                        this.logInfo('count', { count, sql, params: [] });
+
+                        resolve(count);
+                    })
+                    .catch(error => {
+                        this.logError('count', { error });
+                        reject(error);
+                    });
+            } else {
+                const { where, params } = Query.parseWheresAndNulls(entity);
+                const sql = `SELECT COUNT(*) as count FROM ${this.name}s ${where} ORDER BY id;`;
+
+                SqliteDAO.get<{ count: number }>(sql, params)
+                    .then(({ count }) => {
+                        this.logInfo('count', { count, sql, params });
+
+                        resolve(count);
+                    })
+                    .catch(error => {
+                        this.logError('count', { error });
+                        reject(error);
+                    });
+            }
+        });
+    }
+
+    static async removeById(id: number): Promise<RunResult> {
+        const deleteList = await super.removeById(id);
+
+        const { changes } = deleteList;
+
+        const songIds = await SqliteDAO.all<{ song_id: number }>(
+            'SELECT song_id FROM playlist_song_list WHERE playlist_id = ?;',
+            [id.toString()]
+        );
+
+        if (!changes || songIds.length === 0) {
+            this.logInfo('removeById', {
+                deleteList,
+            });
+            return deleteList;
+        }
+
+        const deleteAssocs = await SqliteDAO.run(
+            'DELETE FROM playlist_song_list WHERE playlist_id = ?;',
+            [id]
+        );
+
+        const idsToDelete = songIds.map(song => song.song_id);
+
+        const deleteSongs = await SqliteDAO.run(
+            `DELETE FROM songs WHERE ${Query.parseInFilter(
+                idsToDelete,
+                'id'
+            )};`,
+            idsToDelete
+        );
+
+        this.logInfo('removeById', {
+            playlistId: id,
+            songIds: idsToDelete,
+            deleteList,
+            deleteAssocs,
+            deleteSongs,
+        });
+
+        return deleteList;
     }
 }

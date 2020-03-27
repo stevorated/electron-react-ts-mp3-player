@@ -69,7 +69,7 @@ export class SqliteDAO {
                     reject(error);
                 }
 
-                SqliteDAO.logError('run method', { data: this });
+                SqliteDAO.logInfo('run method', { data: this });
                 resolve(this);
             });
         });
@@ -137,6 +137,7 @@ export class SqliteDAO {
                 }
             });
 
+            this.logInfo('close method', { connection: null });
             resolve(true);
         });
     }

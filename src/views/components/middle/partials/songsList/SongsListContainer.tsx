@@ -2,9 +2,8 @@ import React from 'react';
 import styled, { keyframes } from 'styled-components';
 import { FaSpinner } from 'react-icons/fa';
 
-import { HandlerAction, TreeListType } from '@views/interfaces';
-import { StateHandlerAction } from '@views/interfaces';
 import { ISong } from '@services/db';
+import { AllHandlerActions, TreeListType, StatusType } from '@views/interfaces';
 
 import { PlaylistDetailsBar } from './PlaylistDetailsBar';
 import { SongsContainer } from './songs';
@@ -14,15 +13,15 @@ type Props = {
     loading: boolean;
     current?: TreeListType;
     pointer: number;
-    getPlayer: () => HTMLMediaElement | null;
-    handleAction: (
-        action: HandlerAction | StateHandlerAction,
-        payload: any
-    ) => Promise<void>;
-    status: string;
+    context: AudioContext | null;
+    source: MediaElementAudioSourceNode | null;
+    handleAction: (action: AllHandlerActions, payload: any) => Promise<void>;
+    status: StatusType;
 };
 
 export function SongsListContainer({
+    context,
+    source,
     current,
     pointer,
     handleAction,
@@ -31,13 +30,23 @@ export function SongsListContainer({
 }: Props) {
     const { nested } = current || { nested: [] };
     const songs = nested as ISong[];
+    const songsDurations = songs.map(({ length }) => length);
+    const totalDuration = songs.length
+        ? songsDurations?.reduce((prev, current) => {
+              return prev + current;
+          })
+        : 0;
+
     return (
         <ContainerDiv>
             {current && (
                 <>
                     <PlaylistDetailsBar
+                        source={source}
+                        context={context}
                         size={songs.length || 0}
                         title={current?.title}
+                        totalDuration={totalDuration}
                     />
                     <Hr />
                     <SongsContainer

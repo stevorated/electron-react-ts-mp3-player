@@ -16,13 +16,13 @@ export function DeletePlaylistModal({
     size,
 }: Props) {
     return (
-        <CenteredTextDiv>
-            <h2>Confirm Delete</h2>
+        <CenteredTextDiv style={{ height: '220px' }}>
+            <h2>Sure?</h2>
             <Hr />
             <CenteredTextDiv>
-                <h4>
+                <h3>
                     You are about to delete "{title}"<br />({size} songs)
-                </h4>
+                </h3>
             </CenteredTextDiv>
             <h4 className="uppercase">this cannot be reversed</h4>
             <NoButton className="btn btn-white" onClick={closeModal}>

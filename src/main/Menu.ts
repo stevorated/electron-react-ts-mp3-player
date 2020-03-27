@@ -43,41 +43,44 @@ export default class MenuBuilder {
     }
 
     buildDefaultTemplate() {
-        const fileSubmenuDefault = [
-            {
-                label: '&New Playlist...',
-                accelerator: 'Ctrl+N',
-                click: () => {
-                    // console.log('New Playlist');
-                    this.mainWindow.send('MENU_SAVE_PLAYLIST');
+        const fileDefault: Electron.MenuItemConstructorOptions = {
+            label: '&File',
+            accelerator: 'Ctrl+F',
+            submenu: [
+                {
+                    label: '&New Playlist...',
+                    accelerator: 'Ctrl+N',
+                    click: () => {
+                        this.mainWindow.send('MENU_SAVE_PLAYLIST');
+                    },
                 },
-            },
-            {
-                label: '&Add Song...',
-                accelerator: 'Ctrl+S',
-                click: () => {
-                    // console.log('Add Song');
-                    this.mainWindow.send('MENU_ADD_SONG');
+                {
+                    label: '&Add Song...',
+                    accelerator: 'Ctrl+S',
+                    click: () => {
+                        this.mainWindow.send('MENU_ADD_SONG');
+                    },
                 },
-            },
-            {
-                label: '&Prefrences...',
-                accelerator: 'Ctrl+S',
-                click: () => {
-                    // console.log('Prefrences');
-                    this.mainWindow.send('MENU_OPEN_PREFRENCES');
+                { type: 'separator' },
+                {
+                    label: '&Prefrences...',
+                    accelerator: 'Ctrl+,',
+                    click: () => {
+                        this.mainWindow.send('MENU_OPEN_PREFRENCES');
+                    },
                 },
-            },
-            {
-                label: '&Close',
-                accelerator: 'Ctrl+W',
-                click: () => {
-                    this.mainWindow.close();
+                { type: 'separator' },
+                {
+                    label: '&Close',
+                    accelerator: 'Ctrl+W',
+                    click: () => {
+                        this.mainWindow.close();
+                    },
                 },
-            },
-        ];
+            ],
+        };
 
-        const viewDevMenu =
+        const viewDevMenu: Electron.MenuItemConstructorOptions[] =
             process.env.NODE_ENV === 'development' ||
             process.env.DEBUG_PROD === 'true'
                 ? [
@@ -99,27 +102,25 @@ export default class MenuBuilder {
                 : [];
 
         const templateDefault: Electron.MenuItemConstructorOptions[] = [
-            {
-                label: '&File',
-                submenu: fileSubmenuDefault,
-            },
+            fileDefault,
             {
                 label: '&View',
                 type: 'submenu',
                 submenu: [
                     {
+                        label: 'Toggle &Full Screen',
+                        accelerator: 'F11',
+                        click: () => {
+                            this.mainWindow.setFullScreen(
+                                !this.mainWindow.isFullScreen()
+                            );
+                        },
+                    },
+                    { type: 'separator' },
+                    {
                         label: 'Appearance',
                         type: 'submenu',
                         submenu: [
-                            {
-                                label: 'Toggle &Full Screen',
-                                accelerator: 'F11',
-                                click: () => {
-                                    this.mainWindow.setFullScreen(
-                                        !this.mainWindow.isFullScreen()
-                                    );
-                                },
-                            },
                             {
                                 label: 'Show Sidebar',
                                 accelerator: 'Ctrl+B',
@@ -136,7 +137,7 @@ export default class MenuBuilder {
                 ],
             },
             {
-                label: 'About',
+                label: '&About',
                 submenu:
                     process.env.NODE_ENV === 'development' ||
                     process.env.DEBUG_PROD === 'true'

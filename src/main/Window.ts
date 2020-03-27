@@ -1,6 +1,7 @@
 import path from 'path';
-
+import electronLocalshortcut from 'electron-localshortcut';
 import { BrowserWindow, BrowserWindowConstructorOptions } from 'electron';
+
 import MenuBuilder from './Menu';
 import { Channels } from '.';
 import { Logger } from '../logger';
@@ -33,20 +34,31 @@ export class Window extends BrowserWindow {
             this.webContents.openDevTools();
         }
 
-        this.once('ready-to-show', () => {
-            this.show();
-        });
-
-        this.on('close', () => {
-            // new Window({ file: '' });
-        });
-
         const menuBuilder = new MenuBuilder(this);
         menuBuilder.buildMenu();
+
+        electronLocalshortcut.register(this, 'Ctrl+P', () => {
+            this.send('ACC_PLAY_PAUSE');
+        });
+
+        electronLocalshortcut.register(this, 'Right', () => {
+            this.send('ACC_FF');
+        });
+
+        electronLocalshortcut.register(this, 'Left', () => {
+            this.send('ACC_REWIND');
+        });
+
+        electronLocalshortcut.register(this, 'Down', () => {
+            this.send('ACC_DOWN');
+        });
+
+        electronLocalshortcut.register(this, 'Up', () => {
+            this.send('ACC_UP');
+        });
     }
 
     send = (channel: Channels, ...args: any) => {
-        console.log(channel);
         this.logger.info(`Ipc Send - ${channel}`, { data: args });
         this.webContents.send(channel, ...args);
     };

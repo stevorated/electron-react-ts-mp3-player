@@ -1,24 +1,25 @@
 import React, { ReactNode, useState, useEffect, useRef } from 'react';
 import ReactModal from 'react-modal';
 import styled, { CSSObject } from 'styled-components';
-
 import { ExplorerBtn } from '../explorer/partials/ExplorerBtn';
+
+import './modal.style.less';
 
 type Props = {
     modalLabel: string;
     buttonText: string;
     modalTitle?: string;
-    buttonIcon?: ReactNode;
-    children?: ReactNode;
-    button?: ReactNode;
-    handleAfterModal?: () => void;
     isOpen?: boolean;
-    handleClosing?: () => void;
     top?: number;
     left?: number;
     width?: number;
     height?: number;
+    buttonIcon?: ReactNode;
+    button?: ReactNode;
+    children?: ReactNode;
     customStyles?: CSSObject;
+    handleClosing?: () => void;
+    handleAfterModal?: () => void;
 };
 
 ReactModal.setAppElement('#root');
@@ -46,20 +47,20 @@ export function Modal({
 
     const styles = {
         overlay: {
-            background: 'rgba(255, 255, 255, 0.05)',
+            background: 'rgba(0, 0, 0, .6)',
         },
         content: {
             background: 'rgba(0, 0, 0, 0.9)',
             color: 'white',
             top: top || top === 0 ? topS : '50%',
             left: left || left === 0 ? leftS : '50%',
-            minWidth: '280px',
-            maxWidth: width ? `${width}px` : '340px',
+            height: height ? `${height}px` : '230px',
             width: width ? `${width}px` : '340px',
-            maxHeight: height ? `${height}px` : '250px',
+            // maxHeight: height ? `${height}px` : '250px',
             border: '3px solid rgba(255, 255,255, 0.6)',
-            borderRadious: '3px',
+            borderRadious: '1px',
             boxShadow: '-5px 7px 42px 0px rgba(0, 0, 0, 0.75)',
+            bottom: undefined,
             ...customStyles,
         },
     };
@@ -73,12 +74,9 @@ export function Modal({
     }
 
     const modalBodyRef = useRef<ReactModal>(null);
+    // const modalRootRef = useRef<HTMLDivElement>(null);
 
-    useEffect(() => {
-        if (isOpen) {
-            animateCSS(document.getElementById('modal-root'), 'fade-in');
-        }
-    }, [isOpen]);
+    useEffect(() => {}, []);
 
     return (
         <div id="modal-root">
@@ -94,6 +92,7 @@ export function Modal({
                 </div>
             )}
             <ReactModal
+                closeTimeoutMS={500}
                 ref={modalBodyRef}
                 isOpen={isOpen ?? modalIsOpen}
                 onAfterOpen={handleAfterModal}
@@ -108,19 +107,6 @@ export function Modal({
             </ReactModal>
         </div>
     );
-}
-
-function animateCSS(element: any, animationName: string, callback?: () => {}) {
-    element.classList.add('animated', animationName);
-
-    function handleAnimationEnd() {
-        element.classList.remove('animated', animationName);
-        element.removeEventListener('animationend', handleAnimationEnd);
-
-        if (typeof callback === 'function') callback();
-    }
-
-    element.addEventListener('animationend', handleAnimationEnd);
 }
 
 const ModalContainer = styled.div`

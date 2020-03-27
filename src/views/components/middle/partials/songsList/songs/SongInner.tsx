@@ -1,7 +1,7 @@
 import React, { RefObject } from 'react';
 import styled from 'styled-components';
 
-import { HandlerAction, StateHandlerAction } from '@views/interfaces';
+import { AllHandlerActions } from '@views/interfaces';
 import { ISong } from '@services/db/interfaces';
 
 import { formatMillsToTime } from '../../../../../utils';
@@ -21,10 +21,7 @@ type Props = {
     setNewTitle: (title: string) => void;
     setIsEditable: (editable: boolean) => void;
     handleSave: () => void;
-    handleAction: (
-        action: HandlerAction | StateHandlerAction,
-        payload?: any
-    ) => Promise<void>;
+    handleAction: (action: AllHandlerActions, payload?: any) => Promise<void>;
 };
 
 export function SongInner({

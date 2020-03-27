@@ -24,7 +24,7 @@ const ExplorerBtnContainer = styled.div`
     flex-direction: row;
     align-items: center;
     margin-top: 10px;
-    height: 2.5rem;
+    height: 1.8rem;
     width: 90%;
 `;
 

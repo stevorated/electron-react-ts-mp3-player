@@ -1,8 +1,10 @@
 import React from 'react';
 import { FaPauseCircle, FaPlayCircle } from 'react-icons/fa';
 
+import { StatusType } from '@views/interfaces';
+
 type Props = {
-    status: string;
+    status: StatusType;
     active: boolean;
     size: string;
     iconClassName: string;

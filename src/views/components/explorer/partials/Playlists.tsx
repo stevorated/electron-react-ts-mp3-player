@@ -2,19 +2,12 @@ import React from 'react';
 import { Playlist } from './Playlist';
 import { Folder } from './Folder';
 
-import {
-    TreeListType,
-    HandlerAction,
-    StateHandlerAction,
-} from '../../../interfaces';
+import { TreeListType, AllHandlerActions } from '../../../interfaces';
 
 type Props = {
     currentPlaylistId: number;
     tree: TreeListType[];
-    handleAction: (
-        action: HandlerAction | StateHandlerAction,
-        payload?: any
-    ) => Promise<void>;
+    handleAction: (action: AllHandlerActions, payload?: any) => Promise<void>;
 };
 
 export function Playlists(props: Props) {

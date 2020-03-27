@@ -1,25 +1,48 @@
 import React from 'react';
 import styled from 'styled-components';
+import dayjs from 'dayjs';
 
 import { colors } from '../../../../assets/styles/consts';
 import img from '../../../../assets/img/Record-Album-02.jpg';
+import { Analyser } from '..';
 
 type Props = {
     title?: string;
     size: number;
+    totalDuration?: number;
+    context: AudioContext | null;
+    source: MediaElementAudioSourceNode | null;
 };
 
-export function PlaylistDetailsBar({ title, size }: Props) {
+export function PlaylistDetailsBar({
+    title,
+    size,
+    totalDuration,
+    source,
+    context,
+}: Props) {
     return (
-        <ContainerDiv>
-            <ImageDiv>
-                <Image src={img} alt="" />
-            </ImageDiv>
-            <Title>
-                {title}
-                <SmallTitle>{size} songs</SmallTitle>
-            </Title>
-        </ContainerDiv>
+        <div style={{ display: 'flex' }}>
+            <ContainerDiv>
+                <ImageDiv>
+                    <Image src={img} alt={title} />
+                </ImageDiv>
+                <Title>
+                    <TextContainer>{title}</TextContainer>
+                    <TextContainer>
+                        <SmallTitle>{size} songs</SmallTitle>
+                    </TextContainer>
+                    <TextContainer>
+                        <SmallTitle>
+                            {totalDuration
+                                ? dayjs(totalDuration).format('mm:ss')
+                                : '--:--'}
+                        </SmallTitle>
+                    </TextContainer>
+                </Title>
+            </ContainerDiv>
+            <Analyser source={source} context={context} />
+        </div>
     );
 }
 
@@ -59,7 +82,14 @@ const Title = styled.h3`
 const SmallTitle = styled.small`
     color: ${colors.mediumTextColor};
     padding-top: 0;
-    padding-left: 4px;
+    /* padding-left: 6px; */
     font-size: 10px;
-    text-align: center;
+    text-align: 'start';
+`;
+
+const TextContainer = styled.div`
+    margin: 4px 0;
+    display: flex;
+    justifyself: start;
+    alignitems: floor;
 `;

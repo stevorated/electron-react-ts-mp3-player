@@ -1,6 +1,7 @@
 import { SqliteDAO } from '..';
 import { RunResult } from 'sqlite3';
 import { Logger } from '../../../logger';
+import { Query } from './../utils/Query';
 
 export abstract class Model {
     private static logger = new Logger('database');
@@ -17,12 +18,12 @@ export abstract class Model {
         this.logger.info(`${this.name.toLowerCase()} ${desc} `, meta);
     }
 
-    static async create<T>(entity: T): Promise<RunResult> {
+    static async create<T>(entity: Partial<T>): Promise<RunResult> {
         return new Promise((resolve, reject) => {
             let fields = '(';
             let values = 'VALUES (';
             const entries = Object.entries(entity);
-            const params = Object.values(entity);
+            const params: (string | number)[] = Object.values(entity);
             for (let i = 0; i < entries.length; i++) {
                 fields += `"${entries[i][0]}"`;
                 values += ` ?`;
@@ -39,7 +40,7 @@ export abstract class Model {
 
             SqliteDAO.run(sql, params)
                 .then(data => {
-                    this.logInfo('create', { data });
+                    this.logInfo('create', { data, sql, params });
                     resolve(data);
                 })
                 .catch((error: Error) => {
@@ -83,7 +84,7 @@ export abstract class Model {
 
             SqliteDAO.run(sql, [...params, id])
                 .then(data => {
-                    this.logInfo('updateById', { data });
+                    this.logInfo('updateById', { data, sql, params, id });
                     resolve(data);
                 })
                 .catch(error => {
@@ -102,33 +103,16 @@ export abstract class Model {
                 this.logger.warn(`${this.name.toLowerCase()}s no payload`);
                 reject('no payload!');
             }
-            let fields = '';
-            let where = 'WHERE ';
-
-            const whereKeys = Object.keys(by);
-            const whereValues = Object.values(by);
-
-            for (let i = 0; i < whereKeys.length; i++) {
-                where += `${whereKeys[i]} = ? `;
-                if (i < whereKeys.length - 1) {
-                    where += 'AND ';
-                }
-            }
 
             const keys = Object.keys(payload);
-            const params = Object.values(payload) as (string | number)[];
 
             if (keys.length === 0) {
                 throw new Error('[Error]: cannot update without payload');
             }
 
-            for (let i = 0; i < keys.length; i++) {
-                fields += `"${keys[i]}" = ?`;
-
-                if (i !== keys.length - 1) {
-                    fields += ', ';
-                }
-            }
+            const whereValues = Object.values(by);
+            const { where, params } = Query.parseWheresAndNulls(by);
+            const { fields } = Query.parseFields(by);
 
             const sql = `UPDATE ${this.name.toLowerCase()}s SET ${fields} ${
                 where !== 'WHERE ' ? where : ''

@@ -2,14 +2,11 @@ import React from 'react';
 import { Tab } from './Tab';
 import { Select } from './Select';
 import { Text } from './Text';
-import { HandlerAction, StateHandlerAction } from '@views/interfaces';
+import { AllHandlerActions } from '@views/interfaces';
 
 type Props = {
     waitBetween: number;
-    handleAction: (
-        action: HandlerAction | StateHandlerAction,
-        payload?: any
-    ) => Promise<void>;
+    handleAction: (action: AllHandlerActions, payload?: any) => Promise<void>;
 };
 
 export function PlaybackPrefs({ waitBetween, handleAction }: Props) {

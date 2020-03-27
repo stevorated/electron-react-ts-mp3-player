@@ -3,7 +3,7 @@ import { useDrag, useDrop, DropTargetMonitor } from 'react-dnd';
 import { XYCoord } from 'dnd-core';
 
 import { ISong } from '@services/db';
-import { HandlerAction, StateHandlerAction } from '@views/interfaces';
+import { AllHandlerActions, StatusType } from '@views/interfaces';
 
 import ItemTypes from './ItemTypes';
 import { Song } from './Song';
@@ -20,12 +20,9 @@ export interface Props {
     moveCard: (dragIndex: number, hoverIndex: number) => void;
     handleSortSongs: (songId: number, newIndex: number) => void;
     pointer: number;
-    status: string;
+    status: StatusType;
     playlistId: number;
-    handleAction: (
-        action: HandlerAction | StateHandlerAction,
-        payload?: any
-    ) => Promise<void>;
+    handleAction: (action: AllHandlerActions, payload?: any) => Promise<void>;
 }
 
 interface DragItem {

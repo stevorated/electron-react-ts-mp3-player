@@ -2,21 +2,23 @@ import React, { useState, MouseEvent, useRef } from 'react';
 
 import { Explorer, Middle, Info, Status } from '../components';
 import { TreeListType } from '../interfaces';
-import { HandlerAction, StateHandlerAction } from '../interfaces';
+import { AllHandlerActions, StatusType } from '../interfaces';
 
 type Props = {
     pointer: number;
     currentPlaylistId: number;
     waitBetween: number;
-    status: string;
+    status: StatusType;
     showExplorer: boolean;
     isPrefsOpen: boolean;
     loading: boolean;
     loop: boolean;
     random: boolean;
     tree: TreeListType[];
-    current: TreeListType;
-    getPlayer: () => HTMLMediaElement | null;
+    current?: TreeListType;
+    player: HTMLMediaElement | null;
+    source: MediaElementAudioSourceNode | null;
+    context: AudioContext | null;
     play: (dontRewind?: boolean) => Promise<void>;
     pause: (stop?: boolean) => void;
     nextsong: () => void;
@@ -26,18 +28,16 @@ type Props = {
     getCurrentTime: () => number;
     setCurrentTime: (time: number) => void;
     addSongModal: () => void;
-    handleAnalyse: () => void;
-    handleAction: (
-        action: HandlerAction | StateHandlerAction,
-        payload: any
-    ) => Promise<void>;
+    handleAction: (action: AllHandlerActions, payload: any) => Promise<void>;
 };
 
 export function MainPage({
+    context,
+    source,
     isPrefsOpen,
     showExplorer,
     current,
-    getPlayer,
+    player,
     play,
     pause,
     nextsong,
@@ -48,7 +48,6 @@ export function MainPage({
     setCurrentTime,
     addSongModal,
     handleAction,
-    handleAnalyse,
     tree,
     currentPlaylistId,
     pointer,
@@ -160,7 +159,9 @@ export function MainPage({
                     loading={loading}
                     flex={flex}
                     mainRef={mainRef}
-                    getPlayer={getPlayer}
+                    player={player}
+                    context={context}
+                    source={source}
                     play={play}
                     pause={pause}
                     nextsong={nextsong}
@@ -176,7 +177,6 @@ export function MainPage({
                     random={random}
                     waitBetween={waitBetween}
                     handleAction={handleAction}
-                    handleAnalyse={handleAnalyse}
                 />
                 <Info />
             </div>

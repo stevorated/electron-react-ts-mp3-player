@@ -2,27 +2,24 @@ import React from 'react';
 import styled from 'styled-components';
 
 import { ISong } from '@services/db';
-import {
-    TreeListType,
-    HandlerAction,
-    StateHandlerAction,
-} from '@views/interfaces';
+import { TreeListType, StatusType, AllHandlerActions } from '@views/interfaces';
 
 import { MediaPanel } from './MediaPanel';
 import { MediaPlayer } from './MediaPlayer';
-import './PlayerContainer.style.less';
 import { Hr } from '../../../shared';
 import { by } from '../../../../utils';
 
+import './PlayerContainer.style.less';
+
 type Props = {
     isPrefsOpen: boolean;
-    status: string;
+    status: StatusType;
     pointer: number;
     waitBetween: number;
     loop: boolean;
     random: boolean;
     current?: TreeListType;
-    getPlayer: () => HTMLMediaElement | null;
+    player: HTMLMediaElement | null;
     play: (dontRewind?: boolean) => Promise<void>;
     pause: (stop?: boolean) => void;
     nextsong: () => void;
@@ -32,10 +29,7 @@ type Props = {
     setCurrentTime: (time: number) => void;
     getCurrentTime: () => number;
     addSongModal: () => void;
-    handleAction: (
-        action: HandlerAction | StateHandlerAction,
-        payload?: any
-    ) => Promise<void>;
+    handleAction: (action: AllHandlerActions, payload?: any) => Promise<void>;
 };
 
 export function PlayerContainer({
@@ -45,7 +39,7 @@ export function PlayerContainer({
     pointer,
     addSongModal,
     current,
-    getPlayer,
+    player,
     play,
     pause,
     nextsong,
@@ -62,7 +56,8 @@ export function PlayerContainer({
     return (
         <ContainerDiv>
             <MediaPlayer
-                getPlayer={getPlayer}
+                handleAction={handleAction}
+                player={player}
                 play={play}
                 pause={pause}
                 nextsong={nextsong}

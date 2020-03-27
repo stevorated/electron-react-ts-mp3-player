@@ -6,10 +6,14 @@ import {
     Song,
     ISong,
     startup,
+    IState,
+    Preference,
+    IPrefs,
 } from '../services/db';
 
 import { Logger } from '../logger';
 import { RunResult } from 'sqlite3';
+import { State } from '../services/db';
 
 interface ITreeItem {
     id: string;
@@ -21,10 +25,30 @@ interface ITreeItem {
 
 export class DataHandler {
     private static logger = new Logger('main');
+
     static async startup() {
         const res = startup();
         this.logger.info('called startup');
         return res;
+    }
+
+    static async setup() {
+        const countState = await State.count();
+        if (!countState) {
+            await State.create<IState>({ volume: 0.5 });
+        }
+
+        const countPrefs = await Preference.count();
+
+        if (!countPrefs) {
+            await Preference.create<IPrefs>({
+                wait_between: 0.5,
+            });
+        }
+
+        const state = await State.findOne();
+        const pref = await Preference.findOne();
+        return { state, pref };
     }
 
     static async createPlaylist(title: string): Promise<any> {
@@ -117,7 +141,26 @@ export class DataHandler {
             return data;
         } catch (error) {
             this.logger.error(error.message, { error });
-            throw new Error('ERROR: in fetchAllPlaylists');
+            throw new Error('ERROR: in fetchPlaylists');
+        }
+    }
+
+    static async fetchState() {
+        try {
+            const data = await State.findOne();
+            this.logger.info('fetch state', { data });
+            return data;
+        } catch (error) {
+            this.logger.error(error.message, { error });
+            throw new Error('ERROR: in fetchState');
+        }
+    }
+
+    static async saveState(entity: Partial<IState>) {
+        try {
+            return State.create(entity);
+        } catch (error) {
+            this.logger.error(error.message, { error });
         }
     }
 

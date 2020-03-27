@@ -2,16 +2,18 @@ import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 
 import { ISong } from '@services/db';
+import { StatusType, AllHandlerActions } from '@views/interfaces';
 
 import { Volume, Seek } from './player.partials';
 import { Controls } from './Controls';
 
 type Props = {
-    status: string;
+    status: StatusType;
     bigSize: string;
     size: string;
     pointer: number;
     song?: ISong;
+    player: HTMLMediaElement | null;
     play: (dontRewind?: boolean) => Promise<void>;
     pause: (stop?: boolean) => void;
     nextsong: () => void;
@@ -20,11 +22,12 @@ type Props = {
     forward: () => void;
     setCurrentTime: (time: number) => void;
     getCurrentTime: () => number;
-    getPlayer: () => HTMLMediaElement | null;
+    handleAction: (action: AllHandlerActions, payload?: any) => Promise<void>;
 };
 
 export function MediaPlayer({
-    getPlayer,
+    handleAction,
+    player,
     play,
     pause,
     nextsong,
@@ -38,11 +41,12 @@ export function MediaPlayer({
     status,
     song,
 }: Props) {
-    const player = getPlayer();
     const container = useRef<HTMLDivElement>(null);
-    const [volume, setVolume] = useState(50);
+    const [volume, setVolume] = useState(0.5);
     const [pos, setPos] = useState(0);
     const [seek, setSeek] = useState(false);
+    const [busy, setBusy] = useState(false);
+
     const noSong = !song;
 
     const updatePos = () => {
@@ -52,23 +56,12 @@ export function MediaPlayer({
 
         setSeek(false);
         setCurrentTime(pos);
-        // if(song?.length === pos) {
-        //     nextsong()
-        // }
     };
 
     const handleChangePos = (e: React.ChangeEvent<HTMLInputElement>) => {
+        e.persist();
         setSeek(true);
         setPos(e.target.valueAsNumber / 1000);
-    };
-
-    const handleChangeVolume = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (!player) {
-            return;
-        }
-
-        setVolume(e.target.valueAsNumber);
-        player.volume = e.target.valueAsNumber / 100;
     };
 
     useEffect(() => {
@@ -78,6 +71,28 @@ export function MediaPlayer({
         player.addEventListener('timeupdate', updatePos);
         return () => player.removeEventListener('timeupdate', updatePos);
     });
+
+    const handleChangeVolume = (e: React.ChangeEvent<HTMLInputElement>) => {
+        e.persist();
+
+        if (!player) {
+            return;
+        }
+
+        setVolume(e.target.valueAsNumber);
+        player.volume = e.target?.valueAsNumber / 100;
+
+        if (busy) {
+            return;
+        }
+
+        setBusy(true);
+
+        setTimeout(() => {
+            setBusy(false);
+            handleAction('SET_VOLUME', e.target.valueAsNumber / 100);
+        }, 5000);
+    };
 
     return (
         <ContainerDiv ref={container}>

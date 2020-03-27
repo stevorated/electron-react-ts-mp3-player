@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { FaCogs } from 'react-icons/fa';
 
-import { HandlerAction, StateHandlerAction } from '@views/interfaces';
+import { AllHandlerActions } from '@views/interfaces';
 
 import { Modal } from '../../../../shared';
 import { useWindowSize } from '../../../../../hooks';
@@ -14,7 +14,7 @@ type Props = {
     initialState?: boolean;
     waitBetween: number;
     handleAction: (
-        action: HandlerAction | StateHandlerAction,
+        action: AllHandlerActions,
         payload?: any
     ) => Promise<void>;
 };
@@ -38,9 +38,9 @@ export function Preferences({
     return (
         <Modal
             top={10}
-            left={width / 4}
-            height={height}
-            width={width / 2}
+            left={width / 3}
+            height={height * 0.22}
+            width={width * 0.42}
             modalLabel="preferences"
             buttonText=""
             isOpen={open}
@@ -48,7 +48,12 @@ export function Preferences({
                 toggle();
                 handleAction('SET_STATE', { isPrefsOpen: false });
             }}
-            customStyles={{ border: 'none', background: 'rgba(0, 0, 0, 0.5)' }}
+            customStyles={{
+                border: 'none',
+                background: 'transparent',
+                boxShadow: 'none',
+                overflow: 'hidden',
+            }}
             button={
                 <FaCogs
                     className={`btn action-icon ${statusClass}`}

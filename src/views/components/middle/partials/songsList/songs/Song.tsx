@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { FaEdit, FaListUl, FaPoo } from 'react-icons/fa';
 
 import { ISong } from '@services/db';
-import { HandlerAction, StateHandlerAction } from '@views/interfaces';
+import { AllHandlerActions, StatusType } from '@views/interfaces';
 
 import { colors } from '../../../../../assets/styles/consts';
 import { shouldFloat } from '../../../../../utils';
@@ -12,14 +12,11 @@ import { SongInner } from './SongInner';
 
 type Props = {
     active: boolean;
-    status: string;
+    status: StatusType;
     playlistId: number;
     index: number;
     song: ISong;
-    handleAction: (
-        action: HandlerAction | StateHandlerAction,
-        payload?: any
-    ) => Promise<void>;
+    handleAction: (action: AllHandlerActions, payload?: any) => Promise<void>;
 };
 
 export function Song({
@@ -41,6 +38,10 @@ export function Song({
     const childId = `float-text-${title}-${song.id}`;
     const parentId = `float-text-wrapper-${title}-${song.id}`;
     const float = shouldFloat({ childId, parentId, ratio: 13, title });
+
+    const handleSetNewTitle = (newTitle: string) => {
+        newTitle.length < 50 ? setNewTitle(newTitle) : undefined;
+    };
 
     const handleSave = () => {
         setIsEditable(false);
@@ -76,7 +77,7 @@ export function Song({
                 inputRef={inputRef}
                 title={title}
                 newTitle={newTitle}
-                setNewTitle={setNewTitle}
+                setNewTitle={handleSetNewTitle}
                 setIsEditable={setIsEditable}
                 childId={childId}
                 active={active}

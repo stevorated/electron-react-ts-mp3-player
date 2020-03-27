@@ -1,10 +1,11 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import update from 'immutability-helper';
+
 import { ISong } from '@services/db';
+import { AllHandlerActions, StatusType } from '@views/interfaces';
 
 import { SongContainer } from './SongContainer';
-import { HandlerAction, StateHandlerAction } from '@views/interfaces';
-import { by } from '../../../../../utils/sort';
+import { by } from '../../../../../utils/shared/sort';
 
 const style = {};
 
@@ -20,12 +21,9 @@ export interface ContainerState {
 type Props = {
     songs: ISong[];
     pointer: number;
-    status: string;
+    status: StatusType;
     playlistId: number;
-    handleAction: (
-        action: HandlerAction | StateHandlerAction,
-        payload?: any
-    ) => Promise<void>;
+    handleAction: (action: AllHandlerActions, payload?: any) => Promise<void>;
 };
 
 export function Songs({

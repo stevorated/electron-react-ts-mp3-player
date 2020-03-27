@@ -1,7 +1,6 @@
 import React, { useState, KeyboardEvent } from 'react';
 
-import { HandlerAction, TreeListType } from '@views/interfaces';
-import { StateHandlerAction } from '@views/interfaces';
+import { AllHandlerActions, TreeListType } from '@views/interfaces';
 
 import { Ipc } from '../../../tools';
 import { Editable } from './Editable';
@@ -12,7 +11,7 @@ type Props = {
     title: string;
     playlist: TreeListType;
     handleAction: (
-        action: HandlerAction | StateHandlerAction,
+        action: AllHandlerActions,
         payload?: any,
         extra?: any
     ) => Promise<void>;
@@ -33,6 +32,10 @@ export function Playlist({
         handleAction('SWITCH_PLAYLIST', newId === -1 ? id : newId);
     };
 
+    const handleSetAfterEdit = (afterEdit: string) => {
+        return afterEdit.length < 40 ? setAfterEdit(afterEdit) : undefined;
+    };
+
     const handleDoubleClick = () => {
         if (!isEditing) {
             setAfterEdit(playlist.title);
@@ -45,6 +48,7 @@ export function Playlist({
             if (!isEditing) {
                 const id = await Ipc.invoke<number>('SAVE_PLAYLIST', afterEdit);
                 setNewId(id);
+                setEditing(false);
                 handleAction(
                     'SAVE_PLAYLIST',
                     {
@@ -60,6 +64,7 @@ export function Playlist({
                     title: afterEdit,
                 });
 
+                setEditing(false);
                 handleAction('UPDATE_PLAYLIST', {
                     ...playlist,
                     title: afterEdit,
@@ -68,8 +73,6 @@ export function Playlist({
         } catch (err) {
             new Error('unable to save!!');
         }
-
-        setEditing(false);
     };
 
     const handleDelete = async (temp: boolean = false) => {
@@ -104,7 +107,7 @@ export function Playlist({
             placeholder={id === -1 ? '...' : title}
             afterEdit={afterEdit}
             isEditing={id === -1 ? true : isEditing}
-            setAfterEdit={setAfterEdit}
+            setAfterEdit={handleSetAfterEdit}
             setEditing={setEditing}
             onBlur={onBlurEdit}
             handleKeyDown={handleKeyDown}
