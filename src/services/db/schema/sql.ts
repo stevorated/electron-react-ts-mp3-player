@@ -11,12 +11,11 @@ export const startupSql: string[] = [
     `
   CREATE TABLE IF NOT EXISTS playlists (
   id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE, 
-  playlist_index INTEGER NOT NULL,
   title VARCHAR(30), 
   length INTEGER DEFAULT 0, 
   parent INTEGER, 
   created_at DEFAULT CURRENT_TIMESTAMP, 
-  FOREIGN KEY("parent") REFERENCES "folders"("id") 
+  FOREIGN KEY("parent") REFERENCES "folder"("id") 
   );
 `,
     `
@@ -48,31 +47,7 @@ export const startupSql: string[] = [
   FOREIGN KEY("playlist_id") REFERENCES "playlists"("id") 
   );
 `,
-    `
-  CREATE TABLE IF NOT EXISTS preferences ( 
-  id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE, 
-  wait_between BOOLEAN, 
-  created_at DEFAULT CURRENT_TIMESTAMP
-  );
-`,
-    `
-  CREATE TABLE IF NOT EXISTS states ( 
-  id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE, 
-  volume INTEGER DEFAULT 0.5, 
-  wait_between INTEGER DEFAULT 0.5, 
-  show_explorer BOOLEAN DEFAULT true, 
-  random BOOLEAN DEFAULT false, 
-  current_playlist_id INTEGER DEFAULT 1, 
-  loop BOOLEAN DEFAULT false, 
-  is_prefs_open BOOLEAN DEFAULT false, 
-  created_at DEFAULT CURRENT_TIMESTAMP, 
-  FOREIGN KEY("current_playlist_id") REFERENCES "playlists"("id")
-  );
-`,
-    // `CREATE UNIQUE INDEX IF NOT EXISTS "ui_playlist_songs" ON "playlist_song_list" ("playlist_id", "song_id");`,
+    `CREATE UNIQUE INDEX IF NOT EXISTS "ui_playlist_songs" ON "playlist_song_list" ("playlist_id", "song_id");`,
 ];
 
-export const keys: string[] = [
-    `CREATE UNIQUE INDEX IF NOT EXISTS "ui_playlist_songs" ON "playlist_song_list" ("playlist_id", "song_id");`,
-    // `CREATE UNIQUE INDEX IF NOT EXISTS "ui_playlist_indexs" ON "playlist_song_list" ("playlist_id", "song_index");`,
-];
+// ,`CREATE UNIQUE INDEX IF NOT EXISTS "ui_playlist_indexs" ON "playlist_song_list" ("playlist_id", "song_index");`
