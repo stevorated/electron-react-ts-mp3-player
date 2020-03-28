@@ -1,33 +1,45 @@
-import React, { ReactComponentElement } from 'react';
+import React from 'react';
 import { Playlist } from './Playlist';
 import { Folder } from './Folder';
-import { TreeListType } from '../../../constants/mocks';
-import { PlaylistType } from 'src/views/constants/mocks';
 
-export const Playlists = (props: { playlists: PlaylistType[] }) => {
-    const { playlists } = props;
+import { TreeListType, AllHandlerActions } from '../../../interfaces';
 
-    const renderPlaylists = () =>
-        playlists.map(item => {
-            return <Playlist key={item.id} id={item.id} title={item.title} />;
-        });
-    // const renderPlaylists = () =>
-    //     playlists.map(item => {
-    //         if (item.nested.length === 0) {
-    //             return (
-    //                 <Playlist key={item.id} id={item.id} title={item.title} />
-    //             );
-    //         } else {
-    //             return (
-    //                 <Folder
-    //                     key={item.id}
-    //                     id={item.id}
-    //                     title={item.title}
-    //                     playlists={item.nested}
-    //                 />
-    //             );
-    //         }
-    //     });
-
-    return <ul>{renderPlaylists()}</ul>;
+type Props = {
+    currentPlaylistId: number;
+    tree: TreeListType[];
+    handleAction: (action: AllHandlerActions, payload?: any) => Promise<void>;
 };
+
+export function Playlists(props: Props) {
+    const { tree, handleAction, currentPlaylistId } = props;
+
+    const renderTree = () =>
+        tree.map(item => {
+            if (item.type === 'folder') {
+                return (
+                    <Folder
+                        key={`folder-tree-item-${item.id}`}
+                        currentPlaylistId={currentPlaylistId}
+                        id={item.id}
+                        item={item}
+                        title={item.title}
+                        nestedItems={item.nested as TreeListType[]}
+                        handleAction={handleAction}
+                    />
+                );
+            } else {
+                return (
+                    <Playlist
+                        key={`playlist-tree-item-${item.id}`}
+                        id={item.id || 0}
+                        playlist={item}
+                        title={item.title}
+                        currentPlaylistId={currentPlaylistId}
+                        handleAction={props.handleAction}
+                    />
+                );
+            }
+        });
+
+    return <ul>{renderTree()}</ul>;
+}
