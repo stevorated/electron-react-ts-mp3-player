@@ -1,30 +1,26 @@
-import { Database, RunResult, Statement } from 'sqlite3';
+import sqlite3, { Database, RunResult } from 'sqlite3';
 import { Connector } from './Connector';
-import { Logger } from '../../logger';
+import { startupSql } from './schema/sql';
+
+sqlite3.verbose();
+
+interface IDAO {
+    connect: (dir: string, db: string) => Database | null;
+    // close: () => boolean;
+    // setup: () => Promise<boolean>;
+}
 
 export class SqliteDAO {
-    private static logger = new Logger('database');
-
-    private static logWarn(desc: string, meta: any) {
-        this.logger.warn(`DAO ${desc} `, meta);
-    }
-
-    private static logError(desc: string, meta: any) {
-        this.logger.error(`DAO ${desc} `, meta);
-    }
-
-    private static logInfo(desc: string, meta: any) {
-        this.logger.info(`DAO ${desc} `, meta);
-    }
-
-    static exec(sql: string) {
+    static exec(sql: string, dontLog?: boolean) {
         return new Promise<boolean>((resolve, reject) => {
-            Connector.getInstance().exec(sql, error => {
-                if (error) {
-                    this.logError('exec method', { err: error });
-                    reject(error);
+            Connector.getInstance().exec(sql, function(err) {
+                if (err) {
+                    if (!dontLog) {
+                        console.log('Error running sql: ' + sql);
+                        console.log(err);
+                    }
+                    reject(err);
                 } else {
-                    this.logInfo('exec method', { data: sql });
                     resolve(true);
                 }
             });
@@ -33,13 +29,13 @@ export class SqliteDAO {
 
     static get<T>(sql: string, params: string[]) {
         return new Promise<T>((resolve, reject) => {
-            Connector.getInstance().get(sql, params, (error, data) => {
-                if (error) {
-                    this.logError('get method', { error });
-                    reject(error);
+            Connector.getInstance().get(sql, params, (err, result) => {
+                if (err) {
+                    console.log('Error running sql: ' + sql);
+                    console.log(err);
+                    reject(err);
                 } else {
-                    this.logInfo('get method', { data });
-                    resolve(data);
+                    resolve(result);
                 }
             });
         });
@@ -48,13 +44,14 @@ export class SqliteDAO {
     static all<T>(sql: string, params: string[]): Promise<T[]> {
         return new Promise<T[]>((resolve, reject) => {
             try {
-                Connector.getInstance().all(sql, params, (error, data) => {
-                    if (error) {
-                        this.logError('all method', { error });
-                        reject(error);
+                Connector.getInstance().all(sql, params, (err, result) => {
+                    if (err) {
+                        // console.log('Error running sql: ====> ' + sql);
+                        // console.log(err);
+                        // reject(err);
                     } else {
-                        this.logInfo('all method', { data });
-                        resolve(data);
+                        // console.log(result);
+                        resolve(result);
                     }
                 });
             } catch (err) {}
@@ -63,82 +60,72 @@ export class SqliteDAO {
 
     static run(sql: string, params: (string | number)[]): Promise<RunResult> {
         return new Promise((resolve, reject) => {
-            Connector.getInstance().run(sql, params, function(error) {
-                if (error) {
-                    SqliteDAO.logError('run method', { error });
-                    reject(error);
-                }
-
-                SqliteDAO.logInfo('run method', { data: this });
-                resolve(this);
-            });
-        });
-    }
-
-    static execStatement(
-        sql: string,
-        params: (string | number)[]
-    ): Promise<Statement> {
-        return new Promise((resolve, reject) => {
             try {
-                const stmt = Connector.getInstance().prepare(sql);
-
-                stmt.run(params, error => {
-                    if (error) {
-                        this.logError('execStatement method', { error });
-                        reject(error);
+                // console.log(Connector.getInstance().run(sql, params));
+                Connector.getInstance().run(sql, params, function(err) {
+                    if (err) {
+                        reject(err);
                     }
-                });
 
-                stmt.finalize(() => {
-                    this.logInfo('execStatement method', { data: stmt });
-                    resolve(stmt);
+                    resolve(this);
                 });
-            } catch (error) {
-                this.logError('execStatement method', { error });
-                reject(error);
+            } catch (err) {
+                console.log(err);
+                reject(err);
             }
         });
     }
 
-    static setup(sql: string[]): Promise<boolean> {
+    static execStatement(sql: string, params: (string | number)[]) {
         return new Promise((resolve, reject) => {
-            const promises = sql.map(async query => {
-                this.exec(query);
-            });
-            Promise.all(promises)
-                .then(data => {
-                    this.logInfo('setup method', { data });
-                    resolve(true);
-                })
-                .catch(error => {
-                    this.logError('setup method', { error });
-                    reject(error);
+            try {
+                const stmt = Connector.getInstance().prepare(sql);
+
+                stmt.run(params, function(err) {
+                    if (err) {
+                        reject(err);
+                    }
+                    // resolve(stmt);
                 });
+
+                stmt.finalize(() => {
+                    resolve(stmt);
+                });
+
+                // SqliteDAO.close();
+                // SqliteDAO.connect();
+            } catch (err) {
+                reject(err);
+            }
         });
+    }
+
+    static async setup(): Promise<boolean> {
+        try {
+            startupSql.forEach(async query => {
+                await this.exec(query);
+            });
+            return true;
+        } catch (e) {
+            return false;
+        }
     }
 
     static connect(): Database {
         return Connector.getInstance();
     }
 
-    static close(): Promise<boolean> {
-        return new Promise((resolve, reject) => {
-            const conn = Connector.getInstance();
-            if (!conn) {
-                const msg = `לא הגיוני מבחינה הגיונית`;
-                this.logWarn('close method', { data: msg });
-                reject(msg);
+    static close(): boolean {
+        const conn = Connector.getInstance();
+        if (!conn) {
+            throw new Error(`[Error]: Can't connect to db`);
+        }
+        conn.close(err => {
+            if (err) {
+                return false;
             }
-            conn.close(error => {
-                if (error) {
-                    this.logError('close method', { error });
-                    reject(error);
-                }
-            });
-
-            this.logInfo('close method', { connection: null });
-            resolve(true);
         });
+
+        return true;
     }
 }

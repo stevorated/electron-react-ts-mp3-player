@@ -1,5 +1,4 @@
-import { PlayerContainer } from './player';
-import { SongsListContainer } from './songsList';
-import { Analyser } from './analyser';
+import { PlayerContainer } from './player/PlayerContainer';
+import { SongsListContainer } from './songsList/SongsListContainer';
 
-export { PlayerContainer, SongsListContainer, Analyser };
+export { PlayerContainer, SongsListContainer };

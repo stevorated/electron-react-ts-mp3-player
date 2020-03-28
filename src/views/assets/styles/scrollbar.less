@@ -1,41 +1,26 @@
-@import './constants.less';
-
-// * {
-//     scroll-behavior: smooth;
-// }
+@import './Costants.less';
 
 ::-webkit-scrollbar {
-    width: 12px;
-    background-color: transparent;
-    border-top: 10px solid transparent;
-    border-bottom: 10px solid transparent;
-}
-
-::-webkit-scrollbar:vertical {
-    padding: 0;
-}
-
-::-webkit-scrollbar:horizontal {
-    padding: 0;
-    margin: 0;
+  width: 12px;
+  background-color: transparent;
+  border-top: 10px solid transparent;
+  border-bottom: 10px solid transparent;
 }
 
 ::-webkit-scrollbar:hover {
-    cursor: e-resize;
-    background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.5);
 }
 
 ::-webkit-scrollbar-thumb:vertical {
-    cursor: pointer;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 100px;
-    background-clip: padding-box;
-    border: 2px solid transparent;
-    min-height: 10px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 100px;
+  background-clip: padding-box;
+  border: 2px solid transparent;
+  min-height: 10px;
 }
 
 ::-webkit-scrollbar-thumb:vertical:active {
-    background-color: rgba(255, 255, 255, 0.3);
-    -webkit-border-radius: 100px;
-    border-radius: 100px;
+  background: @secondary-color;
+  -webkit-border-radius: 100px;
+  border-radius: 100px;
 }

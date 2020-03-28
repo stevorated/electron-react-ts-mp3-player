@@ -1,46 +1,24 @@
-export interface IState {
-    id: number;
-    volume: number;
-    wait_between: number;
-    show_explorer: boolean;
-    random: boolean;
-    current_playlist_id: number;
-    // pointer: number;
-    // src: string;
-    loop: boolean;
-    is_prefs_open: boolean;
-    created_at: string;
-}
-
-export interface IPrefs {
-    id: number;
-    wait_between: number;
-    created_at: string;
-}
-
 export interface ISong {
-    id?: number;
+    id?: string;
     title: string;
     path: string;
     length: number;
-    created_at?: string;
-    song_index?: number;
+    createdAt?: string;
 }
 
 export interface IPlaylist {
-    id?: number;
-    playlist_index: number;
+    id?: string;
     title: string;
-    songs?: ISong[];
-    parent: number | null;
+    songs?: any[];
+    parent?: number;
     length: number;
-    created_at?: string;
+    createdAt?: string;
 }
 
 export interface IFolder {
-    id?: number;
+    id?: string;
     title: string;
     playlists?: any[];
     length: number;
-    created_at?: string;
+    createdAt?: string;
 }
