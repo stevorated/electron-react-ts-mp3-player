@@ -1,73 +1,37 @@
 import path from 'path';
-import electronLocalshortcut from 'electron-localshortcut';
-import { BrowserWindow, BrowserWindowConstructorOptions } from 'electron';
 
+import { BrowserWindow, BrowserWindowConstructorOptions } from 'electron';
 import MenuBuilder from './Menu';
-import { Channels } from '.';
-import { Logger } from '../logger';
 
 type Props = {
     file: string;
     windowSettings?: BrowserWindowConstructorOptions;
 };
 
-const defaultSettings: BrowserWindowConstructorOptions = {
+const defaultSettings = {
     width: 1300,
     height: 800,
     minWidth: 1000,
-    icon: path.join(__dirname, '/icon.png'),
     webPreferences: {
         nodeIntegration: true,
-        preload: path.join('./bundle.min.js'),
-        // webSecurity: false,
+        preload: path.join('./dist/perload.js'),
     },
 };
 
 export class Window extends BrowserWindow {
-    private logger: Logger;
-    private menuBuilder: MenuBuilder;
-
     constructor({ file, windowSettings }: Props) {
         super({ ...defaultSettings, ...windowSettings });
 
-        this.loadURL(file);
-
+        this.loadFile(file);
         if (process.env.NODE_ENV === 'development') {
             this.webContents.openDevTools();
         }
 
-        this.logger = new Logger('main');
-        this.menuBuilder = new MenuBuilder(this);
-        this.menuBuilder.buildMenu();
-
-        electronLocalshortcut.register(this, 'Ctrl+P', () => {
-            this.send('ACC_PLAY_PAUSE');
+        this.once('ready-to-show', () => {
+            this.show();
         });
 
-        electronLocalshortcut.register(this, 'Right', () => {
-            this.send('ACC_FF');
-        });
-
-        electronLocalshortcut.register(this, 'Left', () => {
-            this.send('ACC_REWIND');
-        });
-
-        electronLocalshortcut.register(this, 'Down', () => {
-            this.send('ACC_DOWN');
-        });
-
-        electronLocalshortcut.register(this, 'Up', () => {
-            this.send('ACC_UP');
-        });
+        const menuBuilder = new MenuBuilder(this);
+        menuBuilder.buildMenu();
     }
-
-    setSidebarOpen = (open: boolean) => {
-        this.menuBuilder.setSidebarOpen(open);
-        this.menuBuilder.buildMenu();
-    };
-
-    send = (channel: Channels, ...args: any) => {
-        this.logger.info(`Ipc Send - ${channel}`, { data: args });
-        this.webContents.send(channel, ...args);
-    };
 }
