@@ -1,8 +1,10 @@
 import { combineReducers } from 'redux';
-import { playlistsReducer } from './playlists.reducer';
+import { treeReducer } from './tree.reducer';
+import { stateReducer } from './state.reducer';
 
 export const rootReducer = combineReducers({
-    playlists: playlistsReducer,
+    tree: treeReducer,
+    state: stateReducer,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;

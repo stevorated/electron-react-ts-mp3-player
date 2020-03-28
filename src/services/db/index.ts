@@ -1,15 +1,21 @@
 import { Connector } from './Connector';
 import { SqliteDAO } from './SqliteDAO';
-import { Song, Playlist, Folder } from './models';
-import { ISong, IPlaylist, IFolder } from './interfaces';
+import { Song, Playlist, Folder, State, Preference } from './models';
+import { ISong, IPlaylist, IFolder, IState, IPrefs } from './interfaces';
+import { startup } from './startup';
 
 export {
-  Connector,
-  SqliteDAO,
-  Song,
-  Playlist,
-  Folder,
-  ISong,
-  IPlaylist,
-  IFolder
+    ISong,
+    IPlaylist,
+    IFolder,
+    IState,
+    IPrefs,
+    Song,
+    Playlist,
+    Folder,
+    State,
+    Preference,
+    startup,
+    Connector,
+    SqliteDAO,
 };

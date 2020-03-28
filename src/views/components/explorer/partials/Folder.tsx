@@ -1,38 +1,72 @@
-import React, { FormEvent, useState, FunctionComponent } from 'react';
-import { Playlist } from './Playlist';
+import React, { useState } from 'react';
+import { FaFolderOpen, FaFolder } from 'react-icons/fa';
 
-import { TreeListType } from '../../../constants/mocks';
+import { Playlist } from './Playlist';
 import { TreeItemBox } from './TreeItemBox';
+import { TreeListType, AllHandlerActions } from '../../../interfaces';
 
 type Props = {
-    playlists: TreeListType[];
+    nestedItems: TreeListType[];
+    currentPlaylistId: number;
     title: string;
-    id: number;
+    id?: number;
+    item: TreeListType;
+    handleAction: (action: AllHandlerActions, payload?: any) => Promise<void>;
 };
 
-export const Folder: FunctionComponent<Props> = (props: Props) => {
-    const { playlists, id } = props;
+export function Folder(props: Props) {
+    const { nestedItems, id, handleAction, item, currentPlaylistId } = props;
     const [show, setShow] = useState(false);
 
-    const toggleNested = (e: FormEvent) => {
+    const toggleNested = () => {
         setShow(!show);
     };
 
     const renderPlaylists = () =>
-        playlists.map(({ id, title, nested }) => {
-            if (nested.length === 0) {
-                return <Playlist key={id} id={id} title={title} />;
+        nestedItems?.map(({ id: itemId, title, nested, type }) => {
+            if (type === 'folder') {
+                return (
+                    <Folder
+                        currentPlaylistId={currentPlaylistId}
+                        handleAction={handleAction}
+                        key={itemId}
+                        item={item}
+                        id={itemId || 0}
+                        title={title}
+                        nestedItems={nested as TreeListType[]}
+                    />
+                );
             } else {
                 return (
-                    <Folder key={id} id={id} title={title} playlists={nested} />
+                    <Playlist
+                        playlist={item}
+                        currentPlaylistId={currentPlaylistId}
+                        handleAction={handleAction}
+                        key={itemId}
+                        id={itemId || 0}
+                        title={title}
+                    />
                 );
             }
         });
 
     return (
-        <li key={id}>
-            <TreeItemBox onClick={toggleNested} title={props.title} />
+        <li key={id} className="tree-item">
+            <div
+                style={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    alignItems: 'baseline',
+                }}
+            >
+                {show ? <FaFolderOpen size="20px" /> : <FaFolder size="20px" />}
+                <TreeItemBox
+                    itemId={id || 0}
+                    onClick={toggleNested}
+                    title={props.title}
+                />
+            </div>
             <ul className={show ? '' : 'hide'}>{renderPlaylists()}</ul>
         </li>
     );
-};
+}
