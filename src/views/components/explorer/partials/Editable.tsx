@@ -6,7 +6,7 @@ import { DeleteBtn } from './DeleteBtn';
 import { DeletePlaylistModal } from './DeletePlaylistModal';
 import { Modal } from '../../shared';
 import { TreeListType } from '../../../interfaces';
-import { colors } from '../../../assets/styles/consts';
+import { colors } from '../../../assets/consts';
 
 type Props = {
     id: number;

@@ -24,18 +24,21 @@ const defaultSettings: BrowserWindowConstructorOptions = {
 };
 
 export class Window extends BrowserWindow {
-    private logger: Logger = new Logger('main');
+    private logger: Logger;
+    private menuBuilder: MenuBuilder;
 
     constructor({ file, windowSettings }: Props) {
         super({ ...defaultSettings, ...windowSettings });
 
         this.loadURL(file);
+
         if (process.env.NODE_ENV === 'development') {
             this.webContents.openDevTools();
         }
 
-        const menuBuilder = new MenuBuilder(this);
-        menuBuilder.buildMenu();
+        this.logger = new Logger('main');
+        this.menuBuilder = new MenuBuilder(this);
+        this.menuBuilder.buildMenu();
 
         electronLocalshortcut.register(this, 'Ctrl+P', () => {
             this.send('ACC_PLAY_PAUSE');
@@ -57,6 +60,11 @@ export class Window extends BrowserWindow {
             this.send('ACC_UP');
         });
     }
+
+    setSidebarOpen = (open: boolean) => {
+        this.menuBuilder.setSidebarOpen(open);
+        this.menuBuilder.buildMenu();
+    };
 
     send = (channel: Channels, ...args: any) => {
         this.logger.info(`Ipc Send - ${channel}`, { data: args });

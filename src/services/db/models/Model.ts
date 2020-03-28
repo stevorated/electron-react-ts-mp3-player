@@ -52,7 +52,7 @@ export abstract class Model {
 
     static async updateById<T>(
         id: number,
-        payload: Partial<Record<keyof T, number | string>>
+        payload: Partial<Record<keyof T, number | string | boolean>>
     ): Promise<RunResult> {
         return new Promise((resolve, reject) => {
             if (Object.values(payload).length === 0) {

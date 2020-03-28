@@ -43,7 +43,6 @@ export const treeReducer = (
         case SORT_PLAYLIST_TREE:
             return state.map(item => {
                 if (item.id === payload[0].id) {
-                    // console.log(payload[0]);
                     return payload[0];
                 }
                 return item;

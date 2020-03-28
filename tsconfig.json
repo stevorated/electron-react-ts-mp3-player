@@ -17,8 +17,7 @@
         "paths": {
             "@views/*": ["src/views/*"],
             "@services/*": ["src/services/*"],
-            "@main/*": ["src/main/*"],
-            "@/*": ["src/*"]
+            "@main/*": ["src/main/*"]
         },
         "types": ["react"],
         "allowSyntheticDefaultImports": true,

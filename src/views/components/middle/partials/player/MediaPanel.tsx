@@ -5,9 +5,9 @@ import { FaRandom, FaUndo, FaFolderPlus } from 'react-icons/fa';
 import { ISong } from '@services/db';
 import { AllHandlerActions } from '@views/interfaces';
 
-import { colors } from '../../../../assets/styles/consts';
+import { colors } from '../../../../assets/consts';
+import { by } from '../../../../utils';
 import { PreferencesBtn } from './panel.partials';
-import { by } from '../../../../utils/shared/sort';
 
 type Props = {
     isPrefsOpen: boolean;
@@ -54,11 +54,15 @@ export function MediaPanel({
                 className={`btn action-icon ${statusClass} ${
                     loop ? 'active' : ''
                 }`}
-                onClick={() => handleAction('SET_STATE', { loop: !loop })}
+                onClick={() =>
+                    handleAction('UPDATE_REMOTE_STATE', { loop: !loop })
+                }
                 style={{ bottom: '5px', right: '40px' }}
             />
             <FaRandom
-                onClick={() => handleAction('SET_STATE', { random: !random })}
+                onClick={() =>
+                    handleAction('UPDATE_REMOTE_STATE', { random: !random })
+                }
                 className={`btn action-icon ${statusClass} ${
                     random ? 'active' : ''
                 }`}

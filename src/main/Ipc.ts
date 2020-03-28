@@ -14,7 +14,7 @@ export type Channels =
     | 'ACC_UP'
     | 'ACC_DOWN'
     | 'FETCH_STATE'
-    | 'SET_STATE_MAIN'
+    | 'UPDATE_STATE'
     | 'FETCH_TREE'
     | 'SAVE_PLAYLIST'
     | 'SORT_PLAYLIST'

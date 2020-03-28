@@ -12,8 +12,8 @@ type Props = {
     status: StatusType;
     play: (dontRewind?: boolean) => Promise<void>;
     pause: (stop?: boolean) => void;
-    lastsong: () => void;
-    nextsong: () => void;
+    lastsong: () => Promise<void>;
+    nextsong: () => Promise<void>;
     rewind: () => void;
     forward: () => void;
 };

@@ -4,10 +4,11 @@ import { Window } from './Window';
 
 export default class MenuBuilder {
     private mainWindow: Window;
-    private sidebarOpen: boolean = true;
+    private sidebarOpen: boolean;
 
     constructor(mainWindow: Window) {
         this.mainWindow = mainWindow;
+        this.sidebarOpen = true;
     }
 
     buildMenu() {
@@ -24,12 +25,17 @@ export default class MenuBuilder {
         return menu;
     }
 
+    setSidebarOpen(sidebarOpen: boolean) {
+        this.sidebarOpen = sidebarOpen;
+    }
+
+    getSidebarOpen() {
+        return this.sidebarOpen;
+    }
+
     setupDevelopmentEnvironment() {
         this.mainWindow.webContents.on('context-menu', (_, context) => {
-            console.log(context);
             const { x, y } = context;
-
-            // console.log(x, y);
 
             Menu.buildFromTemplate([
                 {
@@ -101,7 +107,7 @@ export default class MenuBuilder {
                   ]
                 : [];
 
-        const templateDefault: Electron.MenuItemConstructorOptions[] = [
+        let templateDefault: Electron.MenuItemConstructorOptions[] = [
             fileDefault,
             {
                 label: '&View',

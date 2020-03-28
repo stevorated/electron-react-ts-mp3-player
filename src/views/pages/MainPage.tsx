@@ -21,8 +21,8 @@ type Props = {
     context: AudioContext | null;
     play: (dontRewind?: boolean) => Promise<void>;
     pause: (stop?: boolean) => void;
-    nextsong: () => void;
-    lastsong: () => void;
+    nextsong: () => Promise<void>;
+    lastsong: () => Promise<void>;
     rewind: () => void;
     forward: () => void;
     getCurrentTime: () => number;

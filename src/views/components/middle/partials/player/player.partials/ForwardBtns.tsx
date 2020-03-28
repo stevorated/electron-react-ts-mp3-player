@@ -5,7 +5,7 @@ import { FaForward, FaFastForward } from 'react-icons/fa';
 type Props = {
     disabled: boolean;
     size: string;
-    nextsong: () => void;
+    nextsong: () => Promise<void>;
     forward: () => void;
 };
 

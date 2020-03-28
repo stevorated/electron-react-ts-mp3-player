@@ -46,13 +46,14 @@ export class App extends Component<Props, AppState> {
     componentDidMount = async () => {
         await setupListeners(this.handleAction, this.player);
         await Ipc.invokeAndHandle('FETCH_TREE', this.handleAction);
-        const initialState = await Ipc.invokeAndReturn<IState>(
+        await Ipc.invokeAndHandle(
             'FETCH_STATE',
-            this.handleAction
+            this.handleAction,
+            {},
+            'FETCH_REMOTE_STATE'
         );
 
         const src = this.getCurrentSrc();
-        this.handleAction('FETCH_REMOTE_STATE', { ...initialState, src });
         this.setState({ loading: false, src });
         this.initPlayer();
     };
@@ -86,7 +87,6 @@ export class App extends Component<Props, AppState> {
         } = this.props;
 
         const logger = new Logger('app');
-
         const { pointer, status } = this.state;
         const [current] = this.getCurrentPlaylist();
         const { current_playlist_id: currentPlaylistId } = this.props.state;
@@ -107,9 +107,6 @@ export class App extends Component<Props, AppState> {
                 return this.handleAction('UPDATE_REMOTE_STATE', {
                     show_explorer: !this.props.state.show_explorer,
                 });
-            // return this.setState({
-            // showExplorer: !this.state.showExplorer,
-            // });
 
             case 'ACC_PLAY_PAUSE':
                 if (status !== 'playing') {
@@ -119,6 +116,7 @@ export class App extends Component<Props, AppState> {
                 return this.pause();
 
             case 'ACC_FF':
+                // this.setState({ time: this.state.time + 5 });
                 return this.forward();
 
             case 'ACC_REWIND':
@@ -136,12 +134,11 @@ export class App extends Component<Props, AppState> {
                 }
 
                 const parent = this;
-
                 this.player.onended = function() {
                     parent.setState({ status: 'waiting...' });
                     setTimeout(() => {
-                        parent.nextsong();
                         parent.setState({ status: 'playing' });
+                        parent.nextsong();
                     }, parent.props.state.wait_between * 1000);
                 };
 
@@ -156,11 +153,8 @@ export class App extends Component<Props, AppState> {
                 return this.setState({
                     src: pathToSong,
                     pointer: 0,
-                    // currentPlaylistId: payload,
                     status: 'ready',
                 });
-
-            // ===================================  TREE reducers   ========================================= //
 
             case 'FETCH_TREE':
                 return fetchTreeDispatch(payload);
@@ -169,6 +163,8 @@ export class App extends Component<Props, AppState> {
                 return fetchStateDispatch(payload);
 
             case 'UPDATE_REMOTE_STATE':
+                await Ipc.invokeAndReturn('UPDATE_STATE', payload);
+
                 return updateStateDispatch(payload);
 
             case 'CREATE_PLAYLIST_TEMP':
@@ -177,7 +173,6 @@ export class App extends Component<Props, AppState> {
                 }
 
                 if (!this.props.state.show_explorer) {
-                    // this.setState({ showExplorer: true });
                     await this.handleAction('UPDATE_REMOTE_STATE', {
                         show_explorer: true,
                     });
@@ -329,6 +324,8 @@ export class App extends Component<Props, AppState> {
                     nested: songsAfterDrop,
                 };
 
+                this.setState({ src: songsAfterDrop[0].path });
+
                 return savePlaylistDispatch(updated);
 
             case 'UPDATE_SONG':
@@ -380,8 +377,8 @@ export class App extends Component<Props, AppState> {
                 return deleteSongDispatch(updatedTreeItem);
 
             case 'CHANGE_SONG':
-                const songsArr = current?.nested || [];
-                const pathTo = (songsArr[payload.pointer] as ISong)?.path;
+                const songsArr = (current?.nested || []) as ISong[];
+                const pathTo = songsArr[payload.pointer]?.path;
 
                 if (pathTo === this.state.src && payload.pointer !== pointer) {
                     this.setCurrentTime(0);
@@ -389,26 +386,21 @@ export class App extends Component<Props, AppState> {
 
                 if (songsArr.length) {
                     if (payload.click && pointer === payload.pointer) {
-                        setTimeout(() => {
-                            this.state.status === 'playing'
+                        setTimeout(async () => {
+                            status === 'playing'
                                 ? this.pause()
-                                : this.play();
+                                : await this.play();
                         }, 80);
 
                         return;
                     } else {
-                        setTimeout(() => {
-                            this.play();
-                        }, 20);
+                        setTimeout(async () => {
+                            status === 'playing' && (await this.play());
+                        }, 80);
                     }
                 }
 
                 return this.setState({ src: pathTo, pointer: payload.pointer });
-
-            // case 'SET_STATUS':
-            //     console.log('setStatus');
-            //     // return this.setState({ status: payload });
-            //     return;
 
             case 'SET_VOLUME':
                 if (!this.player) {
@@ -452,6 +444,7 @@ export class App extends Component<Props, AppState> {
         if (!this.player) {
             return;
         }
+
         const volume = this.props.state.volume || 0.5;
         this.player.src = this.state.src;
         this.player.volume = volume;
@@ -511,6 +504,7 @@ export class App extends Component<Props, AppState> {
         if (!this.player) {
             return;
         }
+
         const [current] = this.getCurrentPlaylist();
 
         const nested = (current?.nested || []) as ISong[];
@@ -523,7 +517,6 @@ export class App extends Component<Props, AppState> {
             });
 
             setTimeout(() => {
-                this.setState({ status: 'ready' });
                 this.props.state.loop && this.play();
             }, 1000);
 
@@ -531,6 +524,7 @@ export class App extends Component<Props, AppState> {
         }
 
         const randomizer = new Randomize(current?.nested.length || 1);
+
         if (!this.state.randomized?.length) {
             const newArr = await randomizer.randomizarray();
             this.setState({ randomized: newArr });
@@ -544,18 +538,14 @@ export class App extends Component<Props, AppState> {
             ? this.state.randomized?.[0]
             : this.state.pointer + 1;
 
-        this.handleAction('CHANGE_SONG', {
-            pointer: newPointer,
-        });
-
-        this.handleAction('SET_STATE', {
+        await this.handleAction('CHANGE_SONG', {
             pointer: newPointer,
         });
 
         this.setState({ randomized: afterFilter });
     };
 
-    lastsong = (): void => {
+    lastsong = async (): Promise<void> => {
         if (!this.player) {
             return;
         }
@@ -567,7 +557,7 @@ export class App extends Component<Props, AppState> {
         }
 
         if (this.state.pointer > 0) {
-            this.handleAction('CHANGE_SONG', {
+            await this.handleAction('CHANGE_SONG', {
                 pointer: this.state.pointer - 1,
             });
 
@@ -608,7 +598,7 @@ export class App extends Component<Props, AppState> {
 
     render() {
         const { tree } = this.props;
-        const { status, pointer, loading } = this.state;
+        const { status, pointer, loading, src } = this.state;
 
         const {
             wait_between: waitBetween,
@@ -623,18 +613,18 @@ export class App extends Component<Props, AppState> {
 
         return (
             <>
-                <audio ref={el => (this.player = el)} src={this.state.src} />
+                <audio ref={el => (this.player = el)} src={src} />
                 <MainPage
+                    current={current}
+                    currentPlaylistId={currentPlaylistId}
+                    pointer={pointer}
+                    tree={tree}
                     showExplorer={showExplorer}
                     isPrefsOpen={isPrefsOpen}
-                    current={current}
                     loading={loading}
                     loop={loop}
                     random={random}
-                    currentPlaylistId={currentPlaylistId}
-                    tree={tree}
                     status={status}
-                    pointer={pointer}
                     waitBetween={waitBetween}
                     pause={this.pause}
                     play={this.play}

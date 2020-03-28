@@ -60,12 +60,12 @@ export const startupSql: string[] = [
   id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE, 
   volume INTEGER DEFAULT 0.5, 
   wait_between INTEGER DEFAULT 0.5, 
-  show_explorer BOOLEAN DEFAULT 1, 
-  random BOOLEAN DEFAULT 0, 
-  current_playlist_id INTEGER DEFAULT 1,
-  loop BOOLEAN DEFAULT 1,
-  is_prefs_open boolean DEFAULT 0,
-  created_at DEFAULT CURRENT_TIMESTAMP,
+  show_explorer BOOLEAN DEFAULT true, 
+  random BOOLEAN DEFAULT false, 
+  current_playlist_id INTEGER DEFAULT 1, 
+  loop BOOLEAN DEFAULT false, 
+  is_prefs_open BOOLEAN DEFAULT false, 
+  created_at DEFAULT CURRENT_TIMESTAMP, 
   FOREIGN KEY("current_playlist_id") REFERENCES "playlists"("id")
   );
 `,

@@ -9,7 +9,7 @@ import { Playlists } from './partials';
 import { Dropzone, Hr } from '../shared';
 
 import './Explorer.style.less';
-import { sizes, colors } from '../../assets/styles/consts';
+import { sizes, colors } from '../../assets/consts';
 
 type Props = {
     hide: boolean;

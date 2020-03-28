@@ -7,11 +7,13 @@ import { saveSongs } from './helpers';
 
 app.allowRendererProcessReuse = true;
 
+let win: Window;
+
 async function main() {
     await DataHandler.startup();
     const initialState = await DataHandler.setup();
 
-    let win = new Window({
+    win = new Window({
         file: `file://${__dirname}/index.html`,
         windowSettings: {},
     });
@@ -28,10 +30,13 @@ handleEvent('FETCH_TREE', async () => {
 
 handleEvent('FETCH_STATE', async () => {
     const result = await DataHandler.fetchState();
+
+    win.setSidebarOpen(result.show_explorer);
+
     return result;
 });
 
-handleEvent('SET_STATE_MAIN', async (_, args) => {
+handleEvent('UPDATE_STATE', async (_, args) => {
     try {
         await DataHandler.saveState(args);
 

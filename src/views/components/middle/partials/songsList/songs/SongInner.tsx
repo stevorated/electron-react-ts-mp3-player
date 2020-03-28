@@ -5,7 +5,7 @@ import { AllHandlerActions } from '@views/interfaces';
 import { ISong } from '@services/db/interfaces';
 
 import { formatMillsToTime } from '../../../../../utils';
-import { colors } from '../../../../../assets/styles/consts';
+import { colors } from '../../../../../assets/consts';
 
 type Props = {
     isEditable: boolean;

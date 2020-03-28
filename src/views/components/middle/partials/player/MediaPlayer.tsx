@@ -16,8 +16,8 @@ type Props = {
     player: HTMLMediaElement | null;
     play: (dontRewind?: boolean) => Promise<void>;
     pause: (stop?: boolean) => void;
-    nextsong: () => void;
-    lastsong: () => void;
+    nextsong: () => Promise<void>;
+    lastsong: () => Promise<void>;
     rewind: () => void;
     forward: () => void;
     setCurrentTime: (time: number) => void;

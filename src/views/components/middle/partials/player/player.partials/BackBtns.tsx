@@ -5,7 +5,7 @@ import styled from 'styled-components';
 type Props = {
     disabled: boolean;
     size: string;
-    lastsong: () => void;
+    lastsong: () => Promise<void>;
     rewind: () => void;
 };
 

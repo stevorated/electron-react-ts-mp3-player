@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { colors } from '../../../../assets/styles/consts';
+import { colors } from '../../../../assets/consts';
 
 type Props = {
     source: MediaElementAudioSourceNode | null;
@@ -8,14 +8,6 @@ type Props = {
 
 export function Analyser({}: Props) {
     const canvasRef = useRef<HTMLCanvasElement>(null);
-
-    // let ctx: CanvasRenderingContext2D | null = null;
-    // let analyser: AnalyserNode | null;
-    // let fbcArray: Uint8Array;
-    // let bars: number = 100;
-    // let barX: number;
-    // let barWidth: number;
-    // let barHeight: number;
 
     return (
         <canvas

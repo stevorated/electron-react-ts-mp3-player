@@ -5,7 +5,7 @@ import { FaEdit, FaListUl, FaPoo } from 'react-icons/fa';
 import { ISong } from '@services/db';
 import { AllHandlerActions, StatusType } from '@views/interfaces';
 
-import { colors } from '../../../../../assets/styles/consts';
+import { colors } from '../../../../../assets/consts';
 import { shouldFloat } from '../../../../../utils';
 import { SongPlayBtn } from './SongPlayBtn';
 import { SongInner } from './SongInner';

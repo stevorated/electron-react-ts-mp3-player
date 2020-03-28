@@ -15,7 +15,6 @@ export const stateReducer = (
             return payload;
 
         case UPDATE_STATE:
-            console.log({ ...state, ...payload });
             return { ...state, ...payload };
         default:
             return state;

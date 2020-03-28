@@ -158,7 +158,7 @@ export class DataHandler {
 
     static async saveState(entity: Partial<IState>) {
         try {
-            return State.create(entity);
+            return State.updateById<IState>(1, entity);
         } catch (error) {
             this.logger.error(error.message, { error });
         }

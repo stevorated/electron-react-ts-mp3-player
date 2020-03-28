@@ -5,7 +5,7 @@ import { AllHandlerActions } from '@views/interfaces';
 import { TreeListType, StatusType } from '@views/interfaces';
 
 import { PlayerContainer, SongsListContainer } from './partials';
-import { colors } from './../../assets/styles/consts';
+import { colors } from '../../assets/consts';
 
 type Props = {
     isPrefsOpen: boolean;
@@ -23,8 +23,8 @@ type Props = {
     player: HTMLMediaElement | null;
     play: (dontRewind?: boolean) => Promise<void>;
     pause: (stop?: boolean) => void;
-    nextsong: () => void;
-    lastsong: () => void;
+    nextsong: () => Promise<void>;
+    lastsong: () => Promise<void>;
     rewind: () => void;
     forward: () => void;
     setCurrentTime: (time: number) => void;

@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import dayjs from 'dayjs';
 
-import { colors } from '../../../../assets/styles/consts';
+import { colors } from '../../../../assets/consts';
 import img from '../../../../assets/img/Record-Album-02.jpg';
 import { Analyser } from '..';
 
