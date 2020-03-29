@@ -8,6 +8,7 @@ export const colors = {
     lightTextColor: '#adadad',
     mediumTextColor: '#6e6a6a',
     activeTextColor: 'rgba(250, 250, 250, 0.85)',
+    blue: '#007acc',
 };
 
 export const sizes = {
