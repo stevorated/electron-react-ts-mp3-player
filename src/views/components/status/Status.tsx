@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { FaMagic, FaSmile, FaList, FaRegHandPointUp } from 'react-icons/fa';
 
 import { TreeListType, StatusType } from '@views/interfaces';
+import { colors } from '../../assets/consts';
 
 type Props = {
     status: StatusType;
@@ -13,7 +14,7 @@ type Props = {
 export function Status({ status, current, pointer }: Props) {
     return (
         <FooterEl>
-            <ContainerDiv className="status-bar">
+            <ContainerDiv>
                 <List>
                     <Item>
                         <FaSmile size="12px" style={{ marginRight: '6px' }} />
@@ -59,7 +60,7 @@ export function Status({ status, current, pointer }: Props) {
 export default Status;
 
 const FooterEl = styled.footer`
-    background-color: #007acc;
+    background-color: ${colors.blue};
     padding: 2px;
     color: #fff;
     height: 19px;
