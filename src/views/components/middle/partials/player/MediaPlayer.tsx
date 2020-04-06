@@ -6,6 +6,7 @@ import { StatusType, AllHandlerActions } from '@views/interfaces';
 
 import { Volume, Seek } from './player.partials';
 import { Controls } from './Controls';
+import { AudioHandler } from '../songsList/audioHandler/AudioHandler';
 
 type Props = {
     status: StatusType;
@@ -13,7 +14,7 @@ type Props = {
     size: string;
     pointer: number;
     song?: ISong;
-    player: HTMLMediaElement | null;
+    player: AudioHandler;
     play: (dontRewind?: boolean) => Promise<void>;
     pause: (stop?: boolean) => void;
     nextsong: () => Promise<void>;
@@ -43,44 +44,55 @@ export function MediaPlayer({
 }: Props) {
     const container = useRef<HTMLDivElement>(null);
     const [volume, setVolume] = useState(0.5);
-    const [pos, setPos] = useState(0);
+    const [pos, setPos] = useState(player.getPosition());
     const [seek, setSeek] = useState(false);
     const [busy, setBusy] = useState(false);
 
     const noSong = !song;
 
+    useEffect(() => {
+        setPos(player.getPosition());
+    }, []);
+
+    useEffect(() => {
+        window.addEventListener('changeposition', updatePos);
+        return () => {
+            window.removeEventListener('changeposition', updatePos);
+        };
+    });
+
     const updatePos = () => {
         if (!seek) {
             return setPos(getCurrentTime());
         }
-
         setSeek(false);
         setCurrentTime(pos);
     };
 
     const handleChangePos = (e: React.ChangeEvent<HTMLInputElement>) => {
         e.persist();
-        setSeek(true);
-        setPos(e.target.valueAsNumber / 1000);
-    };
 
-    useEffect(() => {
-        if (!player) {
+        setBusy(true);
+
+        if (busy) {
             return;
         }
-        player.addEventListener('timeupdate', updatePos);
-        return () => player.removeEventListener('timeupdate', updatePos);
-    });
+        const playing = player.getStatus() === 'PLAY';
+        setSeek(true);
+        player.setPosition(e.target.valueAsNumber / 1000);
+        playing && player.pause();
+        setPos(e.target.valueAsNumber / 1000);
+        setTimeout(() => {
+            playing && player.play();
+            setBusy(false);
+        }, 2);
+    };
 
     const handleChangeVolume = (e: React.ChangeEvent<HTMLInputElement>) => {
         e.persist();
 
-        if (!player) {
-            return;
-        }
-
         setVolume(e.target.valueAsNumber);
-        player.volume = e.target?.valueAsNumber / 100;
+        player.setVolume(e.target?.valueAsNumber / 100);
 
         if (busy) {
             return;
@@ -115,12 +127,7 @@ export function MediaPlayer({
                 rewind={rewind}
                 forward={forward}
             />
-            <Seek
-                disabled={noSong}
-                pos={pos}
-                duration={song?.length || 0}
-                handleChangePos={handleChangePos}
-            />
+            <Seek disabled={noSong} pos={pos} duration={song?.length || 0} handleChangePos={handleChangePos} />
         </ContainerDiv>
     );
 }

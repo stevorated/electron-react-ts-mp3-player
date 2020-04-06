@@ -28,7 +28,7 @@ const terser = new TerserPlugin({
 
 const config = {
     mode: isDev ? 'development' : 'production',
-    devtool: isDev && 'cheap-source-map',
+    devtool: isDev && 'source-map',
     entry: './src/main/main.ts',
     target: 'electron-main',
 

@@ -36,13 +36,8 @@ export function Seek({ disabled, duration, pos, handleChangePos }: Props) {
     return (
         <ContainerDiv>
             <InnerContainerDiv>
-                <TimeLabel className={disabled ? 'disabled' : ''}>
-                    {!disabled ? currentTime : '--:--'}
-                </TimeLabel>
-                <Tooltip
-                    tooltipText={tempTime || currentTime}
-                    style={{ width: '80%' }}
-                >
+                <TimeLabel className={disabled ? 'disabled' : ''}>{!disabled ? currentTime : '--:--'}</TimeLabel>
+                <Tooltip tooltipText={tempTime || currentTime} style={{ width: '80%' }}>
                     <RangeInput
                         onMouseMove={handleTempValue}
                         disabled={disabled}
@@ -55,10 +50,7 @@ export function Seek({ disabled, duration, pos, handleChangePos }: Props) {
                         onChange={handleChangePos}
                     />
                 </Tooltip>
-                <TimeLabel
-                    style={{ marginLeft: '20px' }}
-                    className={disabled ? 'disabled' : ''}
-                >
+                <TimeLabel style={{ marginLeft: '20px' }} className={disabled ? 'disabled' : ''}>
                     {duration ? dayjs(duration).format('mm:ss') : '--:--'}
                 </TimeLabel>
             </InnerContainerDiv>

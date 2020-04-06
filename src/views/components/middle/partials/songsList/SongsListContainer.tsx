@@ -5,28 +5,31 @@ import { FaSpinner } from 'react-icons/fa';
 import { ISong } from '@services/db';
 import { AllHandlerActions, TreeListType, StatusType } from '@views/interfaces';
 
+import { Analyser } from './audioHandler';
 import { PlaylistDetailsBar } from './PlaylistDetailsBar';
 import { SongsContainer } from './songs';
 import { Hr } from '../../../shared';
 
 type Props = {
+    panelWidth: number;
+    pointer: number;
     loading: boolean;
     current?: TreeListType;
-    pointer: number;
-    context: AudioContext | null;
-    source: MediaElementAudioSourceNode | null;
-    handleAction: (action: AllHandlerActions, payload: any) => Promise<void>;
     status: StatusType;
+    sinewaveC: React.RefObject<HTMLCanvasElement>;
+    frequencyC: React.RefObject<HTMLCanvasElement>;
+    handleAction: (action: AllHandlerActions, payload: any) => Promise<void>;
 };
 
 export function SongsListContainer({
-    context,
-    source,
+    panelWidth,
     current,
     pointer,
     handleAction,
     status,
     loading,
+    sinewaveC,
+    frequencyC,
 }: Props) {
     const { nested } = current || { nested: [] };
     const songs = nested as ISong[];
@@ -42,8 +45,18 @@ export function SongsListContainer({
             {current && (
                 <>
                     <PlaylistDetailsBar
-                        source={source}
-                        context={context}
+                        panelWidth={panelWidth}
+                        sinewaveC={sinewaveC}
+                        frequencyC={frequencyC}
+                        size={songs.length || 0}
+                        title={current?.title}
+                        totalDuration={totalDuration}
+                    />
+                    <Hr />
+                    <Analyser
+                        panelWidth={panelWidth}
+                        sinewaveC={sinewaveC}
+                        frequencyC={frequencyC}
                         size={songs.length || 0}
                         title={current?.title}
                         totalDuration={totalDuration}

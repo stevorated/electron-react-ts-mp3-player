@@ -6,7 +6,6 @@
         "allowJs": false,
         "jsx": "react",
         "sourceMap": true,
-        "outDir": "dist",
         "removeComments": true,
         "strict": true,
         "noImplicitAny": true,
@@ -14,10 +13,12 @@
         "noUnusedParameters": true,
         "moduleResolution": "node",
         "baseUrl": "./",
+        "outDir": "./dist",
+        "rootDir": "./src",
         "paths": {
-            "@views/*": ["src/views/*"],
-            "@services/*": ["src/services/*"],
-            "@main/*": ["src/main/*"]
+            "@views/*": ["./src/views/*"],
+            "@services/*": ["./src/services/*"],
+            "@main/*": ["./src/main/*"]
         },
         "types": ["react"],
         "allowSyntheticDefaultImports": true,

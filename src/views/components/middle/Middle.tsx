@@ -6,6 +6,7 @@ import { TreeListType, StatusType } from '@views/interfaces';
 
 import { PlayerContainer, SongsListContainer } from './partials';
 import { colors } from '../../assets/consts';
+import { AudioHandler } from './partials/songsList/audioHandler/AudioHandler';
 
 type Props = {
     isPrefsOpen: boolean;
@@ -18,9 +19,10 @@ type Props = {
     status: StatusType;
     current?: TreeListType;
     mainRef: RefObject<HTMLDivElement>;
-    context: AudioContext | null;
-    source: MediaElementAudioSourceNode | null;
-    player: HTMLMediaElement | null;
+    player: AudioHandler;
+    panelWidth: number;
+    sinewaveC: React.RefObject<HTMLCanvasElement>;
+    frequencyC: React.RefObject<HTMLCanvasElement>;
     play: (dontRewind?: boolean) => Promise<void>;
     pause: (stop?: boolean) => void;
     nextsong: () => Promise<void>;
@@ -34,10 +36,9 @@ type Props = {
 };
 
 export function Middle({
+    panelWidth,
     isPrefsOpen,
     player,
-    context,
-    source,
     play,
     pause,
     nextsong,
@@ -57,6 +58,8 @@ export function Middle({
     loading,
     loop,
     random,
+    sinewaveC,
+    frequencyC,
 }: Props) {
     return (
         <ContainerDiv ref={mainRef} style={{ flex }}>
@@ -81,8 +84,9 @@ export function Middle({
                 waitBetween={waitBetween}
             />
             <SongsListContainer
-                context={context}
-                source={source}
+                panelWidth={panelWidth}
+                sinewaveC={sinewaveC}
+                frequencyC={frequencyC}
                 loading={loading}
                 status={status}
                 handleAction={handleAction}

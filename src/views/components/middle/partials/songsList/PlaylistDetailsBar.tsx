@@ -1,30 +1,26 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import styled from 'styled-components';
 import dayjs from 'dayjs';
 
 import { colors } from '../../../../assets/consts';
 import img from '../../../../assets/img/Record-Album-02.jpg';
-import { Analyser } from '..';
 
 type Props = {
     title?: string;
+    panelWidth: number;
     size: number;
     totalDuration?: number;
-    context: AudioContext | null;
-    source: MediaElementAudioSourceNode | null;
+    sinewaveC: React.RefObject<HTMLCanvasElement>;
+    frequencyC: React.RefObject<HTMLCanvasElement>;
 };
 
-export function PlaylistDetailsBar({
-    title,
-    size,
-    totalDuration,
-    source,
-    context,
-}: Props) {
+export function PlaylistDetailsBar({ title, size, totalDuration }: Props) {
+    const imageRef = useRef<HTMLDivElement>(null);
+
     return (
-        <div style={{ display: 'flex' }}>
+        <div>
             <ContainerDiv>
-                <ImageDiv>
+                <ImageDiv ref={imageRef}>
                     <Image src={img} alt={title} />
                 </ImageDiv>
                 <Title>
@@ -41,42 +37,45 @@ export function PlaylistDetailsBar({
                     </TextContainer>
                 </Title>
             </ContainerDiv>
-            <Analyser source={source} context={context} />
         </div>
     );
 }
 
 const ContainerDiv = styled.div`
-    margin: 20px;
     display: flex;
-    flexdirection: row;
+    flex-direction: row;
+    justify-content: space-around;
+    height: 110px;
 `;
 
 const ImageDiv = styled.div`
     display: flex;
-    height: 14vh;
-    width: 14vh;
+    height: 100px;
+    width: 100px;
+    margin: 3px;
     border: 2px dashed rgba(200, 200, 200, 0.2);
-    alignitems: center;
-    justifycontent: center;
+    align-items: center;
+    justify-content: center;
 `;
 
 const Image = styled.img`
     display: flex;
-    height: 14vh;
-    width: 14vh;
+    height: 100px;
+    width: 100px;
     padding: 0;
-    margin: 0;
-    alignitems: censter;
-    justifycontent: center;
+    margin: 2px;
+    align-items: center;
+    justify-content: center;
 `;
 
 const Title = styled.h3`
     color: ${colors.lightTextColor};
     margin-left: 20px;
-    padding: 10px;
     font-size: 1rem;
     text-align: center;
+    display: block;
+    text-align: flex-start;
+    flex: 1;
 `;
 
 const SmallTitle = styled.small`
@@ -84,12 +83,13 @@ const SmallTitle = styled.small`
     padding-top: 0;
     /* padding-left: 6px; */
     font-size: 10px;
-    text-align: 'start';
+    text-align: flex-start;
 `;
 
 const TextContainer = styled.div`
     margin: 4px 0;
     display: flex;
-    justifyself: start;
-    alignitems: floor;
+    width: 50px;
+    justify-self: start;
+    align-items: floor;
 `;

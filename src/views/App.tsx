@@ -6,20 +6,23 @@ import { ISong, IState } from '@services/db';
 
 import { Logger } from '../logger/logger';
 import { TreeListType, DispatchProps } from './interfaces';
-import { StateProps, AppState } from './interfaces';
-import { AllHandlerActions } from './interfaces';
-import { RootState, fetchTree, deleteSong } from './store';
-import { fetchState, updateState } from './store';
-import { savePlaylist, deleteFromTree } from './store';
-import { createTempPlaylist, updatePlaylist } from './store';
-import { sortPlaylist } from './store';
+import { StateProps, AppState, AllHandlerActions } from './interfaces';
+import { RootState, fetchTree, deleteSong, fetchState, updateState, sortPlaylist } from './store';
+import { savePlaylist, deleteFromTree, createTempPlaylist, updatePlaylist } from './store';
 import { Ipc, setupListeners } from './tools';
 import { Randomize, by } from './utils';
 import { MainPage } from './pages';
+import { AudioHandler } from './components/middle/partials/songsList/audioHandler';
 
 import './app.style.less';
 
-type Props = DispatchProps & StateProps;
+type Props = DispatchProps &
+    StateProps & {
+        sinewaveC: React.RefObject<HTMLCanvasElement>;
+        frequencyC: React.RefObject<HTMLCanvasElement>;
+        audioHandler: AudioHandler;
+        handleLoadFiles: (files: string[]) => Promise<void>;
+    };
 
 export class App extends Component<Props, AppState> {
     player: HTMLMediaElement | null = null;
@@ -28,14 +31,15 @@ export class App extends Component<Props, AppState> {
     componentDidMount = async () => {
         await setupListeners(this.handleAction, this.player);
         await Ipc.invokeAndHandle('FETCH_TREE', this.handleAction);
-        await Ipc.invokeAndHandle(
-            'FETCH_STATE',
-            this.handleAction,
-            {},
-            'FETCH_REMOTE_STATE'
-        );
+        await Ipc.invokeAndHandle('FETCH_STATE', this.handleAction, {}, 'FETCH_REMOTE_STATE');
+
+        const [current] = this.getCurrentPlaylist();
+        const paths = (current?.nested as ISong[]).sort((a, b) => by(a, b, 'song_index')).map(({ path }) => path);
+
+        await this.props.handleLoadFiles(paths);
 
         const src = this.getCurrentSrc();
+
         this.setState({ loading: false, src });
         this.initPlayer();
     };
@@ -50,11 +54,7 @@ export class App extends Component<Props, AppState> {
         source: null,
     };
 
-    handleAction = async (
-        action: AllHandlerActions,
-        payload?: any,
-        extra?: any
-    ): Promise<void> => {
+    handleAction = async (action: AllHandlerActions, payload?: any, extra?: any): Promise<void> => {
         const {
             tree,
             fetchTreeDispatch,
@@ -73,11 +73,7 @@ export class App extends Component<Props, AppState> {
         const [current] = this.getCurrentPlaylist();
         const { current_playlist_id: currentPlaylistId } = this.props.state;
 
-        logger.info(`Action Hander dispatched "${action}"`, [
-            payload,
-            current,
-            extra,
-        ]);
+        logger.info(`Action Hander dispatched "${action}"`, [payload, current, extra]);
 
         switch (action) {
             case 'OPEN_PREFRENCES':
@@ -181,22 +177,16 @@ export class App extends Component<Props, AppState> {
                 if (!current) {
                     return;
                 }
-                const sorted = await Ipc.invokeAndReturn<boolean>(
-                    'SORT_PLAYLIST',
-                    {
-                        ...payload,
-                        currentPlaylistId,
-                    }
-                );
+                const sorted = await Ipc.invokeAndReturn<boolean>('SORT_PLAYLIST', {
+                    ...payload,
+                    currentPlaylistId,
+                });
 
                 if (!sorted) {
                     return;
                 }
 
-                return sortPlaylistDispatch(
-                    { ...current, nested: payload.songs },
-                    currentPlaylistId
-                );
+                return sortPlaylistDispatch({ ...current, nested: payload.songs }, currentPlaylistId);
 
             case 'UPDATE_PLAYLIST':
                 return updatePlaylistDispatch(payload);
@@ -205,10 +195,7 @@ export class App extends Component<Props, AppState> {
                 let check = true;
 
                 if (!payload.temp) {
-                    check = await Ipc.invokeAndReturn(
-                        'DELETE_PLAYLIST',
-                        payload.playlist.id
-                    );
+                    check = await Ipc.invokeAndReturn('DELETE_PLAYLIST', payload.playlist.id);
                 }
 
                 if (!check) {
@@ -255,8 +242,7 @@ export class App extends Component<Props, AppState> {
                             const songs = (current?.nested as ISong[])?.concat(
                                 res.map((song, index) => ({
                                     ...song,
-                                    song_index:
-                                        current?.nested.length + 1 + index,
+                                    song_index: current?.nested.length + 1 + index,
                                 }))
                             );
 
@@ -285,14 +271,11 @@ export class App extends Component<Props, AppState> {
                     return;
                 }
                 const initialIndex = current?.nested?.length + 1;
-                const droppedReturn = await Ipc.invokeAndReturn<ISong[]>(
-                    'DROP_SONG',
-                    {
-                        paths: payload,
-                        playlistId: currentPlaylistId,
-                        index: initialIndex,
-                    }
-                );
+                const droppedReturn = await Ipc.invokeAndReturn<ISong[]>('DROP_SONG', {
+                    paths: payload,
+                    playlistId: currentPlaylistId,
+                    index: initialIndex,
+                });
 
                 const songsAfterDrop = (current?.nested as ISong[]).concat(
                     droppedReturn.map((song, index) => ({
@@ -311,29 +294,21 @@ export class App extends Component<Props, AppState> {
                 return savePlaylistDispatch(updated);
 
             case 'UPDATE_SONG':
-                const res = await Ipc.invokeAndReturn<boolean>(
-                    'UPDATE_SONG',
-                    payload
-                );
+                const res = await Ipc.invokeAndReturn<boolean>('UPDATE_SONG', payload);
 
-                const songsAfterUpdate = (current?.nested as ISong[]).map(
-                    song => {
-                        if (song.id === payload.id) {
-                            return payload as ISong;
-                        }
-                        return song;
+                const songsAfterUpdate = (current?.nested as ISong[]).map(song => {
+                    if (song.id === payload.id) {
+                        return payload as ISong;
                     }
-                );
+                    return song;
+                });
 
                 if (!res) {
                     return;
                 }
 
                 return updatePlaylistDispatch({
-                    ...tree.filter(
-                        item =>
-                            item.type === 'playlist' && item.id === current?.id
-                    )[0],
+                    ...tree.filter(item => item.type === 'playlist' && item.id === current?.id)[0],
                     nested: songsAfterUpdate,
                 });
 
@@ -344,15 +319,10 @@ export class App extends Component<Props, AppState> {
                     return;
                 }
 
-                const songsAfterDelete = (current?.nested as ISong[])?.filter(
-                    song => song.id !== payload[0].id
-                );
+                const songsAfterDelete = (current?.nested as ISong[])?.filter(song => song.id !== payload[0].id);
 
                 const updatedTreeItem = {
-                    ...tree.filter(
-                        item =>
-                            item.type === 'playlist' && item.id === current?.id
-                    )[0],
+                    ...tree.filter(item => item.type === 'playlist' && item.id === current?.id)[0],
                     nested: songsAfterDelete || [],
                 };
 
@@ -361,7 +331,9 @@ export class App extends Component<Props, AppState> {
             case 'CHANGE_SONG':
                 const songsArr = (current?.nested || []) as ISong[];
                 const pathTo = songsArr[payload.pointer]?.path;
-
+                this.props.audioHandler.pause();
+                this.props.audioHandler.setPosition(0);
+                this.props.audioHandler.jump(payload.pointer - 1);
                 if (pathTo === this.state.src && payload.pointer !== pointer) {
                     this.setCurrentTime(0);
                 }
@@ -369,14 +341,15 @@ export class App extends Component<Props, AppState> {
                 if (songsArr.length) {
                     if (payload.click && pointer === payload.pointer) {
                         setTimeout(async () => {
-                            status === 'playing'
-                                ? this.pause()
-                                : await this.play();
+                            // this.props.audioHandler.jump(this.state.pointer);
+                            status === 'playing' ? this.pause() : await this.play();
                         }, 80);
 
                         return;
                     } else {
                         setTimeout(async () => {
+                            // this.props.audioHandler.jump(this.state.pointer);
+                            // this.props.audioHandler.jump(this.state.pointer - 1);
                             status === 'playing' && (await this.play());
                         }, 80);
                     }
@@ -415,38 +388,48 @@ export class App extends Component<Props, AppState> {
                 return this.setState(payload);
 
             default:
-                console.log(
-                    `unknown action: ${action}, with payload: ${payload}`
-                );
+                console.log(`unknown action: ${action}, with payload: ${payload}`);
                 break;
         }
     };
 
     initPlayer = () => {
-        if (!this.player) {
-            return;
-        }
-
+        const { audioHandler } = this.props;
         const volume = this.props.state.volume || 0.5;
-        this.player.src = this.state.src;
-        this.player.volume = volume;
+
+        audioHandler.setVolume(volume);
 
         this.handleAction('CHANGE_WAIT_BETWEEN');
         this.handleAction('SET_VOLUME', volume);
+
+        const onCleanCartridge = () => {
+            this.setCurrentTime(0);
+        };
+
+        const onSongEnd = () => {
+            audioHandler.getStatus() === 'PLAY' && this.nextsong();
+
+            this.setCurrentTime(audioHandler.getDuration());
+        };
+
+        window.addEventListener('onsongend', onSongEnd);
+        window.addEventListener('cleancartridge', onCleanCartridge);
+
+        // return () => {
+        //     window.removeEventListener('cleancartridge', onCleanCartridge);
+        //     window.removeEventListener('onsongend', onSongEnd);
+        //     window.removeEventListener('changeposition', onChangeSong);
+        // };
     };
 
     getCurrentPlaylist = (id?: number): TreeListType[] | undefined[] =>
         this.props.tree.filter(
-            item =>
-                item.type === 'playlist' &&
-                item?.id === (id || this.props.state.current_playlist_id)
+            item => item.type === 'playlist' && item?.id === (id || this.props.state.current_playlist_id)
         );
 
     getCurrentSrc = (id?: number): string => {
         const [song] =
-            (this.getCurrentPlaylist(id)[0]?.nested as ISong[])?.sort((a, b) =>
-                by(a, b, 'song_index')
-            ) || [];
+            (this.getCurrentPlaylist(id)[0]?.nested as ISong[])?.sort((a, b) => by(a, b, 'song_index')) || [];
 
         let pathToSong = '';
 
@@ -458,31 +441,29 @@ export class App extends Component<Props, AppState> {
     };
 
     play = async (): Promise<void> => {
-        if (!this.player) {
-            return;
-        }
-
-        this.setState({ status: 'playing' });
-        this.player.play();
-        return;
+        this.state.status !== 'playing' && this.setState({ status: 'playing' });
+        setTimeout(() => {
+            this.props.audioHandler.play();
+        }, 20);
     };
 
     pause = (stop?: boolean): void => {
-        if (!this.player) return;
-
         if (stop) {
-            this.player.pause();
-            this.player.currentTime = 0;
+            this.props.audioHandler.stop();
             return this.setState({ status: 'stopped', time: 0 });
         }
 
-        this.player.pause();
+        this.props.audioHandler.pause();
         return this.setState({ status: 'paused' });
     };
 
-    nextsong = async (): Promise<void> => {
-        if (!this.player) return;
+    tempPause = (): void => {
+        this.props.audioHandler.pause();
+    };
 
+    nextsong = async (): Promise<void> => {
+        // if (!this.player) return;
+        this.props.audioHandler.nextsong();
         const [current] = this.getCurrentPlaylist();
 
         const nested = (current?.nested || []) as ISong[];
@@ -501,9 +482,7 @@ export class App extends Component<Props, AppState> {
             return;
         }
 
-        const randomizer =
-            !this.state.randomized?.length &&
-            new Randomize(current?.nested.length || 1);
+        const randomizer = !this.state.randomized?.length && new Randomize(current?.nested.length || 1);
 
         const randomized = !randomizer
             ? this.state.randomized?.filter(item => {
@@ -512,9 +491,7 @@ export class App extends Component<Props, AppState> {
             : await randomizer.randomizarray();
 
         this.setState({ randomized });
-        const pointer = this.props.state.random
-            ? this.state.randomized?.[0]
-            : this.state.pointer + 1;
+        const pointer = this.props.state.random ? this.state.randomized?.[0] : this.state.pointer + 1;
 
         await this.handleAction('CHANGE_SONG', {
             pointer,
@@ -522,56 +499,48 @@ export class App extends Component<Props, AppState> {
     };
 
     lastsong = async (): Promise<void> => {
-        if (!this.player) return;
-
-        if (this.player.currentTime > 3) {
-            this.player.currentTime = 0;
-
-            return;
-        }
+        this.props.audioHandler.lastsong();
 
         if (this.state.pointer > 0) {
             await this.handleAction('CHANGE_SONG', {
                 pointer: this.state.pointer - 1,
             });
-
-            return;
         }
     };
 
     rewind = (): void => {
-        if (!this.player) {
-            return;
-        }
+        const { audioHandler } = this.props;
+        const playing = audioHandler.getStatus() === 'PLAY';
+        const position = audioHandler.getPosition();
 
-        return this.setCurrentTime(
-            this.player.currentTime < 5 ? 0 : this.player.currentTime - 5
-        );
+        this.tempPause();
+        this.setCurrentTime(position < 5 ? 0 : position - 5);
+
+        playing && this.play();
     };
 
     forward = (): void => {
-        if (!this.player) {
-            return;
-        }
+        const { audioHandler } = this.props;
+        const playing = audioHandler.getStatus() === 'PLAY';
+        const position = audioHandler.getPosition();
 
-        return this.setCurrentTime(this.player.currentTime + 5);
+        this.tempPause();
+        this.setCurrentTime(position + 5);
+
+        playing && this.play();
     };
 
-    getCurrentTime = (): number => {
-        return this.player?.currentTime || 0;
-    };
+    getCurrentTime = (): number => this.props.audioHandler.getPosition();
 
     setCurrentTime = (time: number): void => {
         this.setState({ time });
-        if (this.player) {
-            this.player.currentTime = time;
-        }
+        this.props.audioHandler.setPosition(time);
     };
 
     addSongModal = (): Promise<void> => this.handleAction('ADD_SONG_MODAL');
 
     render() {
-        const { tree } = this.props;
+        const { tree, sinewaveC, frequencyC } = this.props;
         const { status, pointer, loading, src } = this.state;
 
         const {
@@ -589,6 +558,8 @@ export class App extends Component<Props, AppState> {
             <>
                 <audio ref={el => (this.player = el)} src={src} />
                 <MainPage
+                    sinewaveC={sinewaveC}
+                    frequencyC={frequencyC}
                     current={current}
                     currentPlaylistId={currentPlaylistId}
                     pointer={pointer}
@@ -610,9 +581,7 @@ export class App extends Component<Props, AppState> {
                     setCurrentTime={this.setCurrentTime}
                     addSongModal={this.addSongModal}
                     handleAction={this.handleAction}
-                    player={this.player}
-                    context={this.context}
-                    source={this.state.source}
+                    player={this.props.audioHandler}
                 />
             </>
         );
@@ -624,24 +593,16 @@ const mapStateToProps = ({ tree, state }: RootState) => {
 };
 
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
-    fetchTreeDispatch: (payload: TreeListType[]) =>
-        dispatch(fetchTree(payload)),
-    createPlaylistDispatch: (payload?: TreeListType) =>
-        dispatch(createTempPlaylist(payload)),
-    savePlaylistDispatch: (payload: TreeListType, extra?: any) =>
-        dispatch(savePlaylist(payload, extra)),
-    deletePlaylistDispatch: (payload: TreeListType) =>
-        dispatch(deleteFromTree(payload)),
-    deleteSongDispatch: (payload: TreeListType) =>
-        dispatch(deleteSong(payload)),
-    updatePlaylistDispatch: (payload: TreeListType) =>
-        dispatch(updatePlaylist(payload)),
-    sortPlaylistDispatch: (payload: TreeListType) =>
-        dispatch(sortPlaylist(payload)),
+    fetchTreeDispatch: (payload: TreeListType[]) => dispatch(fetchTree(payload)),
+    createPlaylistDispatch: (payload?: TreeListType) => dispatch(createTempPlaylist(payload)),
+    savePlaylistDispatch: (payload: TreeListType, extra?: any) => dispatch(savePlaylist(payload, extra)),
+    deletePlaylistDispatch: (payload: TreeListType) => dispatch(deleteFromTree(payload)),
+    deleteSongDispatch: (payload: TreeListType) => dispatch(deleteSong(payload)),
+    updatePlaylistDispatch: (payload: TreeListType) => dispatch(updatePlaylist(payload)),
+    sortPlaylistDispatch: (payload: TreeListType) => dispatch(sortPlaylist(payload)),
 
     fetchStateDispatch: (payload: IState) => dispatch(fetchState(payload)),
-    updateStateDispatch: (payload: Partial<IState>) =>
-        dispatch(updateState(payload)),
+    updateStateDispatch: (payload: Partial<IState>) => dispatch(updateState(payload)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);

@@ -3,6 +3,7 @@ import React, { useState, MouseEvent, useRef } from 'react';
 import { Explorer, Middle, Info, Status } from '../components';
 import { TreeListType } from '../interfaces';
 import { AllHandlerActions, StatusType } from '../interfaces';
+import { AudioHandler } from '../components/middle/partials/songsList/audioHandler/AudioHandler';
 
 type Props = {
     pointer: number;
@@ -16,9 +17,9 @@ type Props = {
     random: boolean;
     tree: TreeListType[];
     current?: TreeListType;
-    player: HTMLMediaElement | null;
-    source: MediaElementAudioSourceNode | null;
-    context: AudioContext | null;
+    player: AudioHandler;
+    sinewaveC: React.RefObject<HTMLCanvasElement>;
+    frequencyC: React.RefObject<HTMLCanvasElement>;
     play: (dontRewind?: boolean) => Promise<void>;
     pause: (stop?: boolean) => void;
     nextsong: () => Promise<void>;
@@ -32,8 +33,6 @@ type Props = {
 };
 
 export function MainPage({
-    context,
-    source,
     isPrefsOpen,
     showExplorer,
     current,
@@ -56,6 +55,8 @@ export function MainPage({
     loading,
     loop,
     random,
+    sinewaveC,
+    frequencyC,
 }: Props) {
     const resizeClass = 'move-cursor';
     const panelRef = useRef<HTMLElement>(null);
@@ -120,6 +121,8 @@ export function MainPage({
         if (draggin) {
             panel.classList.add(resizeClass);
             setFlex((layoutWidth - e.clientX) / panelWidth);
+        } else {
+            panelRef.current?.classList.remove(resizeClass);
         }
     };
 
@@ -154,14 +157,13 @@ export function MainPage({
                 />
 
                 <Middle
+                    panelWidth={panelRef.current?.clientWidth || 0}
                     isPrefsOpen={isPrefsOpen}
                     addSongModal={addSongModal}
                     loading={loading}
                     flex={flex}
                     mainRef={mainRef}
                     player={player}
-                    context={context}
-                    source={source}
                     play={play}
                     pause={pause}
                     nextsong={nextsong}
@@ -177,6 +179,8 @@ export function MainPage({
                     random={random}
                     waitBetween={waitBetween}
                     handleAction={handleAction}
+                    sinewaveC={sinewaveC}
+                    frequencyC={frequencyC}
                 />
                 <Info />
             </div>

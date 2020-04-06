@@ -10,6 +10,7 @@ import { Hr } from '../../../shared';
 import { by } from '../../../../utils';
 
 import './PlayerContainer.style.less';
+import { AudioHandler } from '../songsList/audioHandler/AudioHandler';
 
 type Props = {
     isPrefsOpen: boolean;
@@ -19,7 +20,7 @@ type Props = {
     loop: boolean;
     random: boolean;
     current?: TreeListType;
-    player: HTMLMediaElement | null;
+    player: AudioHandler;
     play: (dontRewind?: boolean) => Promise<void>;
     pause: (stop?: boolean) => void;
     nextsong: () => Promise<void>;
@@ -66,11 +67,7 @@ export function PlayerContainer({
                 forward={forward}
                 setCurrentTime={setCurrentTime}
                 getCurrentTime={getCurrentTime}
-                song={
-                    (current?.nested as ISong[])
-                        ?.slice()
-                        ?.sort((a, b) => by(a, b, 'song_index'))?.[pointer]
-                }
+                song={(current?.nested as ISong[])?.slice()?.sort((a, b) => by(a, b, 'song_index'))?.[pointer]}
                 status={status}
                 pointer={pointer}
                 size={`${size}px`}

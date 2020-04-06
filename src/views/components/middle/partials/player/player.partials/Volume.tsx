@@ -3,28 +3,19 @@ import styled from 'styled-components';
 
 import { RangeInput, disableable, Tooltip } from '../../../../shared';
 
-import {
-    IoIosVolumeHigh,
-    IoIosVolumeLow,
-    IoIosVolumeMute,
-} from 'react-icons/io';
+import { IoIosVolumeHigh, IoIosVolumeLow, IoIosVolumeMute } from 'react-icons/io';
+import { AudioHandler } from '../../songsList/audioHandler';
 
 type Props = {
     disabled: boolean;
     volume: number;
-    player: HTMLMediaElement | null;
+    player: AudioHandler;
     handleChangeVolume: (e: React.ChangeEvent<HTMLInputElement>) => void;
     setVolume: (value: number) => void;
 };
 
-export function Volume({
-    setVolume,
-    volume,
-    player,
-    handleChangeVolume,
-    disabled,
-}: Props) {
-    const currentVolume = player?.volume;
+export function Volume({ setVolume, volume, player, handleChangeVolume, disabled }: Props) {
+    const currentVolume = player.getVolume();
     if (currentVolume && currentVolume !== volume) {
         setVolume(currentVolume);
     }
@@ -41,31 +32,14 @@ export function Volume({
         disabled: boolean;
     }) =>
         volume > 0.5 ? (
-            <StyledHigh
-                disabled={disabled}
-                size={size}
-                style={style}
-                className={className}
-            />
+            <StyledHigh disabled={disabled} size={size} style={style} className={className} />
         ) : volume === 0 ? (
-            <StyledMute
-                disabled={disabled}
-                size={size}
-                style={style}
-                className={className}
-            />
+            <StyledMute disabled={disabled} size={size} style={style} className={className} />
         ) : (
-            <StyledLow
-                disabled={disabled}
-                size={size}
-                style={style}
-                className={className}
-            />
+            <StyledLow disabled={disabled} size={size} style={style} className={className} />
         );
 
-    const tooltipText = `${Math.round(
-        (currentVolume || 0) * 100
-    )?.toString()}%`;
+    const tooltipText = `${Math.round((currentVolume || 0) * 100)?.toString()}%`;
 
     return (
         <ContainerDiv>
