@@ -20,7 +20,7 @@ type Props = {
     player: AudioHandler;
     sinewaveC: React.RefObject<HTMLCanvasElement>;
     frequencyC: React.RefObject<HTMLCanvasElement>;
-    play: (dontRewind?: boolean) => Promise<void>;
+    play: (dontRewind?: boolean) => void;
     pause: (stop?: boolean) => void;
     nextsong: () => Promise<void>;
     lastsong: () => Promise<void>;

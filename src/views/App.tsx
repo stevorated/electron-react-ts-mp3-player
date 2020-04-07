@@ -124,14 +124,26 @@ export class App extends Component<Props, AppState> {
 
             case 'SWITCH_PLAYLIST':
                 this.pause(true);
-                let pathToSong = this.getCurrentSrc(payload);
+
                 await this.handleAction('UPDATE_REMOTE_STATE', {
                     current_playlist_id: payload,
                 });
+
+                const [nextPlaylist] = this.getCurrentPlaylist();
+
+                this.props.audioHandler.clean();
+                const paths = (nextPlaylist?.nested as ISong[])
+                    .sort((a, b) => by(a, b, 'song_index'))
+                    .map(({ path }) => path);
+
+                this.setState({ loading: true });
+                await this.props.handleLoadFiles(paths);
+
                 return this.setState({
-                    src: pathToSong,
+                    src: this.getCurrentSrc(payload),
                     pointer: 0,
                     status: 'ready',
+                    loading: false,
                 });
 
             case 'FETCH_TREE':
@@ -331,9 +343,12 @@ export class App extends Component<Props, AppState> {
             case 'CHANGE_SONG':
                 const songsArr = (current?.nested || []) as ISong[];
                 const pathTo = songsArr[payload.pointer]?.path;
-                this.props.audioHandler.pause();
-                this.props.audioHandler.setPosition(0);
-                this.props.audioHandler.jump(payload.pointer - 1);
+
+                if (payload.click) {
+                    this.props.audioHandler.stop();
+                    this.props.audioHandler.jump(payload.pointer);
+                }
+
                 if (pathTo === this.state.src && payload.pointer !== pointer) {
                     this.setCurrentTime(0);
                 }
@@ -341,16 +356,13 @@ export class App extends Component<Props, AppState> {
                 if (songsArr.length) {
                     if (payload.click && pointer === payload.pointer) {
                         setTimeout(async () => {
-                            // this.props.audioHandler.jump(this.state.pointer);
-                            status === 'playing' ? this.pause() : await this.play();
+                            status === 'playing' ? this.pause() : this.play();
                         }, 80);
 
                         return;
                     } else {
                         setTimeout(async () => {
-                            // this.props.audioHandler.jump(this.state.pointer);
-                            // this.props.audioHandler.jump(this.state.pointer - 1);
-                            status === 'playing' && (await this.play());
+                            status === 'playing' && this.play();
                         }, 80);
                     }
                 }
@@ -414,12 +426,6 @@ export class App extends Component<Props, AppState> {
 
         window.addEventListener('onsongend', onSongEnd);
         window.addEventListener('cleancartridge', onCleanCartridge);
-
-        // return () => {
-        //     window.removeEventListener('cleancartridge', onCleanCartridge);
-        //     window.removeEventListener('onsongend', onSongEnd);
-        //     window.removeEventListener('changeposition', onChangeSong);
-        // };
     };
 
     getCurrentPlaylist = (id?: number): TreeListType[] | undefined[] =>
@@ -440,7 +446,7 @@ export class App extends Component<Props, AppState> {
         return pathToSong;
     };
 
-    play = async (): Promise<void> => {
+    play = (): void => {
         this.state.status !== 'playing' && this.setState({ status: 'playing' });
         setTimeout(() => {
             this.props.audioHandler.play();
@@ -499,9 +505,13 @@ export class App extends Component<Props, AppState> {
     };
 
     lastsong = async (): Promise<void> => {
-        this.props.audioHandler.lastsong();
+        const { audioHandler } = this.props;
 
-        if (this.state.pointer > 0) {
+        const pos = audioHandler.getPosition();
+
+        audioHandler.lastsong();
+
+        if (this.state.pointer > 0 && pos < 5) {
             await this.handleAction('CHANGE_SONG', {
                 pointer: this.state.pointer - 1,
             });
@@ -510,6 +520,7 @@ export class App extends Component<Props, AppState> {
 
     rewind = (): void => {
         const { audioHandler } = this.props;
+
         const playing = audioHandler.getStatus() === 'PLAY';
         const position = audioHandler.getPosition();
 
@@ -521,6 +532,7 @@ export class App extends Component<Props, AppState> {
 
     forward = (): void => {
         const { audioHandler } = this.props;
+
         const playing = audioHandler.getStatus() === 'PLAY';
         const position = audioHandler.getPosition();
 

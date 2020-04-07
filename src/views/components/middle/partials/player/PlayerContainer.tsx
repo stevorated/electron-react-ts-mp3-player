@@ -21,7 +21,7 @@ type Props = {
     random: boolean;
     current?: TreeListType;
     player: AudioHandler;
-    play: (dontRewind?: boolean) => Promise<void>;
+    play: (dontRewind?: boolean) => void;
     pause: (stop?: boolean) => void;
     nextsong: () => Promise<void>;
     lastsong: () => Promise<void>;

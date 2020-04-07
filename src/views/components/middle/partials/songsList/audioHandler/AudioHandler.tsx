@@ -28,8 +28,8 @@ export class AudioHandler {
     private pointer = 0;
     private volume = 0.5;
     private releaseTime = 0.1;
-    private status: AudioHandlerStatus = 'INIT';
     private timestampIntervalTick = 1000;
+    private status: AudioHandlerStatus = 'INIT';
 
     private sinewaveC: HTMLCanvasElement | null | undefined = null;
     private frequencyC: HTMLCanvasElement | null | undefined = null;
@@ -50,9 +50,9 @@ export class AudioHandler {
     };
 
     addFiles = async (urls: string[]) => {
-        const cartridge = await Promise.all(urls.map((url) => axios.get(url, { responseType: 'arraybuffer' })));
+        const cartridge = await Promise.all(urls.map(url => axios.get(url, { responseType: 'arraybuffer' })));
 
-        const buffers = await Promise.all(cartridge.map((res) => this.context?.decodeAudioData(res.data)));
+        const buffers = await Promise.all(cartridge.map(res => this.context?.decodeAudioData(res.data)));
 
         this.buffers = this.buffers.concat(buffers);
         if (this.status !== 'PLAY') {
@@ -61,7 +61,7 @@ export class AudioHandler {
     };
 
     loadFiles = async (urls: string[], { frequencyC, sinewaveC }: Displays, styles: Styles): Promise<void> => {
-        const cartridge = await Promise.all(urls.map((url) => axios.get(url, { responseType: 'arraybuffer' })));
+        const cartridge = await Promise.all(urls.map(url => axios.get(url, { responseType: 'arraybuffer' })));
 
         this.grabAudioContext();
 
@@ -74,7 +74,7 @@ export class AudioHandler {
         this.frequencyC = frequencyC;
         this.gainNode = this.context.createGain();
 
-        this.buffers = await Promise.all(cartridge.map((res) => this.context?.decodeAudioData(res.data)));
+        this.buffers = await Promise.all(cartridge.map(res => this.context?.decodeAudioData(res.data)));
 
         this.updateDuration();
         this.updateSampleRate();
@@ -288,7 +288,6 @@ export class AudioHandler {
         this.pointer = pointer;
         this.updateDuration();
         this.updateSampleRate();
-        this.dispatchEvent('onsongend');
     };
 
     nextsong = () => {

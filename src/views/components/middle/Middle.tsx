@@ -23,7 +23,7 @@ type Props = {
     panelWidth: number;
     sinewaveC: React.RefObject<HTMLCanvasElement>;
     frequencyC: React.RefObject<HTMLCanvasElement>;
-    play: (dontRewind?: boolean) => Promise<void>;
+    play: (dontRewind?: boolean) => void;
     pause: (stop?: boolean) => void;
     nextsong: () => Promise<void>;
     lastsong: () => Promise<void>;

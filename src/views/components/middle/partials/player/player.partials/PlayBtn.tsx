@@ -10,7 +10,7 @@ type Props = {
     disabled: boolean;
     status: StatusType;
     size: string;
-    play: () => Promise<void>;
+    play: () => void;
     pause: (stop?: boolean) => void;
 };
 

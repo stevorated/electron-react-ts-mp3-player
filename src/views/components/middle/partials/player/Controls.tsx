@@ -10,7 +10,7 @@ type Props = {
     size: string;
     noSong: boolean;
     status: StatusType;
-    play: (dontRewind?: boolean) => Promise<void>;
+    play: (dontRewind?: boolean) => void;
     pause: (stop?: boolean) => void;
     lastsong: () => Promise<void>;
     nextsong: () => Promise<void>;

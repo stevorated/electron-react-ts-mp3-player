@@ -43,29 +43,21 @@ export function SongInner({
     return !isEditable ? (
         <div
             className={float ? 'float-text-wrapper' : ''}
-            onClick={() =>
+            onClick={() => {
                 handleAction('CHANGE_SONG', {
                     pointer: index - 1,
                     click: true,
-                })
-            }
+                });
+            }}
         >
-            <h3
-                id={childId}
-                className={`hoverable ${float ? 'float-text' : ''} ${
-                    active ? 'active' : ''
-                }`}
-            >
+            <h3 id={childId} className={`hoverable ${float ? 'float-text' : ''} ${active ? 'active' : ''}`}>
                 {title} <TinyText>{formatMillsToTime(length || 0)}</TinyText>
             </h3>
         </div>
     ) : (
         <div
             className={float ? 'float-text-wrapper' : ''}
-            onClick={() =>
-                !isEditable &&
-                handleAction('CHANGE_SONG', (song.song_index ?? 0) - 1)
-            }
+            onClick={() => !isEditable && handleAction('CHANGE_SONG', (song.song_index ?? 0) - 1)}
         >
             <div>
                 <input
