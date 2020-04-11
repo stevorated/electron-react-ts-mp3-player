@@ -16,6 +16,7 @@ export function Seek({ disabled, duration, pos, handleChangePos }: Props) {
     const seek = useRef<HTMLInputElement>(null);
     const currentTime = dayjs(pos * 1000).format('mm:ss');
     const tempTime = dayjs(temp).format('mm:ss');
+
     const handleTempValue = (e: React.MouseEvent) => {
         if (!seek.current) {
             return;
@@ -33,6 +34,7 @@ export function Seek({ disabled, duration, pos, handleChangePos }: Props) {
 
         setTemp(duration * ratio);
     };
+
     return (
         <ContainerDiv>
             <InnerContainerDiv>

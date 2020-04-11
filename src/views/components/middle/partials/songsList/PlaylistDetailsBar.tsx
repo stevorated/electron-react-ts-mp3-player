@@ -7,11 +7,8 @@ import img from '../../../../assets/img/Record-Album-02.jpg';
 
 type Props = {
     title?: string;
-    panelWidth: number;
     size: number;
     totalDuration?: number;
-    sinewaveC: React.RefObject<HTMLCanvasElement>;
-    frequencyC: React.RefObject<HTMLCanvasElement>;
 };
 
 export function PlaylistDetailsBar({ title, size, totalDuration }: Props) {
@@ -29,11 +26,7 @@ export function PlaylistDetailsBar({ title, size, totalDuration }: Props) {
                         <SmallTitle>{size} songs</SmallTitle>
                     </TextContainer>
                     <TextContainer>
-                        <SmallTitle>
-                            {totalDuration
-                                ? dayjs(totalDuration).format('mm:ss')
-                                : '--:--'}
-                        </SmallTitle>
+                        <SmallTitle>{totalDuration ? dayjs(totalDuration).format('mm:ss') : '--:--'}</SmallTitle>
                     </TextContainer>
                 </Title>
             </ContainerDiv>

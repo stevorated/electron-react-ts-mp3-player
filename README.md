@@ -1,4 +1,4 @@
-# pleya :stew:
+# Pleya :stew:
 
 An Electron React mp3 manager app using typescript.
 

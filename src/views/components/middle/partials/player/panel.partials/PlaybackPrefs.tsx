@@ -1,7 +1,6 @@
 import React from 'react';
 import { Tab } from './Tab';
 import { Select } from './Select';
-import { Text } from './Text';
 import { AllHandlerActions } from '@views/interfaces';
 
 type Props = {
@@ -10,35 +9,40 @@ type Props = {
 };
 
 export function PlaybackPrefs({ waitBetween, handleAction }: Props) {
-    const handleChangeWaitBetweenText = (
-        e: React.ChangeEvent<HTMLInputElement>
-    ) => {
+    const handleChangeWaitBetween = (e: React.ChangeEvent<HTMLSelectElement>) => {
         e.preventDefault();
-        handleAction('CHANGE_WAIT_BETWEEN', e.target.value);
-    };
+        let val = 0;
+        console.log(e.target.value);
+        switch (e.target.value) {
+            case '0.9':
+                val = 0.9;
+                break;
 
-    const handleChangeWaitBetween = (
-        e: React.ChangeEvent<HTMLSelectElement>
-    ) => {
-        e.preventDefault();
-        handleAction('CHANGE_WAIT_BETWEEN', e.target.value);
+            case '0.4':
+                val = 0.4;
+                break;
+
+            case '0':
+                val = 0;
+                break;
+
+            default:
+                break;
+        }
+        console.log(val);
+        handleAction('CHANGE_WAIT_BETWEEN', val);
     };
 
     return (
         <Tab title="Playback">
-            <Text
-                name="wait between"
-                value={waitBetween}
-                onChange={handleChangeWaitBetweenText}
-            />
             <Select
                 state={waitBetween}
-                name="select 1"
+                name="wait between"
                 onChange={handleChangeWaitBetween}
                 options={[
-                    { title: 'take your time', value: 3 },
-                    { title: 'half a second', value: 0.5 },
-                    { title: 'back to back', value: 0 },
+                    { title: 'snail', value: '0.9' },
+                    { title: 'fast', value: '0.4' },
+                    { title: 'back to back', value: '0' },
                 ]}
             />
         </Tab>

@@ -28,6 +28,7 @@ export class AudioHandler {
     private pointer = 0;
     private volume = 0.5;
     private releaseTime = 0.1;
+    private between = 500;
     private timestampIntervalTick = 1000;
     private status: AudioHandlerStatus = 'INIT';
 
@@ -87,15 +88,25 @@ export class AudioHandler {
 
         this.createFrequencyCanvasContext(frequencyC);
         this.createSinewaveCavasContext(sinewaveC);
+        this.position = 0;
 
         if (this.status !== 'PLAY') {
             this.status = 'READY';
         }
     };
 
+    move = (from: number, to: number): void => {
+        this.buffers.splice(to, 0, this.buffers.splice(from, 1)[0]);
+    };
+
+    remove = (index: number) => {
+        this.buffers.splice(index, 1);
+    };
+
     clean = () => {
         this.buffers = [];
         this.stop();
+        this.pointer = 0;
         this.duration = 0;
         this.status = 'INIT';
         this.dispatchEvent('cleancartridge');
@@ -117,6 +128,14 @@ export class AudioHandler {
 
     updateSampleRate = () => {
         this.sampleRate = this.buffers[this.pointer]?.sampleRate || 0;
+    };
+
+    setBetween = (between: number) => {
+        this.between = between;
+    };
+
+    getBuffers = () => {
+        return this.buffers;
     };
 
     getSampleRate = () => {
@@ -141,6 +160,7 @@ export class AudioHandler {
 
     setPosition = (position: number) => {
         this.position = position;
+        this.dispatchEvent('changeposition');
     };
 
     getPosition = () => {
@@ -166,70 +186,72 @@ export class AudioHandler {
     };
 
     play = () => {
-        if (
-            this.status === 'PLAY' ||
-            this.status === 'INIT' ||
-            this.status === 'BUSY' ||
-            !this.context ||
-            !this.gainNode ||
-            !this.analyser
-        ) {
-            return;
-        }
+        setTimeout(() => {
+            if (
+                this.status === 'PLAY' ||
+                this.status === 'INIT' ||
+                this.status === 'BUSY' ||
+                !this.context ||
+                !this.gainNode ||
+                !this.analyser
+            ) {
+                return;
+            }
 
-        const resumeTime = this.position ? this.position || 0 : 0;
-        // don't interupt
-        this.status = 'BUSY';
+            const resumeTime = this.position ? this.position || 0 : 0;
+            // don't interupt
+            this.status = 'BUSY';
 
-        this.source = this.context.createBufferSource();
+            this.source = this.context.createBufferSource();
 
-        if (!this.source) {
-            return;
-        }
+            if (!this.source) {
+                return;
+            }
 
-        this.source.buffer = this.buffers?.[this.pointer] || null;
+            this.source.buffer = this.buffers?.[this.pointer] || null;
 
-        // source -> gain
-        this.source.connect(this.gainNode);
-        // gain -> distination
-        this.gainNode.connect(this.context.destination);
+            // source -> gain
+            this.source.connect(this.gainNode);
+            // gain -> distination
+            this.gainNode.connect(this.context.destination);
 
-        this.gainNode.gain.value = this.volume;
+            this.gainNode.gain.value = this.volume;
 
-        // source -> analyser
-        this.source.connect(this.analyser);
+            // source -> analyser
+            this.source.connect(this.analyser);
 
-        // set start timestamp
-        this.timestamp = Date.now();
+            // set start timestamp
+            this.timestamp = Date.now();
 
-        // dispath initial changeposition set interval for events for position
-        this.dispatchEvent('changeposition');
-
-        this.timestampHandler = (setInterval(() => {
+            // dispath initial changeposition set interval for events for position
             this.dispatchEvent('changeposition');
 
-            const now = Date.now();
-            const delta = (now - (this.timestamp || 0)) / 1000;
-            this.position ? (this.position += delta) : (this.position = delta);
-            this.timestamp = now;
+            this.timestampHandler = (setInterval(() => {
+                this.dispatchEvent('changeposition');
 
-            if (this.position && this.position > this.getDuration()) {
-                this.timestampHandler && clearInterval(this.timestampHandler);
-                this.dispatchEvent('onsongend');
+                const now = Date.now();
+                const delta = (now - (this.timestamp || 0)) / 1000;
+                this.position ? (this.position += delta) : (this.position = delta);
+                this.timestamp = now;
 
-                this.position = 0;
-            }
-        }, this.timestampIntervalTick) as unknown) as NodeJS.Timeout; // TODO: fix this uglyness
+                if (this.position && this.position > this.getDuration()) {
+                    this.timestampHandler && clearInterval(this.timestampHandler);
+                    this.dispatchEvent('onsongend');
 
-        // start the track at resume time
-        this.source.start(0, resumeTime);
+                    this.position = 0;
+                }
+            }, this.timestampIntervalTick) as unknown) as NodeJS.Timeout; // TODO: fix this uglyness
 
-        // draw canvas
-        this.drawFrequency();
-        this.drawSinewave();
+            // start the track at resume time
 
-        // done
-        this.status = 'PLAY';
+            // draw canvas
+            this.drawFrequency();
+            this.drawSinewave();
+
+            this.source.start(0, resumeTime);
+            // done
+            this.status = 'PLAY';
+        }, this.between);
     };
 
     dispatchEvent = (eventName: Events) => {
@@ -259,10 +281,10 @@ export class AudioHandler {
         this.timestampHandler && clearInterval(this.timestampHandler);
         this.status = 'PAUSE';
 
-        if (this.position) {
-            this.position += (Date.now() - (this.timestamp || 0)) / 1000;
+        if (this.timestamp) {
+            this.timestamp += (Date.now() - (this.timestamp || 0)) / 1000;
         } else {
-            this.position = (Date.now() - (this.timestamp || 0)) / 1000;
+            this.timestamp = (Date.now() - (this.timestamp || 0)) / 1000;
         }
 
         this.gainNode?.gain.linearRampToValueAtTime(0, this.releaseTime);
@@ -284,7 +306,7 @@ export class AudioHandler {
         }, 20);
     };
 
-    public jump = (pointer: number) => {
+    jump = (pointer: number) => {
         this.pointer = pointer;
         this.updateDuration();
         this.updateSampleRate();

@@ -57,9 +57,7 @@ export class DataHandler {
         return res.lastID;
     }
 
-    static async updatePlaylist(
-        payload: Partial<IPlaylist>
-    ): Promise<RunResult | void> {
+    static async updatePlaylist(payload: Partial<IPlaylist>): Promise<RunResult | void> {
         if (!payload.id || !payload) {
             return;
         }
@@ -72,11 +70,7 @@ export class DataHandler {
         return res;
     }
 
-    static async sortPlaylist(
-        currentPlaylistId: number,
-        songId: number,
-        newIndex: number
-    ) {
+    static async sortPlaylist(currentPlaylistId: number, songId: number, newIndex: number) {
         return Playlist.swap(currentPlaylistId, songId, newIndex);
     }
 
@@ -148,6 +142,7 @@ export class DataHandler {
     static async fetchState() {
         try {
             const data = await State.findOne();
+
             this.logger.info('fetch state', { data });
             return data;
         } catch (error) {

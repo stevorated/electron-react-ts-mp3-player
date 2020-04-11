@@ -2,7 +2,7 @@ import React from 'react';
 
 type Props = {
     title: string;
-    children?: JSX.Element[];
+    children?: JSX.Element[] | JSX.Element;
 };
 
 export function Tab({ title, children }: Props) {

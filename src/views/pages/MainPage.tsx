@@ -2,8 +2,9 @@ import React, { useState, MouseEvent, useRef } from 'react';
 
 import { Explorer, Middle, Info, Status } from '../components';
 import { TreeListType } from '../interfaces';
-import { AllHandlerActions, StatusType } from '../interfaces';
+import { AllHandlerActions, StatusType, CanvasType } from '../interfaces';
 import { AudioHandler } from '../components/middle/partials/songsList/audioHandler/AudioHandler';
+import { FftSizes } from '@views/interfaces';
 
 type Props = {
     pointer: number;
@@ -15,6 +16,8 @@ type Props = {
     loading: boolean;
     loop: boolean;
     random: boolean;
+    canvasType: CanvasType;
+    fftSize: FftSizes;
     tree: TreeListType[];
     current?: TreeListType;
     player: AudioHandler;
@@ -57,6 +60,8 @@ export function MainPage({
     random,
     sinewaveC,
     frequencyC,
+    canvasType,
+    fftSize,
 }: Props) {
     const resizeClass = 'move-cursor';
     const panelRef = useRef<HTMLElement>(null);
@@ -178,6 +183,8 @@ export function MainPage({
                     loop={loop}
                     random={random}
                     waitBetween={waitBetween}
+                    canvasType={canvasType}
+                    fftSize={fftSize}
                     handleAction={handleAction}
                     sinewaveC={sinewaveC}
                     frequencyC={frequencyC}

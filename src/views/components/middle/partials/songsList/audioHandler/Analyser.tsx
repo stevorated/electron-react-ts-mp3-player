@@ -3,8 +3,10 @@ import styled from 'styled-components';
 
 import { Canvas } from './Canvas';
 import { useWindowSize } from '../../../../../hooks';
+import { CanvasType } from '@views/interfaces';
 
 type Props = {
+    canvasType: CanvasType;
     title?: string;
     panelWidth: number;
     size: number;
@@ -13,7 +15,7 @@ type Props = {
     frequencyC: React.RefObject<HTMLCanvasElement>;
 };
 
-export function Analyser({ panelWidth, sinewaveC, frequencyC }: Props) {
+export function Analyser({ panelWidth, sinewaveC, frequencyC, canvasType }: Props) {
     const imageRef = useRef<HTMLDivElement>(null);
     const [windowWidth] = useWindowSize();
 
@@ -22,7 +24,7 @@ export function Analyser({ panelWidth, sinewaveC, frequencyC }: Props) {
     return (
         <div>
             <ContainerDiv>
-                <Canvas display="freq" frequencyC={frequencyC} sinewaveC={sinewaveC} width={w} />
+                <Canvas display={canvasType} frequencyC={frequencyC} sinewaveC={sinewaveC} width={w} />
             </ContainerDiv>
         </div>
     );

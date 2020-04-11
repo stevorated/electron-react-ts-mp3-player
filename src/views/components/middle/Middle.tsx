@@ -1,7 +1,7 @@
 import React, { RefObject } from 'react';
 import styled from 'styled-components';
 
-import { AllHandlerActions } from '@views/interfaces';
+import { AllHandlerActions, CanvasType, FftSizes } from '@views/interfaces';
 import { TreeListType, StatusType } from '@views/interfaces';
 
 import { PlayerContainer, SongsListContainer } from './partials';
@@ -16,6 +16,8 @@ type Props = {
     flex: number;
     pointer: number;
     waitBetween: number;
+    canvasType: CanvasType;
+    fftSize: FftSizes;
     status: StatusType;
     current?: TreeListType;
     mainRef: RefObject<HTMLDivElement>;
@@ -58,6 +60,8 @@ export function Middle({
     loading,
     loop,
     random,
+    fftSize,
+    canvasType,
     sinewaveC,
     frequencyC,
 }: Props) {
@@ -82,9 +86,12 @@ export function Middle({
                 current={current}
                 pointer={pointer}
                 waitBetween={waitBetween}
+                fftSize={fftSize}
+                canvasType={canvasType}
             />
             <SongsListContainer
                 panelWidth={panelWidth}
+                canvasType={canvasType}
                 sinewaveC={sinewaveC}
                 frequencyC={frequencyC}
                 loading={loading}

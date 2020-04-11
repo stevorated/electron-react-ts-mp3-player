@@ -28,6 +28,8 @@ export class State extends Model {
                         current_playlist_id,
                         loop,
                         is_prefs_open,
+                        canvas_type,
+                        fft_size,
                         created_at,
                     } = data;
 
@@ -40,6 +42,8 @@ export class State extends Model {
                         current_playlist_id,
                         loop: loop ? true : false,
                         is_prefs_open: is_prefs_open ? true : false,
+                        canvas_type,
+                        fft_size,
                         created_at,
                     });
                 })

@@ -3,7 +3,7 @@ import styled, { keyframes } from 'styled-components';
 import { FaSpinner } from 'react-icons/fa';
 
 import { ISong } from '@services/db';
-import { AllHandlerActions, TreeListType, StatusType } from '@views/interfaces';
+import { AllHandlerActions, TreeListType, StatusType, CanvasType } from '@views/interfaces';
 
 import { Analyser } from './audioHandler';
 import { PlaylistDetailsBar } from './PlaylistDetailsBar';
@@ -13,6 +13,7 @@ import { Hr } from '../../../shared';
 type Props = {
     panelWidth: number;
     pointer: number;
+    canvasType: CanvasType;
     loading: boolean;
     current?: TreeListType;
     status: StatusType;
@@ -24,6 +25,7 @@ type Props = {
 export function SongsListContainer({
     panelWidth,
     current,
+    canvasType,
     pointer,
     handleAction,
     status,
@@ -44,16 +46,10 @@ export function SongsListContainer({
         <ContainerDiv>
             {current && (
                 <>
-                    <PlaylistDetailsBar
-                        panelWidth={panelWidth}
-                        sinewaveC={sinewaveC}
-                        frequencyC={frequencyC}
-                        size={songs.length || 0}
-                        title={current?.title}
-                        totalDuration={totalDuration}
-                    />
+                    <PlaylistDetailsBar size={songs.length || 0} title={current?.title} totalDuration={totalDuration} />
                     <Hr />
                     <Analyser
+                        canvasType={canvasType}
                         panelWidth={panelWidth}
                         sinewaveC={sinewaveC}
                         frequencyC={frequencyC}

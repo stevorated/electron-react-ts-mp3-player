@@ -1,3 +1,3 @@
-import { Preferences } from './Preferences';
+import { PreferencesBtn } from './PreferencesBtn';
 
-export { Preferences as PreferencesBtn };
+export { PreferencesBtn };

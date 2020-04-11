@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { FaRandom, FaUndo, FaFolderPlus } from 'react-icons/fa';
 
 import { ISong } from '@services/db';
-import { AllHandlerActions } from '@views/interfaces';
+import { AllHandlerActions, CanvasType, FftSizes } from '@views/interfaces';
 
 import { colors } from '../../../../assets/consts';
 import { by } from '../../../../utils';
@@ -14,6 +14,8 @@ type Props = {
     loop: boolean;
     random: boolean;
     waitBetween: number;
+    canvasType: CanvasType;
+    fftSize: FftSizes;
     pointer: number;
     playlistTitle?: string;
     songs?: ISong[];
@@ -29,12 +31,13 @@ export function MediaPanel({
     songs,
     pointer,
     waitBetween,
+    fftSize,
+    canvasType,
     addSongModal,
     isPrefsOpen,
 }: Props) {
     const statusClass = playlistTitle ? 'hoverable' : 'disabled';
-    const title = songs?.sort((a, b) => by(a, b, 'song_index'))?.[pointer]
-        ?.title;
+    const title = songs?.sort((a, b) => by(a, b, 'song_index'))?.[pointer]?.title;
     return (
         <ContainerDiv className="container-audio current-song-container">
             <PreferencesBtn
@@ -42,6 +45,8 @@ export function MediaPanel({
                 statusClass={statusClass}
                 initialState={isPrefsOpen}
                 waitBetween={waitBetween}
+                fftSize={fftSize}
+                canvasType={canvasType}
             />
             <FaFolderPlus
                 className={`btn action-icon ${statusClass}`}
@@ -51,21 +56,13 @@ export function MediaPanel({
             <TitleText className="centered hide">{playlistTitle}</TitleText>
             <TitleText className="centered">{title}</TitleText>
             <FaUndo
-                className={`btn action-icon ${statusClass} ${
-                    loop ? 'active' : ''
-                }`}
-                onClick={() =>
-                    handleAction('UPDATE_REMOTE_STATE', { loop: !loop })
-                }
+                className={`btn action-icon ${statusClass} ${loop ? 'active' : ''}`}
+                onClick={() => handleAction('UPDATE_REMOTE_STATE', { loop: !loop })}
                 style={{ bottom: '5px', right: '40px' }}
             />
             <FaRandom
-                onClick={() =>
-                    handleAction('UPDATE_REMOTE_STATE', { random: !random })
-                }
-                className={`btn action-icon ${statusClass} ${
-                    random ? 'active' : ''
-                }`}
+                onClick={() => handleAction('UPDATE_REMOTE_STATE', { random: !random })}
+                className={`btn action-icon ${statusClass} ${random ? 'active' : ''}`}
                 style={{ bottom: '5px', right: '0px' }}
             />
         </ContainerDiv>

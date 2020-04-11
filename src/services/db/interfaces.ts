@@ -1,3 +1,5 @@
+import { FftSizes, CanvasType } from '@views/interfaces';
+
 export interface IState {
     id: number;
     volume: number;
@@ -5,10 +7,10 @@ export interface IState {
     show_explorer: boolean;
     random: boolean;
     current_playlist_id: number;
-    // pointer: number;
-    // src: string;
     loop: boolean;
     is_prefs_open: boolean;
+    fft_size: FftSizes;
+    canvas_type: CanvasType;
     created_at: string;
 }
 

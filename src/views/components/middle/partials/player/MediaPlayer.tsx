@@ -51,10 +51,6 @@ export function MediaPlayer({
     const noSong = !song;
 
     useEffect(() => {
-        setPos(player.getPosition());
-    }, []);
-
-    useEffect(() => {
         window.addEventListener('changeposition', updatePos);
         return () => {
             window.removeEventListener('changeposition', updatePos);
@@ -65,6 +61,7 @@ export function MediaPlayer({
         if (!seek) {
             return setPos(getCurrentTime());
         }
+
         setSeek(false);
         setCurrentTime(pos);
     };

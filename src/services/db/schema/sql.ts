@@ -65,6 +65,8 @@ export const startupSql: string[] = [
   current_playlist_id INTEGER DEFAULT 1, 
   loop BOOLEAN DEFAULT false, 
   is_prefs_open BOOLEAN DEFAULT false, 
+  fft_size INTEGER DEFAULT 128, 
+  canvas_type VARCHAR(20) DEFAULT "sine", 
   created_at DEFAULT CURRENT_TIMESTAMP, 
   FOREIGN KEY("current_playlist_id") REFERENCES "playlists"("id")
   );

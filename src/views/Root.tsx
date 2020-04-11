@@ -8,17 +8,16 @@ import { rootReducer } from './store';
 
 import App from './App';
 import { AudioHandler } from './components/middle/partials/songsList/audioHandler';
+import { HandleLoadFileOptions } from './interfaces';
 
 const audioHandler = new AudioHandler();
 
 const store = createStore(
     rootReducer,
-    process.env.NODE_ENV === 'production'
-        ? applyMiddleware(thunk)
-        : composeWithDevTools(applyMiddleware(thunk))
+    process.env.NODE_ENV === 'production' ? applyMiddleware(thunk) : composeWithDevTools(applyMiddleware(thunk))
 );
 
-const styles = {
+const defaultCanvasStyleOptions = {
     fillStyleSinewave: 'rgba(20, 20, 20)',
     fillStyleFrequency: 'rgba(20, 20, 20)',
     strokeStyleSinewave: 'rgba(255, 0, 0)',
@@ -32,11 +31,11 @@ export function Root() {
     const sinewaveC = useRef<HTMLCanvasElement>(null);
     const frequencyC = useRef<HTMLCanvasElement>(null);
 
-    const handleLoadFiles = async (files: string[]) => {
+    const handleLoadFiles = async (files: string[], { fftSize }: HandleLoadFileOptions) => {
         await audioHandler.loadFiles(
             files,
             { sinewaveC: sinewaveC.current, frequencyC: frequencyC.current },
-            styles
+            { ...defaultCanvasStyleOptions, fftSize: fftSize || 128 }
         );
     };
 

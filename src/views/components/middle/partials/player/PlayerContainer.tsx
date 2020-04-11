@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 import { ISong } from '@services/db';
-import { TreeListType, StatusType, AllHandlerActions } from '@views/interfaces';
+import { TreeListType, StatusType, AllHandlerActions, FftSizes, CanvasType } from '@views/interfaces';
 
 import { MediaPanel } from './MediaPanel';
 import { MediaPlayer } from './MediaPlayer';
@@ -17,6 +17,8 @@ type Props = {
     status: StatusType;
     pointer: number;
     waitBetween: number;
+    fftSize: FftSizes;
+    canvasType: CanvasType;
     loop: boolean;
     random: boolean;
     current?: TreeListType;
@@ -52,6 +54,8 @@ export function PlayerContainer({
     loop,
     random,
     waitBetween,
+    fftSize,
+    canvasType,
 }: Props) {
     const size = 20;
     return (
@@ -76,6 +80,8 @@ export function PlayerContainer({
             <Hr />
             <MediaPanel
                 waitBetween={waitBetween}
+                fftSize={fftSize}
+                canvasType={canvasType}
                 isPrefsOpen={isPrefsOpen}
                 random={random}
                 pointer={pointer}

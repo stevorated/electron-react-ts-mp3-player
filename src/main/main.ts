@@ -11,6 +11,7 @@ let win: Window;
 
 async function main() {
     await DataHandler.startup();
+    
     const initialState = await DataHandler.setup();
 
     win = new Window({

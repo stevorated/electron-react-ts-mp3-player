@@ -26,17 +26,9 @@ type Props = {
     handleAction: (action: AllHandlerActions, payload?: any) => Promise<void>;
 };
 
-export function Songs({
-    songs: currentState,
-    pointer,
-    status,
-    playlistId,
-    handleAction,
-}: Props) {
+export function Songs({ songs: currentState, pointer, status, playlistId, handleAction }: Props) {
     const [busy, setBusy] = useState(false);
-    const [songs, setSongs] = useState(
-        currentState?.sort((a, b) => by<ISong>(a, b, 'song_index'))
-    );
+    const [songs, setSongs] = useState(currentState?.sort((a, b) => by<ISong>(a, b, 'song_index')));
     useEffect(() => {
         setSongs(currentState?.sort((a, b) => by<ISong>(a, b, 'song_index')));
     }, [currentState]);
@@ -62,6 +54,8 @@ export function Songs({
         }
 
         setBusy(true);
+
+        const [{ song_index: oldIndex }] = songs.filter(song => song.id === songId);
         await handleAction('SORT_PLAYLIST', {
             songs: songs.map((song, index) => ({
                 ...song,
@@ -69,6 +63,7 @@ export function Songs({
             })),
             songId,
             newIndex,
+            oldIndex,
         });
 
         setTimeout(() => {
@@ -86,9 +81,7 @@ export function Songs({
                 handleSortSongs={handleSortSongs}
                 song={song}
                 pointer={pointer}
-                maxPointer={
-                    currentState.length - 1 > 0 ? currentState.length - 1 : 1
-                }
+                maxPointer={currentState.length - 1 > 0 ? currentState.length - 1 : 1}
                 status={status}
                 playlistId={playlistId}
                 handleAction={handleAction}
@@ -96,7 +89,5 @@ export function Songs({
         );
     };
 
-    return (
-        <div style={style}>{songs.map((song, i) => renderCard(song, i))}</div>
-    );
+    return <div style={style}>{songs.map((song, i) => renderCard(song, i))}</div>;
 }

@@ -4,6 +4,7 @@ import { AllHandlerActions } from '@views/interfaces';
 
 import { Channels } from '../../main';
 import { HandlerAction } from '../interfaces';
+import { AudioHandler } from './../components/middle/partials/songsList/audioHandler/AudioHandler';
 
 export class Ipc {
     static invoke<T>(channel: Channels, args: any): Promise<T> {
@@ -28,10 +29,7 @@ export class Ipc {
             ipcRenderer
                 .invoke(channel, args)
                 .then(payload => {
-                    action(
-                        handlerAction || (channel as HandlerAction),
-                        payload
-                    );
+                    action(handlerAction || (channel as HandlerAction), payload);
                     resolve(payload);
                 })
                 .catch(err => reject(err));
@@ -49,23 +47,18 @@ export class Ipc {
         });
     }
 
-    static listen(
-        channel: Channels,
-        listener: (event: Electron.IpcRendererEvent, ...args: any) => any
-    ) {
+    static listen(channel: Channels, listener: (event: Electron.IpcRendererEvent, ...args: any) => any) {
         return ipcRenderer.on(channel, listener);
     }
 }
 
 export const setupListeners = async (
     handler: (action: AllHandlerActions, payload?: any) => Promise<void>,
-    player: HTMLAudioElement | null
+    player: AudioHandler
 ) => {
     Ipc.listen('MENU_ADD_SONG', async () => handler('ADD_SONG_MODAL'));
 
-    Ipc.listen('MENU_SAVE_PLAYLIST', async () =>
-        handler('CREATE_PLAYLIST_TEMP')
-    );
+    Ipc.listen('MENU_SAVE_PLAYLIST', async () => handler('CREATE_PLAYLIST_TEMP'));
 
     Ipc.listen('MENU_OPEN_PREFRENCES', async () => handler('OPEN_PREFRENCES'));
 
@@ -78,11 +71,7 @@ export const setupListeners = async (
     Ipc.listen('ACC_REWIND', async () => handler('ACC_REWIND'));
 
     Ipc.listen('ACC_DOWN', async () => {
-        if (!player) {
-            return;
-        }
-
-        await handler('SET_VOLUME', player.volume - 0.05);
+        await handler('SET_VOLUME', player.getVolume() - 0.05);
     });
 
     Ipc.listen('ACC_UP', async () => {
@@ -90,6 +79,6 @@ export const setupListeners = async (
             return;
         }
 
-        await handler('SET_VOLUME', player.volume + 0.05);
+        await handler('SET_VOLUME', player.getVolume() + 0.05);
     });
 };
